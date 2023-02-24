@@ -12,7 +12,7 @@ const rows = [
 
 ];
 
-export default function Regional() {
+export default function Regionais() {
     return (
         <div style={{ height: 400, width: '100%' }}>
             <DataGrid

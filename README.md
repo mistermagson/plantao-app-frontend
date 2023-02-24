@@ -47,3 +47,10 @@ Inicie o servidor
 
 **Back-end:** Node
 
+## Apêndice
+
+### Links para acessar as telas com a aplicação rodando localmente
+
+- [0 - Login](http://localhost:3000/autentica)
+- [0 - Lista Escalas](http://localhost:3000/lista/escalas)
+- [0 - Lista Regionais](http://localhost:3000/lista/regional)
