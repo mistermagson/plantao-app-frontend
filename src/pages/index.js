@@ -10,11 +10,10 @@ function HomePage() {
             <div className={'jf-h2'}>Seção Judiciária de Mato Grosso do Sul</div>
     <div>
         <p>&nbsp;</p>
-        <p>&nbsp;</p>
-        <p>&nbsp;</p>
+        <p>&nbsp;</p>        
 
     </div>
-            <Button href={"autentica"} variant="contained">Acessar App</Button>
+            <Button href={"painel"} variant="contained">Acessar App</Button>
         </div>
     </>
 }
