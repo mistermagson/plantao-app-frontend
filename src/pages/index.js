@@ -13,7 +13,7 @@ function HomePage() {
         <p>&nbsp;</p>        
 
     </div>
-            <Button href={"painel"} variant="contained">Acessar App</Button>
+            <Button href={"painel"} variant="contained">Acessar APP</Button>
         </div>
     </>
 }
