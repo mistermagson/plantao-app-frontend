@@ -9,6 +9,7 @@ const columns = [
 const rows = [
     { id: 1, descricaoRegional: 'Regional 1' },
     { id: 2, descricaoRegional: 'Regional 2'},
+    { id: 3, descricaoRegional: 'Regional 3'},
 
 ];
 

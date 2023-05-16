@@ -7,7 +7,7 @@ export default function Copyright(props) {
         <Typography variant="body2" color="text.secondary" align="center" {...props}>
             {'Copyright © '}
             <Link color="inherit" href="https://www.jfms.jus.br/">
-                JFMS
+                JFMS - CPD2
             </Link>{' '}
             {new Date().getFullYear()}
             {'.'}
