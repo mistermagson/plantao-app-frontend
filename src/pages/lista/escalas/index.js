@@ -14,18 +14,19 @@ const colunas = [
     { field: 'tipoPlantao', headerName: 'Tipo', width: 100 },
     { field: 'inicioPlantao',   headerName: 'Início', width: 100 , },
     { field: 'fimPlantao',  headerName: 'Fim', width: 100, },
+    { field: 'status',  headerName: 'Status', width: 100, },
 ];
 
 //TODO retorno do BD
 const linhas = [
-    { id: 1, descricaoPlantao: 'Recesso 2023/2024', tipoPlantao: 'Regional',inicioPlantao: '20/12/2023',fimPlantao: '06/01/2024' },
-    { id: 2, descricaoPlantao: 'Plantao Local', tipoPlantao: 'Local',inicioPlantao: '20/12/2023',fimPlantao: '06/01/2024' },
-    { id: 2, descricaoPlantao: 'Plantao Local', tipoPlantao: 'Local',inicioPlantao: '20/12/2023',fimPlantao: '06/01/2024' },
-    { id: 2, descricaoPlantao: 'Plantao Local', tipoPlantao: 'Local',inicioPlantao: '20/12/2023',fimPlantao: '06/01/2024' },
-    { id: 2, descricaoPlantao: 'Plantao Local', tipoPlantao: 'Local',inicioPlantao: '20/12/2023',fimPlantao: '06/01/2024' },
-    { id: 2, descricaoPlantao: 'Plantao Local', tipoPlantao: 'Local',inicioPlantao: '20/12/2023',fimPlantao: '06/01/2024' },
-    { id: 2, descricaoPlantao: 'Plantao Local', tipoPlantao: 'Local',inicioPlantao: '20/12/2023',fimPlantao: '06/01/2024' },
-    { id: 2, descricaoPlantao: 'Plantao Local', tipoPlantao: 'Local',inicioPlantao: '20/12/2023',fimPlantao: '06/01/2024' },
+    { id: 1, descricaoPlantao: 'Recesso 2023/2024', tipoPlantao: 'Regional',inicioPlantao: '20/12/2023',fimPlantao: '06/01/2024',status: '1' },
+    { id: 2, descricaoPlantao: 'Plantao Local', tipoPlantao: 'Local',inicioPlantao: '20/12/2023',fimPlantao: '06/01/2024',status: '1' },
+    { id: 2, descricaoPlantao: 'Plantao Local', tipoPlantao: 'Local',inicioPlantao: '20/12/2023',fimPlantao: '06/01/2024',status: '0' },
+    { id: 2, descricaoPlantao: 'Plantao Local', tipoPlantao: 'Local',inicioPlantao: '20/12/2023',fimPlantao: '06/01/2024',status: '1' },
+    { id: 2, descricaoPlantao: 'Plantao Local', tipoPlantao: 'Local',inicioPlantao: '20/12/2023',fimPlantao: '06/01/2024',status: '0' },
+    { id: 2, descricaoPlantao: 'Plantao Local', tipoPlantao: 'Local',inicioPlantao: '20/12/2023',fimPlantao: '06/01/2024',status: '1' },
+    { id: 2, descricaoPlantao: 'Plantao Local', tipoPlantao: 'Local',inicioPlantao: '20/12/2023',fimPlantao: '06/01/2024',status: '1' },
+    { id: 2, descricaoPlantao: 'Plantao Local', tipoPlantao: 'Local',inicioPlantao: '20/12/2023',fimPlantao: '06/01/2024',status: '0' },
 
 ];
 
