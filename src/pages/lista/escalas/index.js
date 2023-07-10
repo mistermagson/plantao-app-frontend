@@ -10,23 +10,23 @@ import AddIcon from '@mui/icons-material/Add';
 
 const colunas = [
     { field: 'id', headerName: 'ID', width: 30 },
-    { field: 'descricaoPlantao', headerName: 'Descrição', width: 150 },
-    { field: 'tipoPlantao', headerName: 'Tipo', width: 100 },
-    { field: 'inicioPlantao',   headerName: 'Início', width: 100 , },
-    { field: 'fimPlantao',  headerName: 'Fim', width: 100, },
+    { field: 'descricao', headerName: 'Descrição', width: 150 },
+    { field: 'tipo', headerName: 'Tipo', width: 100 },
+    { field: 'datainicio',   headerName: 'Início', width: 100 , },
+    { field: 'datafim',  headerName: 'Fim', width: 100, },
     { field: 'status',  headerName: 'Status', width: 100, },
 ];
 
 //TODO retorno do BD
 const linhas = [
-    { id: 1, descricaoPlantao: 'Recesso 2023/2024', tipoPlantao: 'Regional',inicioPlantao: '20/12/2023',fimPlantao: '06/01/2024',status: '1' },
-    { id: 2, descricaoPlantao: 'Plantao Local', tipoPlantao: 'Local',inicioPlantao: '20/12/2023',fimPlantao: '06/01/2024',status: '1' },
-    { id: 2, descricaoPlantao: 'Plantao Local', tipoPlantao: 'Local',inicioPlantao: '20/12/2023',fimPlantao: '06/01/2024',status: '0' },
-    { id: 2, descricaoPlantao: 'Plantao Local', tipoPlantao: 'Local',inicioPlantao: '20/12/2023',fimPlantao: '06/01/2024',status: '1' },
-    { id: 2, descricaoPlantao: 'Plantao Local', tipoPlantao: 'Local',inicioPlantao: '20/12/2023',fimPlantao: '06/01/2024',status: '0' },
-    { id: 2, descricaoPlantao: 'Plantao Local', tipoPlantao: 'Local',inicioPlantao: '20/12/2023',fimPlantao: '06/01/2024',status: '1' },
-    { id: 2, descricaoPlantao: 'Plantao Local', tipoPlantao: 'Local',inicioPlantao: '20/12/2023',fimPlantao: '06/01/2024',status: '1' },
-    { id: 2, descricaoPlantao: 'Plantao Local', tipoPlantao: 'Local',inicioPlantao: '20/12/2023',fimPlantao: '06/01/2024',status: '0' },
+    { id: 1, descricao: 'Recesso 2023/2024', tipo: 'Regional',datainicio: '20/12/2023',datafim: '06/01/2024',status: '1' },
+    { id: 2, descricao: 'Plantao Local', tipo: 'Local',datainicio: '20/12/2023',datafim: '06/01/2024',status: '1' },
+    { id: 3, descricao: 'Plantao Local', tipo: 'Local',datainicio: '20/12/2023',datafim: '06/01/2024',status: '0' },
+    { id: 4, descricao: 'Plantao Local', tipo: 'Local',datainicio: '20/12/2023',datafim: '06/01/2024',status: '1' },
+    { id: 5, descricao: 'Plantao Local', tipo: 'Local',datainicio: '20/12/2023',datafim: '06/01/2024',status: '0' },
+    { id: 6, descricao: 'Plantao Local', tipo: 'Local',datainicio: '20/12/2023',datafim: '06/01/2024',status: '1' },
+    { id: 7, descricao: 'Plantao Local', tipo: 'Local',datainicio: '20/12/2023',datafim: '06/01/2024',status: '1' },
+    { id: 8, descricao: 'Plantao Local', tipo: 'Local',datainicio: '20/12/2023',datafim: '06/01/2024',status: '0' },
 
 ];
 
