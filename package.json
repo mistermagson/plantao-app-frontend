@@ -1,17 +1,24 @@
 {
-  "name": "plantao-app-front",
-  "version": "1.0.0",
-  "description": "Escala Plantão - FRONTEND",
-  "main": "index.js",
+  "name": "nextjs-material-dashboard-2-pro",
+  "version": "2.1.0",
+  "private": true,
+  "author": "Creative Tim",
+  "license": "SEE LICENSE IN <https://www.creative-tim.com/license>",
+  "description": "NextJS version of Material Dashboard 2 PRO by Creative Tim",
+  "bugs": {
+    "url": "https://github.com/creativetimofficial/ct-nextjs-material-dashboard-pro/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/creativetimofficial/ct-nextjs-material-dashboard-pro.git"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "@asseinfo/react-kanban": "2.2.0",
     "@babel/preset-react": "7.18.6",
@@ -20,7 +27,6 @@
     "@emotion/server": "11.10.0",
     "@emotion/styled": "11.10.6",
     "@fullcalendar/common": "5.11.4",
-    "@fullcalendar/core": "^6.1.7",
     "@fullcalendar/daygrid": "6.1.4",
     "@fullcalendar/interaction": "6.1.4",
     "@fullcalendar/react": "6.1.4",
@@ -51,6 +57,7 @@
     "yup": "1.0.2"
   },
   "devDependencies": {
-    "sass": "^1.58.1"
+    "eslint": "8.36.0",
+    "eslint-config-next": "13.2.4"
   }
 }
