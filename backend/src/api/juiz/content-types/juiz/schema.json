@@ -1,0 +1,35 @@
+{
+  "kind": "collectionType",
+  "collectionName": "juizs",
+  "info": {
+    "singularName": "juiz",
+    "pluralName": "juizs",
+    "displayName": "Juiz"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Nome": {
+      "type": "string",
+      "required": true
+    },
+    "email": {
+      "type": "email",
+      "unique": true,
+      "required": true
+    },
+    "rf": {
+      "type": "string",
+      "unique": true,
+      "required": true
+    },
+    "plantoes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::plantao.plantao",
+      "mappedBy": "juiz"
+    }
+  }
+}

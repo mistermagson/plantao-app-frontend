@@ -1,0 +1,31 @@
+{
+  "kind": "collectionType",
+  "collectionName": "plantoes",
+  "info": {
+    "singularName": "plantao",
+    "pluralName": "plantoes",
+    "displayName": "Plantao"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "data": {
+      "type": "date",
+      "required": true
+    },
+    "escala": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::escala.escala",
+      "inversedBy": "plantoes"
+    },
+    "juiz": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::juiz.juiz",
+      "inversedBy": "plantoes"
+    }
+  }
+}

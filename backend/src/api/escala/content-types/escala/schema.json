@@ -1,0 +1,47 @@
+{
+  "kind": "collectionType",
+  "collectionName": "escalas",
+  "info": {
+    "singularName": "escala",
+    "pluralName": "escalas",
+    "displayName": "Escala"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "descricao": {
+      "type": "string",
+      "required": true
+    },
+    "tipo": {
+      "type": "enumeration",
+      "enum": [
+        "regional",
+        "local",
+        "distribuidor"
+      ],
+      "required": true
+    },
+    "inicio": {
+      "type": "date",
+      "required": true
+    },
+    "fim": {
+      "type": "date",
+      "required": true
+    },
+    "fechada": {
+      "type": "boolean",
+      "default": false,
+      "required": true
+    },
+    "plantoes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::plantao.plantao",
+      "mappedBy": "escala"
+    }
+  }
+}
