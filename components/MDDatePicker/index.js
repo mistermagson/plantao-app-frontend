@@ -25,25 +25,22 @@ import "flatpickr/dist/flatpickr.css";
 // NextJS Material Dashboard 2 PRO components
 import MDInput from "/components/MDInput";
 
-function MDDatePicker({ input, ...rest }) {
+import { useState } from "react"
+import DatePicker from "react-multi-date-picker"
+
+export default function MMDatePicker() {
+  const today = new Date()
+  const tomorrow = new Date()
+
+  tomorrow.setDate(tomorrow.getDate() + 1)
+
+  const [values, setValues] = useState([today, tomorrow])
+
   return (
-    <Flatpickr
-      {...rest}
-      render={({ defaultValue }, ref) => (
-        <MDInput {...input} defaultValue={defaultValue} inputRef={ref} />
-      )}
-    />
-  );
+      <DatePicker
+          multiple
+          value={values}
+          onChange={setValues}
+      />
+  )
 }
-
-// Setting default values for the props of MDDatePicker
-MDDatePicker.defaultProps = {
-  input: {},
-};
-
-// Typechecking props for the MDDatePicker
-MDDatePicker.propTypes = {
-  input: PropTypes.objectOf(PropTypes.any),
-};
-
-export default MDDatePicker;

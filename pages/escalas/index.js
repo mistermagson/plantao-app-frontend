@@ -1,6 +1,8 @@
 import React from 'react';
 import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
+import DataTable from "/examples/Tables/DataTable";
+import {keys} from "regenerator-runtime";
 
 export async function getStaticProps(){
     const data = await fetch('http://localhost:3000/api/escala')
@@ -12,15 +14,22 @@ export async function getStaticProps(){
 }
 
 function Escalas({escalas}) {
+
           return (
                    <DashboardLayout>
                        <DashboardNavbar />
                        <h1>Escalas</h1>
-                         <ul>
-                           {escalas.map((escala)=>(
-                             <li key={escala.id}>{escala.descricao} - <strong>{escala.tipo}</strong> - {escala.datainicio} até {escala.datafim}</li>
-                           ))}
-                         </ul>
+                       <DataTable
+                           table={{
+                               columns: [
+                                   {Header: "id", accessor: "id", width: "10%"},
+                                   {Header: "descricao", accessor: "descricao", width: "30%"},
+                                   {Header: "tipo", accessor: "tipo"},
+
+                               ],
+                               rows: escalas
+                           }}
+                       />
                    </DashboardLayout>
                   );
   }

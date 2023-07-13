@@ -34,6 +34,9 @@ import BookingCard from "/examples/Cards/BookingCard";
 // Anaytics dashboard components
 import SalesByCountry from "/pagesComponents/dashboards/analytics/components/SalesByCountry";
 
+// Date picker
+import MDDatePicker from "/components/MDDatePicker";
+
 // Data
 import reportsBarChartData from "/pagesComponents/dashboards/analytics/data/reportsBarChartData";
 import reportsLineChartData from "/pagesComponents/dashboards/analytics/data/reportsLineChartData";
@@ -79,6 +82,16 @@ function Analytics() {
         <Grid container>
           <SalesByCountry />
         </Grid>
+        <MDBox mt={6} bgColor="dark" variant="gradient" borderRadius="lg" shadow="lg" opacity={1} p={2}>
+          <Grid item>
+            <MDTypography sx={{ mt: 2, mb: 1 }} color="white">
+              Selecione uma data:
+            </MDTypography>
+            <MDBox>
+              <MDDatePicker input={{ placeholder: "Select a date" }} />
+            </MDBox>
+          </Grid>
+        </MDBox>
         <MDBox mt={6}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={4}>
