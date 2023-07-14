@@ -25,15 +25,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/dashboards/analytics": [
+    "/escalas/adicionaescalas": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/dashboards/analytics.js"
-    ],
-    "/escalas": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/escalas.js"
+      "static/chunks/pages/escalas/adicionaescalas.js"
     ]
   },
   "ampFirstPages": []
