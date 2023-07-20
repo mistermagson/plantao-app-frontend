@@ -1,22 +1,15 @@
-// @material-ui core components
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import Autocomplete from "@mui/material/Autocomplete";
 
-// NextJS Material Dashboard 2 PRO components
+
 import MDBox from "/components/MDBox";
 import MDTypography from "/components/MDTypography";
 import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
-import DataTable from "/examples/Tables/DataTable";
-import FormField from "/pagesComponents/pages/account/components/FormField";
+import { useForm } from "react-hook-form";
+
 import { DataGrid } from '@mui/x-data-grid';
-
-// Settings page components
-
-
-// Data
-import selectData from "/pagesComponents/pages/account/settings/components/BasicInfo/data/selectData";
 import React from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -39,6 +32,9 @@ export async function getStaticProps(){
 }
 function Plantoes({plantoes,juizes,escalas}) {
 
+    const {register} = useForm();
+    const onSubmit = () => {};
+
     const juizProps = {
         options: juizes,
         getOptionLabel: (option) => option.nome,
@@ -48,6 +44,8 @@ function Plantoes({plantoes,juizes,escalas}) {
         options: escalas,
         getOptionLabel: (option) => option.descricao,
     };
+
+
     return (
         <DashboardLayout>
             <DashboardNavbar />
@@ -63,17 +61,16 @@ function Plantoes({plantoes,juizes,escalas}) {
                                 <Autocomplete
                                     {...juizProps}
                                     disablePortal
-                                    id="combo-box-juiz"
                                     sx={{ width: 300 }}
                                     size="Big"
-                                    renderInput={(params) => <TextField {...params} label="Nome do Juiz" />}
+                                    renderInput={(params) =>
+                                        <TextField {...params} label="Nome do Juiz" required />}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={1} >
                                 <Autocomplete
                                     {...escalaProps}
                                     disablePortal
-                                    id="combo-box-escala"
                                     sx={{ width: 300 }}
                                     renderInput={(params) => <TextField {...params} label="Escala" />}
                                 />
@@ -87,8 +84,8 @@ function Plantoes({plantoes,juizes,escalas}) {
                         <div style={{ width: '400px' }}>
                         <DataGrid
                             rows={plantoes}
-                            columns={[{field:'data', headerName:'Datas',flex:'1'}]}
-                            pageSize={5}
+                            columns={[{field:'data', headerName:'Datas',flex:'1', sortable:false}]}
+                            pageSize={6}
                             pageSizeOptions={[5,10,20]}
                             checkboxSelection
                             sx={{ fontSize: '18px' }}

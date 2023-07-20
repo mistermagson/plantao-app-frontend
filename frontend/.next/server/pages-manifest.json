@@ -2,5 +2,11 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/plantoes": "pages/plantoes.js"
+  "/api/escala": "pages/api/escala.js",
+  "/ecommerce/products/product-page": "pages/ecommerce/products/product-page.js",
+  "/escalas": "pages/escalas.js",
+  "/plantoes": "pages/plantoes.js",
+  "/escalas/adicionaescalas": "pages/escalas/adicionaescalas.js",
+  "/api/plantao": "pages/api/plantao.js",
+  "/api/juiz": "pages/api/juiz.js"
 }

@@ -49,6 +49,7 @@
     "react-dom": "18.2.0",
     "react-flatpickr": "3.10.13",
     "react-github-btn": "1.4.0",
+    "react-hook-form": "^7.45.2",
     "react-images-viewer": "1.7.1",
     "react-quill": "2.0.0",
     "react-table": "7.8.0",
