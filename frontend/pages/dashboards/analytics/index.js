@@ -88,7 +88,7 @@ function Analytics() {
               Selecione uma data:
             </MDTypography>
             <MDBox>
-              <MDDatePicker input={{ placeholder: "Select a date" }} />
+              <MDDatePicker input={{ placeholder: "Selecione uma data" }} />
             </MDBox>
           </Grid>
         </MDBox>

@@ -3,7 +3,17 @@ import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
 import DataTable from "/examples/Tables/DataTable";
 import {keys} from "regenerator-runtime";
+import MDBox from "/components/MDBox";
 import { useState } from 'react';
+
+
+// @mui material components
+import Grid from "@mui/material/Grid";
+import Card from "@mui/material/Card";
+import MDTypography from "/components/MDTypography";
+// Date picker
+import MDDatePicker from "/components/MDDatePicker";
+import FormField from "/pagesComponents/pages/account/components/FormField";
 
 // Parses the JSON returned by a network request
 const parseJSON = resp => (resp.json ? resp.json() : resp);
@@ -55,54 +65,63 @@ function AdicionaEscala({escalas}) {
       }
     };
           return (
-                   <DashboardLayout>
-                       <DashboardNavbar />
-                       <h1>Escalas</h1>
-                        <form onSubmit={handleSubmit}>
-                               <label>
-                                 Descricao:
-                                 <input type="text" name="descricao" value={modifiedData.descricao} onChange={handleChange} />
-                               </label>
-                               <label>
-                                 inicio:
-                                 <input
-                                   type="text"
-                                   name="inicio"
-                                   value={modifiedData.inicio}
-                                   onChange={handleChange}
-                                 />
-                                 </label>
-                                 <label>
-                                                                  Fim:
-                                                                  <input
-                                                                    type="text"
-                                                                    name="fim"
-                                                                    value={modifiedData.fim}
-                                                                    onChange={handleChange}
-                                                                  />
-                            </label>
-                              <label>
-                                                               Tipo:
-                                                               <input
-                                                                 type="text"
-                                                                 name="tipo"
-                                                                 value={modifiedData.tipo}
-                                                                 onChange={handleChange}
-                                                               />
-                            </label>
-  <label>
-                                                               Fechada:
-                                                                <input
-                                                                         type="checkbox"
-                                                                         checked="true"
-                                                                         onChange={handleChange}
-                                                                         name="fechada"
-                                                                         id={modifiedData.fechada}
-                                                                       />
-                            </label>
-                               <button type="submit">Submit</button>
-                             </form>
-                   </DashboardLayout>
-                  );
+               <DashboardLayout>
+                   <DashboardNavbar />
+                   <Grid item ml={1}>
+                    <h1>Escalas</h1>
+                   </Grid>
+                   <Card id="escalas" sx={{ overflow: "visible" }}>
+
+                       <MDBox component="form" py={3} px={3}>
+                           <Grid container spacing={3}>
+                               <Grid item xs={12} sm={6}>
+                                   <FormField label="First Name" placeholder="Alec" />
+                               </Grid>
+                               <Grid item xs={12} sm={6}>
+                                   <FormField label="Last Name" placeholder="Thompson" />
+                               </Grid>
+                           </Grid>
+                       </MDBox>
+                       <Grid mb={3} >
+                           <label>Tipo:
+                               <input
+                               type="text"
+                               name="tipo"
+                               value={modifiedData.tipo}
+                               onChange={handleChange}
+                               />
+                           </label>
+                       </Grid>
+                       <Grid mb={3}>
+                           <label>inicio:
+                               <MDDatePicker input={{ placeholder: "Selecione uma data" }} />
+                           </label>
+                           <label>Fim:
+                               <MDDatePicker input={{ placeholder: "Selecione uma data" }} />
+                           </label>
+                       </Grid>
+                       <label>Descricao:
+                           <textarea
+                               name="descricao"
+                               value={modifiedData.descricao}
+                               onChange={handleChange}
+                               rows="3"
+                               cols="50"
+                           />
+                       </label>
+                       <label>Fechada:
+                            <input
+                             type="checkbox"
+                             checked="true"
+                             onChange={handleChange}
+                             name="fechada"
+                             id={modifiedData.fechada}
+                            />
+                       </label>
+                       <button type="submit">Submit</button>
+
+                   </Card>
+               </DashboardLayout>
+              );
   }
 export default AdicionaEscala;
