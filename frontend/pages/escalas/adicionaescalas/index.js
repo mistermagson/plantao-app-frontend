@@ -14,6 +14,11 @@ import MDTypography from "/components/MDTypography";
 // Date picker
 import MDDatePicker from "/components/MDDatePicker";
 import FormField from "/pagesComponents/pages/account/components/FormField";
+import Button from "@mui/material/Button";
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
+import {InputLabel, Select} from "@mui/material";
+import MenuItem from "@mui/material/MenuItem";
 
 // Parses the JSON returned by a network request
 const parseJSON = resp => (resp.json ? resp.json() : resp);
@@ -64,51 +69,47 @@ function AdicionaEscala({escalas}) {
         setErrorEscalas(error);
       }
     };
+
+    const opcoes = [{label:'Local'},{label:'Regional'},{label:'Distribuidor'}];
+
           return (
                <DashboardLayout>
                    <DashboardNavbar />
-                   <Grid item ml={1}>
-                    <h1>Escalas</h1>
-                   </Grid>
                    <Card id="escalas" sx={{ overflow: "visible" }}>
-
+                       <MDBox p={3}>
+                           <MDTypography variant="h2">Adicionar Escala</MDTypography>
+                       </MDBox>
                        <MDBox component="form" py={3} px={3}>
                            <Grid container spacing={3}>
                                <Grid item xs={12} sm={6}>
-                                   <FormField label="First Name" placeholder="Alec" />
+                                   <FormField label="Descrição" placeholder="Insira uma descrição" multiline rows={4} variant="outlined"/>
                                </Grid>
                                <Grid item xs={12} sm={6}>
-                                   <FormField label="Last Name" placeholder="Thompson" />
+                                   <Autocomplete
+                                       disablePortal
+                                       options={opcoes}
+                                       sx={{ width: 300 }}
+                                       renderInput={(params) => <TextField {...params} label="Tipo" />}
+                                   />
                                </Grid>
                            </Grid>
-                       </MDBox>
-                       <Grid mb={3} >
-                           <label>Tipo:
-                               <input
-                               type="text"
-                               name="tipo"
-                               value={modifiedData.tipo}
-                               onChange={handleChange}
-                               />
-                           </label>
-                       </Grid>
+                           <Grid container spacing={3} p={3}>
+                               <Grid item xs={12} sm={6} >
+
+                               </Grid>
+                               <Grid item xs={12} sm={6}>
+                               </Grid>
+                           </Grid>
+
                        <Grid mb={3}>
-                           <label>inicio:
-                               <MDDatePicker input={{ placeholder: "Selecione uma data" }} />
-                           </label>
-                           <label>Fim:
-                               <MDDatePicker input={{ placeholder: "Selecione uma data" }} />
-                           </label>
+                           <MDDatePicker   label="Controlled picker"
+                                           value={modifiedData.inicio}
+                                           onChange={(newValue) => setModifiedData(inicio, newValue)} />
+                           <MDDatePicker  name="descricao"
+                                          value={modifiedData.descricao}
+                                          onChange={handleChange} input={{ placeholder: "Data de Fim" }} />
                        </Grid>
-                       <label>Descricao:
-                           <textarea
-                               name="descricao"
-                               value={modifiedData.descricao}
-                               onChange={handleChange}
-                               rows="3"
-                               cols="50"
-                           />
-                       </label>
+
                        <label>Fechada:
                             <input
                              type="checkbox"
@@ -118,8 +119,8 @@ function AdicionaEscala({escalas}) {
                              id={modifiedData.fechada}
                             />
                        </label>
-                       <button type="submit">Submit</button>
-
+                       <Button onClick={()=>{console.log(modifiedData.descricao)}}>Salvar</Button>
+                       </MDBox>
                    </Card>
                </DashboardLayout>
               );

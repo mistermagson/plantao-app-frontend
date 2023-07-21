@@ -53,30 +53,29 @@ function Plantoes({plantoes,juizes,escalas}) {
                 <MDBox p={3}>
                     <MDTypography variant="h2">Plantões</MDTypography>
                 </MDBox>
+                <MDBox p={1} ml={2}>
+                    <h5>Selecione o nome do juiz e a escala:</h5>
+                </MDBox>
                 <MDBox component="form" pb={3} px={3}>
-                    <Grid item xs={12}>
-                        <h5>Selecione o nome do juiz e a escala:</h5>
-                        <Grid container spacing={2} mt={0.1}>
-                            <Grid item xs={12} sm={3.2}>
+                        <Grid container spacing={3}>
+                            <Grid item xs={12} sm={6}>
                                 <Autocomplete
                                     {...juizProps}
                                     disablePortal
-                                    sx={{ width: 300 }}
                                     size="Big"
                                     renderInput={(params) =>
                                         <TextField {...params} label="Nome do Juiz" required />}
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={1} >
+                            <Grid item xs={12} sm={6} >
                                 <Autocomplete
                                     {...escalaProps}
                                     disablePortal
-                                    sx={{ width: 300 }}
                                     renderInput={(params) => <TextField {...params} label="Escala" />}
                                 />
                             </Grid>
                         </Grid>
-                    </Grid>
+
                     <Grid item xs={12} sm={4} my={3} >
                         <Grid mb={1}>
                             <h5>Plantões Disponiveis:</h5>
@@ -89,7 +88,7 @@ function Plantoes({plantoes,juizes,escalas}) {
                             pageSizeOptions={[5,10,20]}
                             checkboxSelection
                             sx={{ fontSize: '18px' }}
-                            autoHeight
+
                             disableColumnMenu
                         />
                     </div>
