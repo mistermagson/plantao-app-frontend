@@ -4,6 +4,8 @@ import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
 import DataTable from "/examples/Tables/DataTable";
 import {keys} from "regenerator-runtime";
 import MDTypography from "../../components/MDTypography";
+import Card from "@mui/material/Card";
+
 
 export async function getStaticProps(){
     const data = await fetch('http://localhost:3000/api/escala')
@@ -19,6 +21,7 @@ function Escalas({escalas}) {
     return (
         <DashboardLayout>
             <DashboardNavbar />
+            <Card id="listaescalas" sx={{ overflow: "visible" }}>
             <MDTypography variant="h2" sx={{ mt: 2, mb: 1, ml: 2 }}>
                 Escalas
             </MDTypography>
@@ -35,6 +38,7 @@ function Escalas({escalas}) {
                     rows: escalas
                 }}
             />
+            </Card>
         </DashboardLayout>
     );
 }

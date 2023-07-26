@@ -2,10 +2,5 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/pages/account/settings": "pages/pages/account/settings.js",
-  "/plantoes": "pages/plantoes.js",
-  "/escalas/adicionaescalas": "pages/escalas/adicionaescalas.js",
-  "/api/plantao": "pages/api/plantao.js",
-  "/api/juiz": "pages/api/juiz.js",
-  "/api/escala": "pages/api/escala.js"
+  "/plantoes": "pages/plantoes.js"
 }
