@@ -10,15 +10,26 @@ import {DataGrid, GridFooter, useGridApiContext, useGridApiEventHandler, useGrid
 import React, {useState, useEffect} from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import {Alert} from "@mui/material";
-import {createTheme} from "@mui/material/styles";
+const parseJSON = resp => (resp.json ? resp.json() : resp);
+const checkStatus = resp => {
+    if (resp.status >= 200 && resp.status < 300) {
+        return resp;
+    }
+    return parseJSON(resp).then(resp => {
+        throw resp;
+    });
+};
+const headers= {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b'
+};
 export async function getStaticProps(){
 
-    const data1 = await fetch('http://localhost:3000/api/plantao')
-    const plantoes = await data1.json()
+    const juizes = await fetch('http://localhost:1337/api/juizs',{
+        method: 'GET',
+        headers
+    }).then(response => response.json()).then(data => console.log(data));
 
-    const data2 = await fetch('http://localhost:3000/api/juiz')
-    const juizes = await data2.json()
 
     const data3 = await fetch('http://localhost:3000/api/escala')
     const escalas = await data3.json()
@@ -27,21 +38,45 @@ export async function getStaticProps(){
 }
 function Plantoes({plantoes,juizes,escalas}) {
 
-    const {register} = useForm();
-    const onSubmit = () => {};
-
     const [opcaoSelecionada, setOpcaoSelecionada] = useState(null);
-    // Constantes para os Autocompletes
-    const juizProps = {
-        options: juizes,
-        getOptionLabel: (option) => option.nome,
-    };
-    const filterEscalas = (escalas, { inputValue }) => {
+    const [select, setSelection] = React.useState([]);
+    const [modifiedData, setModifiedData] = useState(valorInicial);//-------do it
+
+    /*const filterEscalas = (escalas, { inputValue }) => {
         const inputValueLowerCase = inputValue.toLowerCase();
         return escalas.filter(escala =>
             escala.status.toLowerCase() === '0'
         );
+    };*///Constante para filtrar as escalas
+
+    /*const handleSubmit = (event) => {
+        event.preventDefault();
+
+        console.log('Opção selecionada:', opcaoSelecionada);
+        console.log('datas:', select);
+    };*/
+    const handleSubmit = async e => {
+        e.preventDefault();
+
+        try {
+            const response = await fetch('http://localhost:1337/api/plantoes', {
+                method: 'GET',
+                headers,
+                body: JSON.stringify({ data: modifiedData }),
+            })
+                .then(checkStatus)
+                .then(parseJSON);
+        } catch (error) {
+            setErrorEscalas(error);
+        }
     };
+    const handleChange = e =>{
+        const {name,value} = e.target
+        setModifiedData({
+            ...modifiedData,
+            [name]: value
+        })
+    }
 
     return (
         <DashboardLayout>
@@ -53,11 +88,13 @@ function Plantoes({plantoes,juizes,escalas}) {
                 <MDBox p={1} ml={2}>
                     <h5>Selecione o nome do juiz e a escala:</h5>
                 </MDBox>
-                <MDBox component="form" pb={3} px={3}>
+                <form onSubmit={handleSubmit}>
+                    <MDBox pb={3} px={3}>
                         <Grid container spacing={3}>
                             <Grid item xs={12} sm={4}>
                                 <Autocomplete
-                                    {...juizProps}
+                                    options={juizes}
+                                    getOptionLabel={juiz => juiz.nome }
                                     onChange={(event, value) => console.log(value)}
                                     renderInput={(params) => <TextField {...params} label="Nome do Juiz" required />}
                                 />
@@ -67,49 +104,51 @@ function Plantoes({plantoes,juizes,escalas}) {
                                     options={escalas}
                                     getOptionLabel={escala => escala.descricao}
                                     filterOptions={filterEscalas}
-                                    value={opcaoSelecionada} // Define o valor selecionado
-                                    onChange={(event, newValue) => setOpcaoSelecionada(newValue)} // Atualiza o estado com a opção selecionada
+                                    value={opcaoSelecionada}
+                                    onChange={(event, newValue) => setOpcaoSelecionada(newValue)}
                                     renderInput={(params) => <TextField {...params} label="Escala" />}
                                 />
                             </Grid>
                         </Grid>
-                    <MDBox my={2} >
-                        <h5>Plantões Disponiveis:</h5>
-                    </MDBox>
-                    <Grid container spacing={3}>
-                        <Grid item xs={12} sm={4}>
-                        <Grid style={{ flex: '1' }}>
+                        <MDBox my={2} >
+                            <h5>Plantões Disponiveis:</h5>
+                        </MDBox>
+                        <Grid container spacing={3}>
+                            <Grid item xs={12} sm={5}>
+                                <Grid style={{ flex: '1' }}>
 
-                            {opcaoSelecionada && opcaoSelecionada.datasplantao && (
-                            <DataGrid
+                                    {opcaoSelecionada && opcaoSelecionada.datasplantao && (
+                                        <DataGrid
 
-                            initialState={{pagination: { paginationModel: { pageSize: 5 } },}}
-                            pageSizeOptions={[5,10,20]}
-                            checkboxSelection
-                            sx={{ fontSize: '17px' }}
-                            disableColumnMenu
-
-                            onClick={(event, value) => console.log(value)}
-                            isRowSelectable={(params) => params.row.status === true}
-                            rows={opcaoSelecionada.datasplantao}
-                            columns={[{field:'data', headerName:'Datas',flex:'1', sortable:false},{
-                                field: 'status', headerName: 'Status', width: 120,
-                                renderCell: (params) => (
-                                    <span style={{ color: params.value ? 'green' : 'red' }}>
+                                            initialState={{pagination: { paginationModel: { pageSize: 5 } },}}
+                                            pageSizeOptions={[5,10,20]}
+                                            checkboxSelection
+                                            sx={{ fontSize: '17px' }}
+                                            disableColumnMenu
+                                            isRowSelectable={(params) => params.row.status === true}
+                                            onSelectionChange={(newSelection) => {
+                                                setSelection(newSelection.rows);
+                                            }}
+                                            rows={opcaoSelecionada.datasplantao}
+                                            columns={[{field:'data', headerName:'Datas',width: 120, sortable:false},{
+                                                field: 'status', headerName: 'Status', width: 120,
+                                                renderCell: (params) => (
+                                                    <span style={{ color: params.value ? 'green' : 'red' }}>
                                       {params.value ? 'Disponível' : 'Ocupado'}
                                     </span>
-                                ),
-                            },]}
+                                                ),
+                                            },]}
 
-                        />)}
-                    </Grid>
-                    <Grid item xs={12} sm={6} >
+                                        />)}
+                                </Grid>
+                                <Grid item xs={12} sm={6} >
 
-                    </Grid>
-                </Grid>
-                    </Grid>
-                    <Button color="error" size="large" onClick={()=>{console.log("teste")}}>Salvar</Button>
-                </MDBox>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Button color="error" size="large" type="submit">Salvar</Button>
+                    </MDBox>
+                </form>
             </Card>
         </DashboardLayout>
     );
