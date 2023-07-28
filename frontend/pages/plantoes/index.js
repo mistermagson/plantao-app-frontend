@@ -10,26 +10,18 @@ import {DataGrid, GridFooter, useGridApiContext, useGridApiEventHandler, useGrid
 import React, {useState, useEffect} from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-const parseJSON = resp => (resp.json ? resp.json() : resp);
-const checkStatus = resp => {
-    if (resp.status >= 200 && resp.status < 300) {
-        return resp;
-    }
-    return parseJSON(resp).then(resp => {
-        throw resp;
-    });
-};
+
 const headers= {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b'
 };
 export async function getStaticProps(){
 
-    const juizes = await fetch('http://localhost:1337/api/juizs',{
+    const data2 = await fetch('http://localhost:1337/api/juizs',{
         method: 'GET',
         headers
-    }).then(response => response.json()).then(data => console.log(data));
-
+    })
+    const juizes = await data2.json()
 
     const data3 = await fetch('http://localhost:3000/api/escala')
     const escalas = await data3.json()
