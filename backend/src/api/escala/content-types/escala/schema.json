@@ -4,7 +4,8 @@
   "info": {
     "singularName": "escala",
     "pluralName": "escalas",
-    "displayName": "Escala"
+    "displayName": "Escala",
+    "description": ""
   },
   "options": {
     "draftAndPublish": false
@@ -37,7 +38,12 @@
       "default": false,
       "required": true
     },
-    "plantoes": {
+    "participantes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::juiz.juiz"
+    },
+    "plantaos": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::plantao.plantao",

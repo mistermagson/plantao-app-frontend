@@ -4,7 +4,8 @@
   "info": {
     "singularName": "plantao",
     "pluralName": "plantoes",
-    "displayName": "Plantao"
+    "displayName": "Plantao",
+    "description": ""
   },
   "options": {
     "draftAndPublish": false
@@ -19,13 +20,12 @@
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::escala.escala",
-      "inversedBy": "plantoes"
+      "inversedBy": "plantaos"
     },
     "juiz": {
       "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::juiz.juiz",
-      "inversedBy": "plantoes"
+      "relation": "oneToOne",
+      "target": "api::juiz.juiz"
     }
   }
 }
