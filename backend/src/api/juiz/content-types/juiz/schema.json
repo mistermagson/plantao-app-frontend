@@ -4,7 +4,8 @@
   "info": {
     "singularName": "juiz",
     "pluralName": "juizs",
-    "displayName": "Juiz"
+    "displayName": "Juiz",
+    "description": ""
   },
   "options": {
     "draftAndPublish": false
@@ -28,8 +29,7 @@
     "plantoes": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::plantao.plantao",
-      "mappedBy": "juiz"
+      "target": "api::plantao.plantao"
     }
   }
 }

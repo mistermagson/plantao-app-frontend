@@ -38,16 +38,16 @@
       "default": false,
       "required": true
     },
-    "plantoes": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::plantao.plantao",
-      "mappedBy": "escala"
-    },
     "participantes": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::juiz.juiz"
+    },
+    "plantaos": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::plantao.plantao",
+      "mappedBy": "escala"
     }
   }
 }
