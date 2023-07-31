@@ -62,7 +62,7 @@ function Plantoes() {
         const fetchEscalas = async () => {
             try {
 
-                const response2 = await fetch('http://localhost:1337/api/escalas', {
+                const response2 = await fetch('http://localhost:1337/api/escalas?populate=*', {
                     method: 'GET',
                     headers,
                 });
@@ -88,7 +88,8 @@ function Plantoes() {
                 setError(error.message);
             }
         };
-        const fetchPlantoes = async () => {
+
+        /*const fetchPlantoes = async () => {
             try {
 
                 const response3 = await fetch('http://localhost:1337/api/plantoes', {
@@ -116,11 +117,11 @@ function Plantoes() {
             } catch (error) {
                 setError(error.message);
             }
-        };
+        };*/
 
         fetchJuizes();
         fetchEscalas();
-        fetchPlantoes();
+        //fetchPlantoes();
     }, []);
 
     /*const filterEscalas = (escalas, { inputValue }) => {
@@ -157,7 +158,7 @@ function Plantoes() {
                         {console.log('-------| PÓS MAP |--------')}
                         {console.log('-------| Constante Juizes:', juizes)}
                         {console.log('-------| Constante Escalas:', escalas)}
-                        {console.log('-------| Constante Plantoes:', plantoes)}
+                        {console.log('-------| Constante Plantoes:', escalas[0].plantoes)}
                         {console.log('')}
                     </h2>
                 </MDBox>
