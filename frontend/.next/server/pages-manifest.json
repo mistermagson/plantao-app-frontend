@@ -2,5 +2,6 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/escalas/datas": "pages/escalas/datas.js"
+  "/plantoes/meusplantoes": "pages/plantoes/meusplantoes.js",
+  "/pages/profile/profile-overview": "pages/pages/profile/profile-overview.js"
 }
