@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
 import DataTable from "/examples/Tables/DataTable";
@@ -16,21 +16,23 @@ import TextField from "@mui/material/TextField";
 import {FormControlLabel, InputLabel, Select} from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import Checkbox from "@mui/material/Checkbox";
+import {DataGrid} from "@mui/x-data-grid";
+import MDButton from "../../../components/MDButton";
 
 
 const parseJSON = resp => (resp.json ? resp.json() : resp);
 
 const checkStatus = resp => {
-  if (resp.status >= 200 && resp.status < 300) {
-    return resp;
-  }
-  return parseJSON(resp).then(resp => {
-    throw resp;
-  });
+    if (resp.status >= 200 && resp.status < 300) {
+        return resp;
+    }
+    return parseJSON(resp).then(resp => {
+        throw resp;
+    });
 };
 const headers = {
-  'Content-Type': 'application/json',
-  'Authorization': 'Bearer ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b'
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b'
 };
 
 const valorInicial={
@@ -43,26 +45,64 @@ const valorInicial={
 }
 function AdicionaEscala({escalas}) {
 
+    //------- CONSTANTES PARA O DATAGRID----------------------------------------
+    const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
+    //--------------------------------------------------------------------------
+
     const opEscala = ["local","regional","distribuidor"];
     const [modifiedData, setModifiedData] = useState(valorInicial);
     const [errorEscalas, setErrorEscalas] = useState(null);
+    const [juizes, setJuizes] = useState([]);
 
-   const handleSubmit = async e => {
-      e.preventDefault();
 
-      try {
-        const response = await fetch('http://localhost:1337/api/escalas', {
-          method: 'POST',
-          headers,
-          body: JSON.stringify({ data: modifiedData }),
-        })
-          .then(checkStatus)
-          .then(parseJSON);
-      } catch (error) {
-        setErrorEscalas(error);
-      }
+    useEffect(() => {
+        const fetchJuizes = async () => {
+            try {
+
+                const response1 = await fetch('http://localhost:1337/api/juizs', {
+                    method: 'GET',
+                    headers,
+                });
+
+                if (!response1.ok) {
+                    throw new Error('Falha ao obter os dados dos juizes.');
+                }
+
+                const responseJuiz = await response1.json();
+                console.log('')
+                console.log('------------------------------------------------')
+                console.log('-------| Constante responseJuiz:', responseJuiz);
+
+                if (Array.isArray(responseJuiz.data)) {
+                    const juizesData = responseJuiz.data.map((item) => ({id: item.id, ...item.attributes,}));
+                    setJuizes(juizesData);
+
+                } else {
+                    setError('Formato de dados inválido.');
+                }
+
+            } catch (error) {
+                setError(error.message);
+            }
+        };
+
+        fetchJuizes();
+    }, []);
+    const handleSubmit = async e => {
+        e.preventDefault();
+
+        try {
+            const response = await fetch('http://localhost:1337/api/escalas', {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({ data: modifiedData }),
+            })
+                .then(checkStatus)
+                .then(parseJSON);
+        } catch (error) {
+            setErrorEscalas(error);
+        }
     };
-
     const handleChange = e =>{
         const {name,value} = e.target
         setModifiedData({
@@ -70,81 +110,117 @@ function AdicionaEscala({escalas}) {
             [name]: value
         })
     }
-
     const showJSON = () => {
         console.log('JSON:', modifiedData);
     };
+    // Função para ser chamada quando a seleção mudar
 
-          return (
-               <DashboardLayout>
-                   <DashboardNavbar />
-                   <Card id="escalas" sx={{ overflow: "visible" }}>
 
-                       <MDBox p={3}>
-                           <MDTypography variant="h2">Adicionar Escala</MDTypography>
-                       </MDBox>
-                       <MDBox p={1} ml={2} mb={1}>
-                           <h5>Insira uma descrição e selecione o tipo de escala:</h5>
-                       </MDBox>
-                       <form onSubmit={handleSubmit}>
-                       <MDBox pb={3} px={3}>
-                           <Grid container spacing={2}>
-                               <Grid item xs={12} sm={2}>
-                                   <TextField
-                                       label="Descrição"
-                                       placeholder="Insira uma descrição"
-                                       name="descricao"
-                                       variant="outlined"
-                                       value={modifiedData.descricao}
-                                       onChange={handleChange}
-                                       multiline
-                                       rows={3}
-                                   />
-                               </Grid>
-                               <Grid item xs={12} sm={2.5}>
-                                   <Autocomplete
-                                       name="tipoEscala"
-                                       options={opEscala}
-                                       value={modifiedData.tipo} // Define o valor selecionado
-                                       onChange={(event, newValue) =>
-                                           setModifiedData({ ...modifiedData, tipo: newValue })
-                                       }
-                                       renderInput={(params) => <TextField {...params} label="Tipo" />}
-                                   />
-                               </Grid>
-                           </Grid>
+    return (
+        <DashboardLayout>
+            <DashboardNavbar />
+            <MDBox p={3}>
+                <MDTypography variant="h2">Adicionar Escala</MDTypography>
+            </MDBox>
+            <Grid container spacing={2}>
+                <Grid item xs={12} xl={8} sx={{ height: "max-content" }}>
+                    <Card id="escalas" sx={{ overflow: "visible" }}>
 
-                           <Grid container spacing={1.5}>
-                               <Grid item xs={6} sm={2.5}>
-                                   <MDBox mt={3} >
-                                       <h5>Selecione a data de Inicio:</h5>
-                                   </MDBox>
-                                   <MDDatePicker
-                                       input={{ placeholder: "Data de Inicio", format: "dd/MM/yy" }}
-                                       value={modifiedData.inicio}
-                                       onChange={(event, value) =>
-                                           setModifiedData({ ...modifiedData, inicio: value })}/>
+                        <MDBox p={1} ml={2} my={2}>
+                            <h5 >Insira uma descrição e selecione o tipo de escala:</h5>
+                        </MDBox>
+                        <form onSubmit={handleSubmit}>
+                            <MDBox pb={3} px={3}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12} xl={6} >
+                                        <FormField
+                                            label="Descrição"
+                                            placeholder="Insira uma descrição"
+                                            name="descricao"
+                                            variant="outlined"
+                                            value={modifiedData.descricao}
+                                            onChange={handleChange}
+                                            rows={3}
+                                            multiline
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}  xl={6}>
+                                        <Autocomplete
+                                            name="tipoEscala"
+                                            options={opEscala}
+                                            value={modifiedData.tipo} // Define o valor selecionado
+                                            onChange={(event, newValue) =>
+                                                setModifiedData({ ...modifiedData, tipo: newValue })
+                                            }
+                                            renderInput={(params) => <TextField {...params} label="Tipo" />}
+                                        />
+                                    </Grid>
+                                </Grid>
+                                <Grid container spacing={1.5}>
+                                    <Grid item xs={6} xl={4}>
+                                        <MDBox mt={3} >
+                                            <h5>Selecione a data de Inicio:</h5>
+                                        </MDBox>
+                                        <MDDatePicker
+                                            input={{ placeholder: "Data de Inicio", format: "dd/MM/yy" }}
+                                            value={modifiedData.inicio}
+                                            onChange={(event, value) =>
+                                                setModifiedData({ ...modifiedData, inicio: value })}/>
 
-                               </Grid>
-                               <Grid item xs={6} sm={2.5} >
-                                   <MDBox mt={3} >
-                                       <h5>Selecione a data de Fim:</h5>
-                                   </MDBox>
-                                   <MDDatePicker
-                                       name="dataFim"
-                                       value={modifiedData.fim}
-                                       input={{ placeholder: "Data de Fim", format: "dd/MM/yy" }}
-                                       onChange={(event, value) =>
-                                           setModifiedData({ ...modifiedData, fim: value })}/>
-                               </Grid>
-                           </Grid>
-                           <Checkbox defaultChecked  label="Fechada" />
-                           <button type="button" onClick={showJSON}>Exibir</button>
-                           <button onClick={handleSubmit}>Salvar</button>
-                       </MDBox>
-                       </form>
-                   </Card>
-               </DashboardLayout>
-              );
-  }
+                                    </Grid>
+                                    <Grid item xs={6} xl={4}>
+                                        <MDBox mt={3} >
+                                            <h5>Selecione a data de Fim:</h5>
+                                        </MDBox>
+                                        <MDDatePicker
+                                            name="dataFim"
+                                            value={modifiedData.fim}
+                                            input={{ placeholder: "Data de Fim", format: "dd/MM/yy" }}
+                                            onChange={(event, value) =>
+                                                setModifiedData({ ...modifiedData, fim: value })}/>
+                                    </Grid>
+                                </Grid>
+                                <Checkbox defaultChecked label="Fechada" />
+                                <MDBox p={1}>
+                                    <MDButton size="small" onClick={showJSON} color="info">Exibir</MDButton>
+                                    <MDButton onClick={handleSubmit} size="small" color="success" >Salvar</MDButton>
+                                </MDBox>
+                            </MDBox>
+                        </form>
+                    </Card>
+                </Grid>
+                <Grid item xs={12} xl={4}>
+                    <MDBox mb={3}>
+                        <Card sx={{ height: "100%" }}>
+                            <MDBox pt={2} px={2}>
+                                <MDTypography variant="h6" >
+                                    Selecionar juizes participantes
+                                </MDTypography>
+                            </MDBox>
+                            <MDBox p={2}>
+                                <DataGrid
+                                    checkboxSelection
+                                    disableColumnMenu
+                                    sx={{ fontSize: '17px' }}
+                                    rowsPerPageOptions={[5]}
+                                    initialState={{pagination:{paginationModel:{pageSize:5}},}}
+                                    rows={juizes}
+                                    columns={[{field:'Nome',headerName:'Juiz', flex:'1'},]}
+                                    onRowSelectionModelChange={(newRowSelectionModel) => {
+                                        setRowSelectionModel(newRowSelectionModel);
+                                    }}
+                                    rowSelectionModel={rowSelectionModel}
+
+                                />
+
+                                <Button onClick={() => console.log('Opções selecionadas:', rowSelectionModel)}>Imprimir Selecionados</Button>
+
+                            </MDBox>
+                        </Card>
+                    </MDBox>
+                </Grid>
+            </Grid>
+        </DashboardLayout>
+    );
+}
 export default AdicionaEscala;
