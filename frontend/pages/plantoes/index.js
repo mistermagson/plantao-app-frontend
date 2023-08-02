@@ -30,111 +30,69 @@ function Plantoes() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchJuizes = async () => {
-            try {
-
-                const response1 = await fetch('http://localhost:1337/api/juizs', {
-                    method: 'GET',
-                    headers,
-                });
-
-                if (!response1.ok) {
-                    throw new Error('Falha ao obter os dados dos juizes.');
-                }
-
-                const responseJuiz = await response1.json();
-                console.log('')
-                console.log('------------------------------------------------')
-                console.log('-------| Constante responseJuiz:', responseJuiz);
-
-                if (Array.isArray(responseJuiz.data)) {
-                    const juizesData = responseJuiz.data.map((item) => ({id: item.id, ...item.attributes,}));
-                    setJuizes(juizesData);
-
-                } else {
-                    setError('Formato de dados inválido.');
-                }
-
-            } catch (error) {
-                setError(error.message);
-            }
-        };
         const fetchEscalas = async () => {
             try {
 
                 const response2 = await fetch('http://localhost:1337/api/escalas?populate=*', {
                     method: 'GET',
                     headers,
-                });
+                }).then;
 
                 if (!response2.ok) {
                     throw new Error('Falha ao obter os dados dos juizes.');
                 }
 
                 const responseEscala = await response2.json();
-                console.log('')
-                console.log('------------------------------------------------')
-                console.log('-------| Constante responseEscala:', responseEscala);
+
 
                 if (Array.isArray(responseEscala.data)) {
                     const escalasData = responseEscala.data.map((item) => ({id: item.id, ...item.attributes,}));
+
+                      const participantes = responseEscala.data.map(item => {
+                        const participantesData = item.attributes.participantes.data;
+
+                        const participantes = participantesData.map(participante => {
+                          return {
+                            id: participante.id,
+                            nome: participante.attributes.Nome,
+                            email: participante.attributes.email,
+                            rf: participante.attributes.rf,
+                            createdAt: participante.attributes.createdAt,
+                            updatedAt: participante.attributes.updatedAt
+                          };
+                        });
+
+                        return {
+                          id: item.id,
+                          participantes: participantes
+                        };
+                      });
+                    console.log('-------| Constante escalas:', escalasData);
+
                     setEscalas(escalasData);
 
+
                 } else {
                     setError('Formato de dados inválido.');
                 }
 
-            } catch (error) {
+
+            }
+            catch (error) {
                 setError(error.message);
             }
+
         };
 
-        /*const fetchPlantoes = async () => {
-            try {
 
-                const response3 = await fetch('http://localhost:1337/api/plantoes', {
-                    method: 'GET',
-                    headers,
-                });
-
-                if (!response3.ok) {
-                    throw new Error('Falha ao obter os dados dos juizes.');
-                }
-
-                const responsePlantoes = await response3.json();
-                console.log('')
-                console.log('------------------------------------------------')
-                console.log('-------| Constante responsePlantoes:', responsePlantoes);
-
-                if (Array.isArray(responsePlantoes.data)) {
-                    const plantoesData = responsePlantoes.data.map((item) => ({id: item.id, ...item.attributes,}));
-                    setPlantoes(plantoesData);
-
-                } else {
-                    setError('Formato de dados inválido.');
-                }
-
-            } catch (error) {
-                setError(error.message);
-            }
-        };*/
-
-        fetchJuizes();
         fetchEscalas();
-        //fetchPlantoes();
-    }, []);
 
-    /*const filterEscalas = (escalas, { inputValue }) => {
-        const inputValueLowerCase = inputValue.toLowerCase();
-        return escalas.filter(escala =>
-            escala.fechada.toLowerCase() === false
-        );
-    };*///Constante para filtrar as escalas
+    }, []);
 
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        console.log('Opção selecionada:', opcaoSelecionada);
+       // console.log('Opção selecionada:', opcaoSelecionada);
 
     };
     const handleChange = e =>{
@@ -156,10 +114,9 @@ function Plantoes() {
                     <h5>Selecione o nome do juiz e a escala:</h5>
                     <h2>
                         {console.log('-------| PÓS MAP |--------')}
-                        {console.log('-------| Constante Juizes:', juizes)}
-                        {console.log('-------| Constante Escalas:', escalas)}
-                        {console.log('-------| Constante Plantoes:', escalas[0].plantoes)}
-                        {console.log('')}
+
+
+
                     </h2>
                 </MDBox>
                 <form onSubmit={handleSubmit}>
