@@ -21,6 +21,7 @@ function Plantoes() {
 
     //------- CONSTANTES PARA O DATAGRID----------------------------------------
     const [opcaoSelecionada, setOpcaoSelecionada] = useState(null);
+    const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
     //--------------------------------------------------------------------------
 
     const [juizes, setJuizes] = useState([]);
@@ -98,72 +99,81 @@ function Plantoes() {
     return (
         <DashboardLayout>
             <DashboardNavbar />
-            <Card id="basic-info" sx={{ overflow: "visible" }}>
-
-                <MDBox p={3}>
-                    <MDTypography variant="h2">Plantões</MDTypography>
-                </MDBox>
+            <MDBox p={3}>
+                <MDTypography variant="h2">Plantões</MDTypography>
+            </MDBox>
+            <Card>
                 <form onSubmit={handleSubmit}>
-                    <MDBox p={1} ml={2}>
-                        <h5>Selecione o nome do juiz e a escala:</h5>
-                    </MDBox>
-                    <Grid container spacing={3}>
-                        <Grid item xs={12} sm={6} >
-                            <Grid container spacing={3}>
-                                <Grid item xs={12} sm={12} >
-                                    <Autocomplete
-                                        options={escalas}
-                                        getOptionLabel={escala => escala.descricao}
-                                        value={opcaoSelecionada}
-                                        onChange={(event, newValue) => setOpcaoSelecionada(newValue)}
-                                        renderInput={(params) => <TextField {...params} label="Escala" />}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={12}>
-                                    <Autocomplete
-                                        options={escalas}
-                                        getOptionLabel={juiz => juiz.Nome }
-                                        onChange={(event, value) => console.log(value)}
-                                        renderInput={(params) => <TextField {...params} label="Nome do Juiz" required />}
-                                    />
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <Grid container spacing={3}>
-                                <MDBox my={2} >
-                                    <h5>Plantões Disponiveis:</h5>
-                                </MDBox>
-                                <Grid item xs={12} sm={5}>
-                                    <Grid style={{ flex: '1' }}>{opcaoSelecionada && (
-                                        <DataGrid
-                                            checkboxSelection
-                                            disableColumnMenu
-                                            sx={{ fontSize: '17px' }}
-                                            pageSizeOptions={[5,10,20]}
-                                            initialState={{pagination: { paginationModel: { pageSize: 5 } },}}
-                                            rows={plantoes}
-                                            columns={[
-                                                {field:'data', headerName:'Datas',width: 120, sortable:false},
-                                                {field: 'status', headerName: 'Status', width: 120,
-                                                renderCell: (params) => (
-                                                    <span style={{ color: params.value ? 'green' : 'red' }}>
-                                                        {params.value ? 'Disponível' : 'Ocupado'}
-                                                    </span>
-                                                ),
-                                            },]}
-                                            onRowSelectionModelChange={(newRowSelectionModel) => {
-                                                setRowSelectionModel(newRowSelectionModel);}}
-                                            rowSelectionModel={rowSelectionModel}
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={5} sx={{ height: "max-content" }}>
 
-                                        />)}
-                                        <Button onClick={() => console.log('Opções selecionadas:', rowSelectionModel)}>Imprimir Selecionados</Button>
+                            <MDBox p={1} ml={2} my={2}>
+                                <h5>Selecione o nome do juiz e a escala:</h5>
+                            </MDBox>
+
+                            <MDBox pb={3} px={3}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12} xl={12} >
+                                        <Autocomplete
+                                            options={escalas}
+                                            getOptionLabel={escala => escala.descricao}
+                                            value={opcaoSelecionada}
+                                            onChange={(event, newValue) => setOpcaoSelecionada(newValue)}
+                                            renderInput={(params) => <TextField {...params} label="Escala" />}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}  xl={12}>
+                                        <h5>Selecione o nome do juiz :</h5>
+                                        <Autocomplete
+                                            options={escalas}
+                                            getOptionLabel={juiz => juiz.Nome }
+                                            onChange={(event, value) => console.log(value)}
+                                            renderInput={(params) => <TextField {...params} label="Nome do Juiz" required />}
+                                        />
                                     </Grid>
                                 </Grid>
-                            </Grid>
+                            </MDBox>
+                        </Grid>
+                        <Grid item xs={12} xl={6}>
+                            <MDBox mb={3}>
+
+                                <MDBox pt={2} px={2}>
+                                    <MDTypography variant="h6" >
+                                        Selecione os plantões:
+                                    </MDTypography>
+                                </MDBox>
+                                <MDBox p={2}>{opcaoSelecionada && (
+                                    <DataGrid
+                                        checkboxSelection
+                                        disableColumnMenu
+                                        sx={{ fontSize: '17px' }}
+                                        pageSizeOptions={[5,10,20]}
+                                        initialState={{pagination: { paginationModel: { pageSize: 5 } },}}
+                                        rows={escalas}
+                                        columns={[
+                                            {field:'descricao', headerName:'Nome',flex:1, sortable:false},
+                                            {field:'data', headerName:'Datas',width: 120, sortable:false},
+                                            {field: 'status', headerName: 'Status', width: 120,
+                                                renderCell: (params) => (
+                                                    <span style={{ color: params.value ? 'green' : 'red' }}>
+                                                            {params.value ? 'Disponível' : 'Ocupado'}
+                                                        </span>
+                                                ),
+                                            },]}
+                                        onRowSelectionModelChange={(newRowSelectionModel) => {
+                                            setRowSelectionModel(newRowSelectionModel);}}
+                                        rowSelectionModel={rowSelectionModel}
+
+                                    />)}
+                                </MDBox>
+                                <Button onClick={() => console.log('Opções selecionadas:', rowSelectionModel)}>Imprimir Selecionados</Button>
+                            </MDBox>
+                        </Grid>
+                        <MDBox ml={2} p={3}>
                             <Button color="error" size="large" type="submit">Salvar</Button>
                             <MDButton size="small" onClick={showJSON} color="info">Exibir</MDButton>
-                        </Grid>
+                        </MDBox>
+
                     </Grid>
                 </form>
             </Card>
