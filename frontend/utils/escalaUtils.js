@@ -4,8 +4,8 @@ export const geraDatas = (start, end) => {
     let currentDate = new Date(start);
 
     while (currentDate <= new Date(end)) {
-      dateArray.push(new Date(currentDate));
-      currentDate.setDate(currentDate.getDate() + 1);
+        dateArray.push(new Date(currentDate));
+        currentDate.setDate(currentDate.getDate() + 1);
     }
 
     return dateArray;
@@ -17,11 +17,11 @@ export const geraWeekends = (start, end) => {
     let currentDate = new Date(start);
 
     while (currentDate <= new Date(end)) {
-     if (currentDate.getDay() === 0 || currentDate.getDay() === 6) {
-       // Se a data for um sábado (6) ou domingo (0), adicionamos ao array
-       dateArray.push(new Date(currentDate));
-     }
-     currentDate.setDate(currentDate.getDate() + 1);
+        if (currentDate.getDay() === 0 || currentDate.getDay() === 6) {
+            // Se a data for um sábado (6) ou domingo (0), adicionamos ao array
+            dateArray.push(new Date(currentDate));
+        }
+        currentDate.setDate(currentDate.getDate() + 1);
     }
 
     return dateArray;
@@ -53,4 +53,26 @@ export const setDatasEscala = (idEscala, dateArray) => {
     return response;
 };
 
+export const setParticipantesEscala = (idEscala, juizesArray,headers) => {
 
+
+    const participantes={
+        participantes:{connect: juizesArray}
+    }
+    const setEscala = async () => {
+        try {
+            const response = await fetch(`http://localhost:1337/api/escalas/${idEscala}`, {
+                method: 'PUT',
+                headers,
+                body: JSON.stringify({ data: participantes }),
+            })
+                .then(checkStatus)
+                .then(parseJSON);
+        } catch (error) {
+            return error;
+        }
+    };
+
+    setEscala();
+
+};

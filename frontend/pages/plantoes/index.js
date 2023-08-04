@@ -10,6 +10,7 @@ import {DataGrid, GridFooter, useGridApiContext, useGridApiEventHandler, useGrid
 import React, {useState, useEffect} from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import MDButton from "../../components/MDButton";
 
 const headers= {
     'Content-Type': 'application/json',
@@ -20,10 +21,9 @@ function Plantoes() {
 
     //------- CONSTANTES PARA O DATAGRID----------------------------------------
     const [opcaoSelecionada, setOpcaoSelecionada] = useState(null);
-    const [select, setSelection] = React.useState([]);
+    const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
     //--------------------------------------------------------------------------
 
-    //const [modifiedData, setModifiedData] = useState(valorInicial);//-------do it
     const [juizes, setJuizes] = useState([]);
     const [escalas, setEscalas] = useState([]);
     const [plantoes, setPlantoes] = useState([]);
@@ -36,7 +36,7 @@ function Plantoes() {
                 const response2 = await fetch('http://localhost:1337/api/escalas?populate=*', {
                     method: 'GET',
                     headers,
-                }).then;
+                });
 
                 if (!response2.ok) {
                     throw new Error('Falha ao obter os dados dos juizes.');
@@ -44,136 +44,121 @@ function Plantoes() {
 
                 const responseEscala = await response2.json();
 
-
                 if (Array.isArray(responseEscala.data)) {
                     const escalasData = responseEscala.data.map((item) => ({id: item.id, ...item.attributes,}));
-
-                      const participantes = responseEscala.data.map(item => {
-                        const participantesData = item.attributes.participantes.data;
-
-                        const participantes = participantesData.map(participante => {
-                          return {
-                            id: participante.id,
-                            nome: participante.attributes.Nome,
-                            email: participante.attributes.email,
-                            rf: participante.attributes.rf,
-                            createdAt: participante.attributes.createdAt,
-                            updatedAt: participante.attributes.updatedAt
-                          };
-                        });
-
-                        return {
-                          id: item.id,
-                          participantes: participantes
-                        };
-                      });
-                    console.log('-------| Constante escalas:', escalasData);
-
                     setEscalas(escalasData);
 
+                    const plantoesItem = responseEscala.data.map(item => {
+                        const plantoesData = item.attributes.plantaos.data;
+                        const plantoesT = plantoesData.map(plantao => {
+                            return {
+                                id: plantao.id,
+                                data: plantao.attributes.data,
+                            };})
+                        setPlantoes(plantoesData);
+                    });
 
                 } else {
                     setError('Formato de dados inválido.');
                 }
 
-
-            }
-            catch (error) {
+            } catch (error) {
                 setError(error.message);
             }
-
         };
 
-
         fetchEscalas();
-
+        ///NECESSITA DOS PLANTOES FILTRADOS PELA ESCALA SELECIONADA PARA O DATAGRID
     }, []);
 
     const handleSubmit = (event) => {
         event.preventDefault();
-
-       // console.log('Opção selecionada:', opcaoSelecionada);
+        //AQUI VAI O PUT PARA ADICIONAR O PLANTAO NAS ESCALAS
+        console.log('Opção selecionada:', opcaoSelecionada);
 
     };
-    const handleChange = e =>{
-        const {name,value} = e.target
-        setModifiedData({
-            ...modifiedData,
-            [name]: value
-        })
-    }
-
+    const showJSON = () => {
+        console.log('JSON:', plantoes, escalas);
+    };
     return (
         <DashboardLayout>
             <DashboardNavbar />
-            <Card id="basic-info" sx={{ overflow: "visible" }}>
-                <MDBox p={3}>
-                    <MDTypography variant="h2">Plantões</MDTypography>
-                </MDBox>
-                <MDBox p={1} ml={2}>
-                    <h5>Selecione o nome do juiz e a escala:</h5>
-                    <h2>
-                        {console.log('-------| PÓS MAP |--------')}
-
-
-
-                    </h2>
-                </MDBox>
+            <MDBox p={3}>
+                <MDTypography variant="h2">Plantões</MDTypography>
+            </MDBox>
+            <Card>
                 <form onSubmit={handleSubmit}>
-                    <MDBox pb={3} px={3}>
-                        <Grid container spacing={3}>
-                            <Grid item xs={12} sm={4}>
-                                <Autocomplete
-                                    options={juizes}
-                                    getOptionLabel={juiz => juiz.Nome }
-                                    onChange={(event, value) => console.log(value)}
-                                    renderInput={(params) => <TextField {...params} label="Nome do Juiz" required />}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={4} >
-                                <Autocomplete
-                                    options={escalas}
-                                    getOptionLabel={escala => escala.descricao}
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={5} sx={{ height: "max-content" }}>
 
-                                    value={opcaoSelecionada}
-                                    onChange={(event, newValue) => setOpcaoSelecionada(newValue)}
-                                    renderInput={(params) => <TextField {...params} label="Escala" />}
-                                />
-                            </Grid>
+                            <MDBox p={1} ml={2} my={2}>
+                                <h5>Selecione a escala:</h5>
+                            </MDBox>
+
+                            <MDBox pb={3} px={3}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={12} xl={12} >
+                                        <Autocomplete
+                                            options={escalas}
+                                            getOptionLabel={escala => escala.descricao}
+                                            value={opcaoSelecionada}
+                                            onChange={(event, newValue) => setOpcaoSelecionada(newValue)}
+                                            renderInput={(params) => <TextField {...params} label="Escala" />}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}  xl={12}>
+                                        <h5>Selecione o nome do juiz :</h5>
+                                        <Autocomplete
+                                            options={escalas}
+                                            getOptionLabel={juiz => juiz.Nome }
+                                            onChange={(event, value) => console.log(value)}
+                                            renderInput={(params) => <TextField {...params} label="Nome do Juiz" required />}
+                                        />
+                                    </Grid>
+                                </Grid>
+                            </MDBox>
                         </Grid>
-                        <MDBox my={2} >
-                            <h5>Plantões Disponiveis:</h5>
-                        </MDBox>
-                        <Grid container spacing={3}>
-                            <Grid item xs={12} sm={5}>
-                                <Grid style={{ flex: '1' }}>
+                        <Grid item xs={12} xl={6}>
+                            <MDBox mb={3}>
 
-                                    {opcaoSelecionada && (
-                                        <DataGrid
-                                            checkboxSelection
-                                            disableColumnMenu
-                                            sx={{ fontSize: '17px' }}
-                                            pageSizeOptions={[5,10,20]}
-                                            initialState={{pagination: { paginationModel: { pageSize: 5 } },}}
-                                            isRowSelectable={(params) => params.row.status === true}
-                                            onSelectionChange={(newSelection) => {setSelection(newSelection.rows);}}
-                                            rows={plantoes}
-                                            columns={[{field:'data', headerName:'Datas',width: 120, sortable:false},{field:'escala', headerName:'Escala',width: 120, sortable:false},{field:'juiz', headerName:'Juiz',width: 120, sortable:false},{field: 'status', headerName: 'Status', width: 120,
+                                <MDBox pt={2} px={2}>
+                                    <MDTypography variant="h6" >
+                                        Selecione os plantões:
+                                    </MDTypography>
+                                </MDBox>
+                                <MDBox p={2}>{opcaoSelecionada && (
+                                    <DataGrid
+                                        checkboxSelection
+                                        disableColumnMenu
+                                        sx={{ fontSize: '17px' }}
+                                        pageSizeOptions={[5,10,20]}
+                                        initialState={{pagination: { paginationModel: { pageSize: 5 } },}}
+                                        rows={plantoes}
+                                        columns={[
+                                            {field:'descricao', headerName:'Nome',flex:1, sortable:false},
+                                            {field:'data', headerName:'Datas',width: 120, sortable:false},
+                                            {field: 'status', headerName: 'Status', width: 120,
                                                 renderCell: (params) => (
                                                     <span style={{ color: params.value ? 'green' : 'red' }}>
-                                                        {params.value ? 'Disponível' : 'Ocupado'}
-                                                    </span>
+                                                            {params.value ? 'Disponível' : 'Ocupado'}
+                                                        </span>
                                                 ),
                                             },]}
-                                        />)}
-                                </Grid>
-                                <Grid item xs={12} sm={6} >
+                                        onRowSelectionModelChange={(newRowSelectionModel) => {
+                                            setRowSelectionModel(newRowSelectionModel);}}
+                                        rowSelectionModel={rowSelectionModel}
 
-                                </Grid>
-                            </Grid>
+                                    />)}
+                                </MDBox>
+                                <Button onClick={() => console.log('Opções selecionadas:', rowSelectionModel)}>Imprimir Selecionados</Button>
+                            </MDBox>
                         </Grid>
-                        <Button color="error" size="large" type="submit">Salvar</Button>
-                    </MDBox>
+                        <MDBox ml={2} p={3}>
+                            <Button color="error" size="large" type="submit">Salvar</Button>
+                            <MDButton size="small" onClick={showJSON} color="info">Exibir</MDButton>
+                        </MDBox>
+
+                    </Grid>
                 </form>
             </Card>
         </DashboardLayout>
