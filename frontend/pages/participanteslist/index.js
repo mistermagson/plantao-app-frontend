@@ -7,8 +7,6 @@ export const getStaticProps = async () => {
   return { props: { jsonData } }
 }
 
-
-
 function ParticipantesList({ jsonData }){
    const [juizes, setJuizes] = useState(null);
 

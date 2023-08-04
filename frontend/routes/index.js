@@ -73,9 +73,9 @@ const routes = [
             key: "profile",
             collapse: [
               {
-                name: "Escalas",
+                name: "Adicionar Escala",
                 key: "participantes",
-                route: "/escalas/adicionarescala",
+                route: "/escalas/adicionaescalas",
               },
               {
                 name: "Participantes",

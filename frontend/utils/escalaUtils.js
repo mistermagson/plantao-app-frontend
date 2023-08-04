@@ -26,3 +26,31 @@ export const geraWeekends = (start, end) => {
 
     return dateArray;
 };
+
+// Vincula Datas a um escala
+// dateArrays é um array dos id´s das datas
+export const setDatasEscala = (idEscala, dateArray) => {
+
+    const plantaos={
+        connect: dateArray
+    }
+    const setEscala = async () => {
+        try {
+            const response = await fetch('http://localhost:1337/api/escalas/{idEscala}', {
+                method: 'PUT',
+                headers,
+                body: JSON.stringify({ data: plantaos }),
+            })
+                .then(checkStatus)
+                .then(parseJSON);
+        } catch (error) {
+            return error;
+        }
+    };
+
+    setEscala();
+
+    return response;
+};
+
+

@@ -3,7 +3,7 @@ import {geraDatas, geraWeekends} from '../../utils/escalaUtils'
 
 const DateRangeComponent = ({ startDate, endDate }) => {
 
-  const dateArray = geraWeekends(startDate, endDate);
+  const dateArray = geraDatas(startDate, endDate);
 
   return (
     <div>
