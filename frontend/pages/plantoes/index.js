@@ -48,15 +48,20 @@ function Plantoes() {
                     const escalasData = responseEscala.data.map((item) => ({id: item.id, ...item.attributes,}));
                     setEscalas(escalasData);
 
-                    const plantoesItem = responseEscala.data.map(item => {
-                        const plantoesData = item.attributes.plantaos.data;
-                        const plantoesT = plantoesData.map(plantao => {
-                            return {
-                                id: plantao.id,
-                                data: plantao.attributes.data,
-                            };})
-                        setPlantoes(plantoesData);
+                    const escalasItem = responseEscala.data.map(item => {
+                        const participantesData = item.attributes.participantes.data;
+                        const participantes = participantesData.map(participante => ({
+                            id: participante.id,
+                            nome: participante.attributes.Nome,
+                        }));
+
+                        return {
+                            id: item.id,
+                            participantes: participantes,
+                        };
                     });
+
+                    setJuizes(escalasItem);
 
                 } else {
                     setError('Formato de dados inválido.');
@@ -78,7 +83,7 @@ function Plantoes() {
 
     };
     const showJSON = () => {
-        console.log('JSON:', plantoes, escalas);
+        console.log('JSON:', juizes, escalas, opcaoSelecionada);
     };
     return (
         <DashboardLayout>
@@ -109,8 +114,8 @@ function Plantoes() {
                                     <Grid item xs={12}  xl={12}>
                                         <h5>Selecione o nome do juiz :</h5>
                                         <Autocomplete
-                                            options={escalas}
-                                            getOptionLabel={juiz => juiz.Nome }
+                                            options={juizes}
+                                            getOptionLabel={juiz => juiz.participantes.nome }
                                             onChange={(event, value) => console.log(value)}
                                             renderInput={(params) => <TextField {...params} label="Nome do Juiz" required />}
                                         />

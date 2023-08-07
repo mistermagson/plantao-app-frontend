@@ -110,7 +110,7 @@ function AdicionaEscala({escalas}) {
         })
     }
     const showJSON = () => {
-        console.log('JSON:', modifiedData);
+        console.log('JSON:', juizes);
     };
     // Função para ser chamada quando a seleção mudar
 

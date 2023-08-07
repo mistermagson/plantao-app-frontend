@@ -103,6 +103,7 @@ function Participantes() {
         fetchJuizes();
     }, []);
 
+
     const handleSubmit = async e => {
         e.preventDefault();
 

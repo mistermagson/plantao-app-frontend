@@ -32,11 +32,11 @@ export const geraWeekends = (start, end) => {
 export const setDatasEscala = (idEscala, dateArray) => {
 
     const plantaos={
-        connect: dateArray
+        plantaos:{connect: dateArray}
     }
     const setEscala = async () => {
         try {
-            const response = await fetch('http://localhost:1337/api/escalas/{idEscala}', {
+            const response = await fetch('http://localhost:1337/api/escalas/${idEscala}', {
                 method: 'PUT',
                 headers,
                 body: JSON.stringify({ data: plantaos }),
@@ -76,3 +76,4 @@ export const setParticipantesEscala = (idEscala, juizesArray,headers) => {
     setEscala();
 
 };
+
