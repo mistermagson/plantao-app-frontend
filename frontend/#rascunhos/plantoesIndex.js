@@ -34,11 +34,11 @@ function Plantoes() {
     //--------------------------------------------------------------------------
 
     //const [modifiedData, setModifiedData] = useState(valorInicial);//-------do it
-    const [juizes, setJuizes] = useState([]);
+    const [escalas, setEscalas] = useState([]);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchJuizes = async () => {
+        const fetchEscalas = async () => {
             try {
 
                 const response = await fetch('http://localhost:1337/api/juizs', {
@@ -47,7 +47,7 @@ function Plantoes() {
                 });
 
                 if (!response.ok) {
-                    throw new Error('Falha ao obter os dados das juizes.');
+                    throw new Error('Falha ao obter os dados das escalas.');
                 }
 
                 const responseData = await response.json();
@@ -56,8 +56,8 @@ function Plantoes() {
                 console.log('-------| Constante DATA:', responseData);
 
                 if (Array.isArray(responseData.data)) {
-                    const juizesData = responseData.data.map((item) => ({id: item.id, ...item.attributes,}));
-                    setJuizes(juizesData);
+                    const escalasData = responseData.data.map((item) => ({id: item.id, ...item.attributes,}));
+                    setEscalas(escalasData);
 
                 } else {
                     setError('Formato de dados inválido.');
@@ -68,7 +68,7 @@ function Plantoes() {
             }
         };
 
-        fetchJuizes();
+        fetchEscalas();
     }, []);
 
     /*const filterEscalas = (escalas, { inputValue }) => {
