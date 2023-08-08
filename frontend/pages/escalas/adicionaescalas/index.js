@@ -63,10 +63,10 @@ function AdicionaEscala({escalas}) {
                 .then(checkStatus)
                 .then(parseJSON)
                 .then(escala => {
-                    console.log(geraDatas(escala.data.attributes.inicio, escala.data.attributes.fim));
+                    //console.log(geraDatas(escala.data.attributes.inicio, escala.data.attributes.fim));
                     const datasEscala =  geraDatas(escala.data.attributes.inicio, escala.data.attributes.fim);
                     console.table(datasEscala)
-                    setDatasEscala(dados.id, datasEscala, headers);
+                    setDatasEscala(escala.data.id, datasEscala, headers);
                     console.log('Escala adicionada com sucesso');
 
                 })
