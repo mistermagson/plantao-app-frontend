@@ -97,7 +97,8 @@ function AdicionaEscala({escalas}) {
                 body: JSON.stringify({ data: modifiedData }),
             })
                 .then(checkStatus)
-                .then(parseJSON);
+                .then(parseJSON)
+                .then(console.log(response.json()))
         } catch (error) {
             setErrorEscalas(error);
         }
