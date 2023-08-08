@@ -4,7 +4,7 @@ export const geraDatas = (start, end) => {
     let currentDate = new Date(start);
 
     while (currentDate <= new Date(end)) {
-        dateArray.push(new Date(currentDate));
+        dateArray.push(new Date());
         currentDate.setDate(currentDate.getDate() + 1);
     }
 
@@ -29,7 +29,7 @@ export const geraWeekends = (start, end) => {
 
 // Vincula Datas a um escala
 // dateArrays é um array dos id´s das datas
-export const setDatasEscala = (idEscala, dateArray) => {
+export const setDatasEscalaId = (idEscala, dateArray, ...params) => {
 
     const plantaos={
         plantaos:{connect: dateArray}
@@ -49,6 +49,32 @@ export const setDatasEscala = (idEscala, dateArray) => {
     };
 
     setEscala();
+
+    return response;
+};
+
+export const setDatasEscala = (idEscala, dateArray, ...params) => {
+
+    const setEscala = async (idEscala, item) => {
+        try {
+            const plantaos={
+                data: item.data,
+                escala: idEscala
+            }
+            const response = await fetch('http://localhost:1337/api/plantoes', {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({ data: plantaos }),
+            })
+                .then(checkStatus)
+                .then(parseJSON);
+        } catch (error) {
+            return error;
+        }
+    };
+
+    dateArray.forEach(item => setEscala(idEscala, item));
+
 
     return response;
 };

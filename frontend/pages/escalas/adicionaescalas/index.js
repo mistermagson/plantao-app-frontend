@@ -1,8 +1,6 @@
 import React, {useEffect} from 'react';
 import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
-import DataTable from "/examples/Tables/DataTable";
-import {keys} from "regenerator-runtime";
 import MDBox from "/components/MDBox";
 import { useState } from 'react';
 import Grid from "@mui/material/Grid";
@@ -10,14 +8,12 @@ import Card from "@mui/material/Card";
 import MDTypography from "/components/MDTypography";
 import MDDatePicker from "/components/MDDatePicker";
 import FormField from "/pagesComponents/pages/account/components/FormField";
-import Button from "@mui/material/Button";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import {FormControlLabel, InputLabel, Select} from "@mui/material";
-import MenuItem from "@mui/material/MenuItem";
 import Checkbox from "@mui/material/Checkbox";
-import {DataGrid} from "@mui/x-data-grid";
 import MDButton from "../../../components/MDButton";
+import {geraDatas, setDatasEscala} from "../../../utils/escalaUtils";
 
 
 const parseJSON = resp => (resp.json ? resp.json() : resp);
@@ -25,6 +21,7 @@ const parseJSON = resp => (resp.json ? resp.json() : resp);
 const checkStatus = resp => {
     if (resp.status >= 200 && resp.status < 300) {
         return resp;
+
     }
     return parseJSON(resp).then(resp => {
         throw resp;
@@ -54,39 +51,6 @@ function AdicionaEscala({escalas}) {
     const [errorEscalas, setErrorEscalas] = useState(null);
     const [juizes, setJuizes] = useState([]);
 
-
-    useEffect(() => {
-        const fetchJuizes = async () => {
-            try {
-
-                const response1 = await fetch('http://localhost:1337/api/juizs', {
-                    method: 'GET',
-                    headers,
-                });
-
-                if (!response1.ok) {
-                    throw new Error('Falha ao obter os dados dos juizes.');
-                }
-
-                const responseJuiz = await response1.json();
-                console.log('')
-                console.log('------------------------------------------------')
-                console.log('-------| Constante responseJuiz:', responseJuiz);
-
-                if (Array.isArray(responseJuiz.data)) {
-                    const juizesData = responseJuiz.data.map((item) => ({id: item.id, ...item.attributes,}));
-                    setJuizes(juizesData);
-
-                } else {
-                    setError('Formato de dados inválido.');
-                }
-
-            } catch (error) {
-                setError(error.message);
-            }
-        };
-        fetchJuizes();
-    }, []);
     const handleSubmit = async e => {
         e.preventDefault();
 
@@ -97,7 +61,16 @@ function AdicionaEscala({escalas}) {
                 body: JSON.stringify({ data: modifiedData }),
             })
                 .then(checkStatus)
-                .then(parseJSON);
+                .then(parseJSON)
+                .then(escala => {
+                    console.log(geraDatas(escala.data.attributes.inicio, escala.data.attributes.fim));
+                    const datasEscala =  geraDatas(escala.data.attributes.inicio, escala.data.attributes.fim);
+                    console.table(datasEscala)
+                    setDatasEscala(dados.id, datasEscala, headers);
+                    console.log('Escala adicionada com sucesso');
+
+                })
+
         } catch (error) {
             setErrorEscalas(error);
         }
@@ -110,7 +83,7 @@ function AdicionaEscala({escalas}) {
         })
     }
     const showJSON = () => {
-        console.log('JSON:', juizes);
+        console.log('JSON:', modifiedData);
     };
     // Função para ser chamada quando a seleção mudar
 
