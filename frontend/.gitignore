@@ -10,6 +10,7 @@
 
 # next.js
 /plantao-app-front/.next/
+/frontend/.next/
 /out/
 
 # production
