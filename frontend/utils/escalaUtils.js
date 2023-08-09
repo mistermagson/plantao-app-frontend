@@ -3,8 +3,15 @@ export const geraDatas = (start, end) => {
     const dateArray = [];
     let currentDate = new Date(start);
 
+    const formatDate = date => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
     while (currentDate <= new Date(end)) {
-        dateArray.push(new Date());
+        dateArray.push(formatDate(currentDate));
         currentDate.setDate(currentDate.getDate() + 1);
     }
 
@@ -53,14 +60,15 @@ export const setDatasEscalaId = (idEscala, dateArray, ...params) => {
     return response;
 };
 
-export const setDatasEscala = (idEscala, dateArray, ...params) => {
+export const setDatasEscala = (idEscala, dateArray, headers) => {
 
-    const setEscala = async (idEscala, item) => {
+    const setEscala = async (idEscala, item,headers) => {
         try {
             const plantaos={
-                data: item.data,
+                data: item,
                 escala: idEscala
             }
+            console.log(plantaos)
             const response = await fetch('http://localhost:1337/api/plantoes', {
                 method: 'POST',
                 headers,
@@ -73,7 +81,7 @@ export const setDatasEscala = (idEscala, dateArray, ...params) => {
         }
     };
 
-    dateArray.forEach(item => setEscala(idEscala, item));
+    dateArray.forEach(item => setEscala(idEscala, item,headers));
 
 
     return response;
@@ -102,4 +110,3 @@ export const setParticipantesEscala = (idEscala, juizesArray,headers) => {
     setEscala();
 
 };
-

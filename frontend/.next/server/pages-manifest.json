@@ -2,7 +2,11 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
+<<<<<<< HEAD
   "/404": "pages/404.js",
   "/dashboards/analytics": "pages/dashboards/analytics.js",
   "/escalas/adicionaescalas": "pages/escalas/adicionaescalas.js"
+=======
+  "/plantoes": "pages/plantoes.js"
+>>>>>>> fdb126ba6789fb1ba05fd5eafc5243f4ed8622d6
 }

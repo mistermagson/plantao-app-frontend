@@ -10,7 +10,7 @@ const DateRangeComponent = ({ startDate, endDate }) => {
       <h2>Datas entre {startDate} e {endDate}:</h2>
       <ul>
         {dateArray.map((date, index) => (
-          <li key={index}>{date.toISOString().split('T')[0]}</li>
+          <li key={index}>{date}</li>
         ))}
       </ul>
     </div>

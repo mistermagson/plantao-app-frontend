@@ -54,10 +54,16 @@ function Plantoes() {
                             id: participante.id,
                             nome: participante.attributes.Nome,
                         }));
+                        const plantaosData = item.attributes.plantaos.data;
+                        const plantaos = plantaosData.map(plantao => ({
+                            id: plantao.id,
+                            nome: plantao.attributes.data,
+                        }));
 
                         return {
-                            id: item.id,
+                            idEscala: item.id,
                             participantes: participantes,
+                            plantaos: plantaos,
                         };
                     });
 
@@ -82,8 +88,10 @@ function Plantoes() {
         console.log('Opção selecionada:', opcaoSelecionada);
 
     };
+
     const showJSON = () => {
-        console.log('JSON:', juizes, escalas, opcaoSelecionada);
+        console.log('ESCALAS:', escalas,'--| ESCALAS NOME:', escalas.descricao ,"--| SELECIONADA:",opcaoSelecionada);
+        console.log('--| NOME JUIZES', juizes);
     };
     return (
         <DashboardLayout>
@@ -107,14 +115,14 @@ function Plantoes() {
                                             options={escalas}
                                             getOptionLabel={escala => escala.descricao}
                                             value={opcaoSelecionada}
-                                            onChange={(event, newValue) => setOpcaoSelecionada(newValue)}
+                                            onChange={(event, newValue) =>{ setOpcaoSelecionada(newValue);}}
                                             renderInput={(params) => <TextField {...params} label="Escala" />}
                                         />
                                     </Grid>
                                     <Grid item xs={12}  xl={12}>
                                         <h5>Selecione o nome do juiz :</h5>
                                         <Autocomplete
-                                            options={juizes}
+                                            options={juizes.participantes}
                                             getOptionLabel={juiz => juiz.participantes.nome }
                                             onChange={(event, value) => console.log(value)}
                                             renderInput={(params) => <TextField {...params} label="Nome do Juiz" required />}
