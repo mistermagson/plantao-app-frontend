@@ -2,10 +2,5 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-<<<<<<< HEAD
-  "/api/feriados/[ano]": "pages/api/feriados/[ano].js",
-  "/404": "pages/404.js"
-=======
-  "/plantoes": "pages/plantoes.js"
->>>>>>> c8a576d9c53416305c455980ae38627199889ebb
+  "/api/feriados/[ano]": "pages/api/feriados/[ano].js"
 }

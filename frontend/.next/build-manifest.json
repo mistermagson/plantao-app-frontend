@@ -24,14 +24,6 @@
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
-<<<<<<< HEAD
-=======
-    ],
-    "/plantoes": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/plantoes.js"
->>>>>>> c8a576d9c53416305c455980ae38627199889ebb
     ]
   },
   "ampFirstPages": []
