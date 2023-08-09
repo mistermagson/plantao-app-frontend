@@ -22,10 +22,15 @@
       "target": "api::escala.escala",
       "inversedBy": "plantaos"
     },
-    "juiz": {
+    "status": {
+      "type": "boolean",
+      "default": true
+    },
+    "plantonista": {
       "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::juiz.juiz"
+      "relation": "manyToMany",
+      "target": "api::juiz.juiz",
+      "inversedBy": "plantoes"
     }
   }
 }

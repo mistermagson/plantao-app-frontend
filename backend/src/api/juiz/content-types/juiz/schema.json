@@ -28,8 +28,9 @@
     },
     "plantoes": {
       "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::plantao.plantao"
+      "relation": "manyToMany",
+      "target": "api::plantao.plantao",
+      "mappedBy": "plantonista"
     }
   }
 }

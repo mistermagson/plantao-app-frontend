@@ -48,8 +48,6 @@ export const setDatasEscalaId = (idEscala, dateArray, ...params) => {
                 headers,
                 body: JSON.stringify({ data: plantaos }),
             })
-                .then(checkStatus)
-                .then(parseJSON);
         } catch (error) {
             return error;
         }
@@ -74,8 +72,6 @@ export const setDatasEscala = (idEscala, dateArray, headers) => {
                 headers,
                 body: JSON.stringify({ data: plantaos }),
             })
-                .then(checkStatus)
-                .then(parseJSON);
         } catch (error) {
             return error;
         }
