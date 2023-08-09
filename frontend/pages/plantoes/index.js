@@ -6,11 +6,12 @@ import MDTypography from "/components/MDTypography";
 import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
 import { useForm } from "react-hook-form";
-import {DataGrid, GridFooter, useGridApiContext, useGridApiEventHandler, useGridApiRef} from '@mui/x-data-grid';
+import {DataGrid, createTheme, ThemeProvider} from '@mui/x-data-grid';
 import React, {useState, useEffect} from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import MDButton from "../../components/MDButton";
+import {setPlantonista} from "../../utils/plantaoUtils";
 
 const headers= {
     'Content-Type': 'application/json',
@@ -20,7 +21,8 @@ const headers= {
 function Plantoes() {
 
     //------- CONSTANTES PARA O DATAGRID----------------------------------------
-    const [opcaoSelecionada, setOpcaoSelecionada] = useState(null);
+    const [escalaSelecionada, setEscalaSelecionada] = useState(null);
+    const [juizSelecionado, setJuizSelecionado] = useState(null);
     const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
     //--------------------------------------------------------------------------
 
@@ -48,26 +50,6 @@ function Plantoes() {
                     const escalasData = responseEscala.data.map((item) => ({id: item.id, ...item.attributes,}));
                     setEscalas(escalasData);
 
-                    const escalasItem = responseEscala.data.map(item => {
-                        const participantesData = item.attributes.participantes.data;
-                        const participantes = participantesData.map(participante => ({
-                            id: participante.id,
-                            nome: participante.attributes.Nome,
-                        }));
-                        const plantaosData = item.attributes.plantaos.data;
-                        const plantaos = plantaosData.map(plantao => ({
-                            id: plantao.id,
-                            nome: plantao.attributes.data,
-                        }));
-
-                        return {
-                            idEscala: item.id,
-                            participantes: participantes,
-                            plantaos: plantaos,
-                        };
-                    });
-
-                    setJuizes(escalasItem);
 
                 } else {
                     setError('Formato de dados inválido.');
@@ -84,15 +66,30 @@ function Plantoes() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        //AQUI VAI O PUT PARA ADICIONAR O PLANTAO NAS ESCALAS
-        console.log('Opção selecionada:', opcaoSelecionada);
+        setPlantonista(juizSelecionado.id,rowSelectionModel,headers);
 
     };
+    const onChangeEscala = (selected)=>{
 
+        const participantesArray = selected.participantes.data.map((item) => ({id: item.id, ...item.attributes,}));
+        setJuizes(participantesArray);
+
+        const plantaosArray = selected.plantaos.data.map((item) => ({id: item.id, ...item.attributes,}));
+        setPlantoes(plantaosArray);
+
+        setJuizSelecionado(null);
+    }
     const showJSON = () => {
-        console.log('ESCALAS:', escalas,'--| ESCALAS NOME:', escalas.descricao ,"--| SELECIONADA:",opcaoSelecionada);
+        console.log('PLANTOES',plantoes);
         console.log('--| NOME JUIZES', juizes);
     };
+
+    const handleCellClick = (params, event) => {
+        if (!params.row.status) {
+            event.stopPropagation();
+        }
+    };
+
     return (
         <DashboardLayout>
             <DashboardNavbar />
@@ -114,17 +111,19 @@ function Plantoes() {
                                         <Autocomplete
                                             options={escalas}
                                             getOptionLabel={escala => escala.descricao}
-                                            value={opcaoSelecionada}
-                                            onChange={(event, newValue) =>{ setOpcaoSelecionada(newValue);}}
+                                            value={escalaSelecionada}
+                                            onChange={(event, newValue) =>{setEscalaSelecionada(newValue); onChangeEscala(newValue)}}
                                             renderInput={(params) => <TextField {...params} label="Escala" />}
                                         />
                                     </Grid>
+
                                     <Grid item xs={12}  xl={12}>
                                         <h5>Selecione o nome do juiz :</h5>
                                         <Autocomplete
-                                            options={juizes.participantes}
-                                            getOptionLabel={juiz => juiz.participantes.nome }
-                                            onChange={(event, value) => console.log(value)}
+                                            options={juizes}
+                                            getOptionLabel={juiz => juiz.Nome }
+                                            value={juizSelecionado}
+                                            onChange={(event, newValue) =>setJuizSelecionado(newValue)}
                                             renderInput={(params) => <TextField {...params} label="Nome do Juiz" required />}
                                         />
                                     </Grid>
@@ -139,7 +138,7 @@ function Plantoes() {
                                         Selecione os plantões:
                                     </MDTypography>
                                 </MDBox>
-                                <MDBox p={2}>{opcaoSelecionada && (
+                                <MDBox p={2}>{escalaSelecionada && juizSelecionado &&(
                                     <DataGrid
                                         checkboxSelection
                                         disableColumnMenu
@@ -148,7 +147,6 @@ function Plantoes() {
                                         initialState={{pagination: { paginationModel: { pageSize: 5 } },}}
                                         rows={plantoes}
                                         columns={[
-                                            {field:'descricao', headerName:'Nome',flex:1, sortable:false},
                                             {field:'data', headerName:'Datas',width: 120, sortable:false},
                                             {field: 'status', headerName: 'Status', width: 120,
                                                 renderCell: (params) => (
@@ -160,6 +158,8 @@ function Plantoes() {
                                         onRowSelectionModelChange={(newRowSelectionModel) => {
                                             setRowSelectionModel(newRowSelectionModel);}}
                                         rowSelectionModel={rowSelectionModel}
+                                        disableSelectionOnClick={true} // Desabilita a seleção ao clicar nas células
+                                        onCellClick={handleCellClick}
 
                                     />)}
                                 </MDBox>
