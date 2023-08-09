@@ -29,23 +29,6 @@
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
-    ],
-<<<<<<< HEAD
-    "/dashboards/analytics": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/dashboards/analytics.js"
-    ],
-    "/escalas/adicionaescalas": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/escalas/adicionaescalas.js"
-=======
-    "/plantoes": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/plantoes.js"
->>>>>>> fdb126ba6789fb1ba05fd5eafc5243f4ed8622d6
     ]
   },
   "ampFirstPages": []
