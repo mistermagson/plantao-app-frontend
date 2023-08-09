@@ -27,10 +27,7 @@ const checkStatus = resp => {
         throw resp;
     });
 };
-const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b'
-};
+
 
 const valorInicial={
     descricao:'',
@@ -51,11 +48,18 @@ function AdicionaEscala({escalas}) {
     const [errorEscalas, setErrorEscalas] = useState(null);
     const [juizes, setJuizes] = useState([]);
 
+    const url = `${process.env.PRIVATE_API_URL}/api/escalas`;
+    const token = process.env.PRIVATE_API_TOKEN;
+    const headers = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+    };
+
     const handleSubmit = async e => {
         e.preventDefault();
 
         try {
-            const response = await fetch('http://localhost:1337/api/escalas', {
+            const response = await fetch(url, {
                 method: 'POST',
                 headers,
                 body: JSON.stringify({ data: modifiedData }),

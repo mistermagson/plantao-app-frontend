@@ -15,6 +15,11 @@
   ],
   "rootMainFiles": [],
   "pages": {
+    "/404": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/404.js"
+    ],
     "/_app": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
@@ -25,15 +30,15 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
+    "/dashboards/analytics": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/dashboards/analytics.js"
+    ],
     "/escalas/adicionaescalas": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/escalas/adicionaescalas.js"
-    ],
-    "/escalas/datas": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/escalas/datas.js"
     ]
   },
   "ampFirstPages": []
