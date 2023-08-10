@@ -46,16 +46,6 @@ const routes = [
         route: "/applications/calendar",
 
       },
-      {
-        name: "Local",
-        key: "regionais",
-        route: "/applications/calendar",
-      },
-      {
-        name: "Distribuidor",
-        key: "wizard",
-        route: "/applications/calendar",
-      },
 
 
     ],
@@ -64,7 +54,7 @@ const routes = [
   { type: "title", title: "Área do Admin", key: "area-admin" },
   {
     type: "collapse",
-    name: "Gestão",
+    name: "Plantões Magistrados",
     key: "gestao",
     icon: <Icon fontSize="medium">dashboard</Icon>,
     collapse: [
@@ -83,9 +73,10 @@ const routes = [
                 route: "/escalas/participantes",
               },
               {
-                name: "Datas",
+                name: "Plantões",
                 key: "datas",
-                route: "/escalas/datas",              },
+                route: "/plantoes",
+              },
             ],
           },
 
@@ -122,6 +113,37 @@ const routes = [
         key: "feriados",
         route: "/applications/calendar",
       },
+
+
+    ],
+  },
+
+  { type: "divider", key: "divider-0" },
+  {
+    type: "collapse",
+    name: "Plantões Varas",
+    key: "plantoes-varas",
+    icon: <Icon fontSize="medium">dashboard</Icon>,
+    collapse: [
+      {
+        name: "Escalas",
+        key: "profile",
+        collapse: [
+          {
+            name: "Adicionar Escala",
+            key: "escalas-varas",
+            route: "/",
+          },
+          {
+            name: "Participantes",
+            key: "participantes=vara",
+            route: "/",
+          },
+
+        ],
+      },
+
+
 
 
     ],

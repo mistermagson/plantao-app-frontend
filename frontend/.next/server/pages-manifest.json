@@ -2,5 +2,6 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/api/feriados/[ano]": "pages/api/feriados/[ano].js"
+  "/dashboards/analytics": "pages/dashboards/analytics.js",
+  "/escalas/adicionaescalas": "pages/escalas/adicionaescalas.js"
 }

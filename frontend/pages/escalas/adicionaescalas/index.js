@@ -14,6 +14,7 @@ import {FormControlLabel, InputLabel, Select} from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
 import MDButton from "../../../components/MDButton";
 import {geraDatas, setDatasEscala} from "../../../utils/escalaUtils";
+import process from "next/dist/build/webpack/loaders/resolve-url-loader/lib/postcss";
 
 
 const parseJSON = resp => (resp.json ? resp.json() : resp);
