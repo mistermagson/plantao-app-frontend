@@ -8,18 +8,21 @@ export const setPlantonista = (idJuiz, plantaoArray,headers ) => {
         plantoes:{connect: plantaoArray}
     }
 
-    const url =`http://localhost:1337/api/juizs/${idJuiz}`
+    const statusPlantoes={
+        status: false
+    }
 
-
+    const urlJuiz =`http://localhost:1337/api/juizs/${idJuiz}`
     const setJuizData = async () => {
         try {
 
-            console.log(url);
-            const response = await fetch(url, {
+            console.log(urlJuiz);
+            const response = await fetch(urlJuiz, {
                 method: 'PUT',
                 headers,
                 body: JSON.stringify({ data: plantoes }),
             })
+
         } catch (error) {
             return error;
         }

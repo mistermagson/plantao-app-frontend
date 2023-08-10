@@ -16,7 +16,7 @@ function ParticipantesList({ jsonData }){
     const participantes = participantesData.map(participante => {
       return {
         id: participante.id,
-        nome: participante.attributes.Nome,
+        nome: participante.attributes.nome,
         email: participante.attributes.email,
         rf: participante.attributes.rf,
         createdAt: participante.attributes.createdAt,

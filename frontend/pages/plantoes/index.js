@@ -36,7 +36,7 @@ function Plantoes() {
         const fetchEscalas = async () => {
             try {
 
-                const response2 = await fetch('http://localhost:1337/api/escalas?populate=*', {
+                const response2 = await fetch('http://localhost:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes', {
                     method: 'GET',
                     headers,
                 });
@@ -90,8 +90,9 @@ function Plantoes() {
 
     }
     const showJSON = () => {
-        console.log('PLANTOES',plantoes);
-        console.log('--| NOME JUIZES', juizes);
+
+        console.log('PLANTONISTA',plantoes);
+
     };
 
     const theme = createTheme({
@@ -143,7 +144,7 @@ function Plantoes() {
                                         </MDBox>
                                         <Autocomplete
                                             options={juizes}
-                                            getOptionLabel={juiz => juiz.Nome }
+                                            getOptionLabel={juiz => juiz.nome }
                                             value={juizSelecionado}
                                             onChange={(event, newValue) =>setJuizSelecionado(newValue)}
                                             renderInput={(params) => <TextField {...params} label="Nome do Juiz" required />}
@@ -160,7 +161,7 @@ function Plantoes() {
                                     </MDTypography>)}
                                 </MDBox>
                                 <ThemeProvider theme={theme}>
-                                <MDBox p={2}>{escalaSelecionada && juizSelecionado &&(
+                                <MDBox p={2}>{escalaSelecionada && (
                                     <DataGrid
                                         checkboxSelection
                                         disableColumnMenu
@@ -170,15 +171,16 @@ function Plantoes() {
                                         rows={plantoes}
                                         columns={[
                                             {field:'data', headerName:'Datas',width: 120, sortable:false},
-                                            {field: 'status', headerName: 'Status', width: 120,
+                                            {field: 'plantonista', headerName: 'Status', width: 300,
                                                 renderCell: (params) => (
-                                                    <span style={{ color: params.value ? 'green' : 'red' }}>
-                                                            {params.value ? 'Disponível' : 'Ocupado'}
+                                                    console.log(params.value.data[0]),
+                                                    <span style={{ color: params.value.data[0] ? 'red': 'green' }}>
+                                                            {params.value.data[0] ?  params.value.data[0].attributes.nome:'Disponível' }
                                                         </span>
                                                 ),
                                             },]}
                                         disableSelectionOnClick={true} // Desabilita a seleção ao clicar nas células
-                                        isRowSelectable={(params) => params.row.status}
+                                        isRowSelectable={(params) => params.row.plantonista.data[0] ? false : true}
                                         onRowSelectionModelChange={(newRowSelectionModel) => {setRowSelectionModel(newRowSelectionModel);}}
                                         rowSelectionModel={rowSelectionModel}
                                     />)}

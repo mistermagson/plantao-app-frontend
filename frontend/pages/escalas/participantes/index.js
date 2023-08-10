@@ -150,7 +150,7 @@ function Participantes() {
                         rowsPerPageOptions={[5]}
                         initialState={{pagination:{paginationModel:{pageSize:5}},}}
                         rows={juizes}
-                        columns={[{field:'Nome',headerName:'Juiz', flex:'1'},]}
+                        columns={[{field:'nome',headerName:'Juiz', flex:'1'},]}
                         onRowSelectionModelChange={(newRowSelectionModel) => {
                             setRowSelectionModel(newRowSelectionModel);
                         }}
