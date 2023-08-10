@@ -6,12 +6,13 @@ import MDTypography from "/components/MDTypography";
 import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
 import { useForm } from "react-hook-form";
-import {DataGrid, createTheme, ThemeProvider} from '@mui/x-data-grid';
+import {DataGrid} from '@mui/x-data-grid';
 import React, {useState, useEffect} from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import MDButton from "../../components/MDButton";
 import {setPlantonista} from "../../utils/plantaoUtils";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const headers= {
     'Content-Type': 'application/json',
@@ -67,28 +68,48 @@ function Plantoes() {
     const handleSubmit = (event) => {
         event.preventDefault();
         setPlantonista(juizSelecionado.id,rowSelectionModel,headers);
+        console.log(juizSelecionado.id,rowSelectionModel,headers);
 
     };
     const onChangeEscala = (selected)=>{
+        try{
+            if(selected==null){setJuizSelecionado(null);
+            }else{
+                const participantesArray = selected.participantes.data.map((item) => ({id: item.id, ...item.attributes,}));
+                setJuizes(participantesArray);
 
-        const participantesArray = selected.participantes.data.map((item) => ({id: item.id, ...item.attributes,}));
-        setJuizes(participantesArray);
+                const plantaosArray = selected.plantaos.data.map((item) => ({id: item.id, ...item.attributes,}));
+                setPlantoes(plantaosArray);
 
-        const plantaosArray = selected.plantaos.data.map((item) => ({id: item.id, ...item.attributes,}));
-        setPlantoes(plantaosArray);
+                setJuizSelecionado(null);
+            }
 
-        setJuizSelecionado(null);
+        }catch (error) {
+            setError(error.message);
+        }
+
     }
     const showJSON = () => {
         console.log('PLANTOES',plantoes);
         console.log('--| NOME JUIZES', juizes);
     };
 
-    const handleCellClick = (params, event) => {
-        if (!params.row.status) {
-            event.stopPropagation();
-        }
-    };
+    const theme = createTheme({
+        components: {
+            MuiDataGrid: {
+                styleOverrides: {
+                    cellSelected: {
+                        backgroundColor: 'blue', // Cor das células selecionadas
+                    },
+                    cell: {
+                        '&.status-ocupado': {
+                            color: 'red', // Cor do texto das células com status igual a "Ocupado"
+                        },
+                    },
+                },
+            },
+        },
+    });
 
     return (
         <DashboardLayout>
@@ -100,8 +121,7 @@ function Plantoes() {
                 <form onSubmit={handleSubmit}>
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={5} sx={{ height: "max-content" }}>
-
-                            <MDBox p={1} ml={2} my={2}>
+                            <MDBox pl={3} my={2}>
                                 <h5>Selecione a escala:</h5>
                             </MDBox>
 
@@ -118,7 +138,9 @@ function Plantoes() {
                                     </Grid>
 
                                     <Grid item xs={12}  xl={12}>
-                                        <h5>Selecione o nome do juiz :</h5>
+                                        <MDBox my={2}>
+                                            <h5>Selecione o nome do juiz :</h5>
+                                        </MDBox>
                                         <Autocomplete
                                             options={juizes}
                                             getOptionLabel={juiz => juiz.Nome }
@@ -132,12 +154,12 @@ function Plantoes() {
                         </Grid>
                         <Grid item xs={12} xl={6}>
                             <MDBox mb={3}>
-
-                                <MDBox pt={2} px={2}>
+                                <MDBox pt={2} px={2}>{escalaSelecionada && juizSelecionado &&(
                                     <MDTypography variant="h6" >
                                         Selecione os plantões:
-                                    </MDTypography>
+                                    </MDTypography>)}
                                 </MDBox>
+                                <ThemeProvider theme={theme}>
                                 <MDBox p={2}>{escalaSelecionada && juizSelecionado &&(
                                     <DataGrid
                                         checkboxSelection
@@ -155,15 +177,13 @@ function Plantoes() {
                                                         </span>
                                                 ),
                                             },]}
-                                        onRowSelectionModelChange={(newRowSelectionModel) => {
-                                            setRowSelectionModel(newRowSelectionModel);}}
-                                        rowSelectionModel={rowSelectionModel}
                                         disableSelectionOnClick={true} // Desabilita a seleção ao clicar nas células
-                                        onCellClick={handleCellClick}
-
+                                        isRowSelectable={(params) => params.row.status}
+                                        onRowSelectionModelChange={(newRowSelectionModel) => {setRowSelectionModel(newRowSelectionModel);}}
+                                        rowSelectionModel={rowSelectionModel}
                                     />)}
                                 </MDBox>
-                                <Button onClick={() => console.log('Opções selecionadas:', rowSelectionModel)}>Imprimir Selecionados</Button>
+                                </ThemeProvider>
                             </MDBox>
                         </Grid>
                         <MDBox ml={2} p={3}>

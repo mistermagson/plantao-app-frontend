@@ -2,14 +2,20 @@
 // dateArrays é um array dos id´s das datas
 import {item} from "../examples/Sidenav/styles/sidenavItem";
 
-export const setPlantonista = (idJuiz, plantaoArray,...params ) => {
+export const setPlantonista = (idJuiz, plantaoArray,headers ) => {
 
     const plantoes={
         plantoes:{connect: plantaoArray}
     }
+
+    const url =`http://localhost:1337/api/juizs/${idJuiz}`
+
+
     const setJuizData = async () => {
         try {
-            const response = await fetch('http://localhost:1337/api/juizs/${idJuiz}', {
+
+            console.log(url);
+            const response = await fetch(url, {
                 method: 'PUT',
                 headers,
                 body: JSON.stringify({ data: plantoes }),
