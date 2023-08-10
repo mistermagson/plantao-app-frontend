@@ -22,10 +22,6 @@
       "target": "api::escala.escala",
       "inversedBy": "plantaos"
     },
-    "status": {
-      "type": "boolean",
-      "default": true
-    },
     "plantonista": {
       "type": "relation",
       "relation": "manyToMany",
