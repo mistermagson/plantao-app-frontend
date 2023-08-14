@@ -88,6 +88,13 @@ function AdicionaEscala({escalas}) {
             [name]: value
         })
     }
+    const handleChangeCheck = e =>{
+        const { name, value, checked } = e.target;
+        setModifiedData({
+            ...modifiedData,
+            [name]: name === 'fechada' ? checked : value
+        });
+    }
     const showJSON = () => {
         console.log('JSON:', modifiedData);
     };
@@ -158,16 +165,16 @@ function AdicionaEscala({escalas}) {
                                     <Grid item xs={6} xl={4} >
                                         <MDTypography variant="h6">Status da Escala:</MDTypography>
                                         <FormControlLabel
-                                            control={<Checkbox defaultChecked />}
+                                            control={<Checkbox defaultChecked={modifiedData.fechada} />}
                                             label="Fechada"
                                             name="fechada"
-                                            value={modifiedData.fechada}
-                                            onChange={handleChange}
+                                            checked={modifiedData.fechada}
+                                            onChange={handleChangeCheck()}
                                         />
                                     </Grid>
                                 </Grid>
                                 <Grid p={1}>
-                                    <MDButton size="small" onClick={showJSON} color="info">Exibir</MDButton>
+                                    <MDButton size="small" onClick={showJSON} lcolor="info">Exibir</MDButton>
                                     <MDButton onClick={handleSubmit} size="small" color="success" >Salvar</MDButton>
                                 </Grid>
                             </Grid>

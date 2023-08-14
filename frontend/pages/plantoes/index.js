@@ -171,7 +171,7 @@ function Plantoes() {
                                         rows={plantoes}
                                         columns={[
                                             {field:'data', headerName:'Datas',width: 120, sortable:false},
-                                            {field: 'plantonista', headerName: 'Status', width: 300,
+                                            {field: 'plantonista', headerName: 'Status', flex:1,
                                                 renderCell: (params) => (
                                                     console.log(params.value.data[0]),
                                                     <span style={{ color: params.value.data[0] ? 'red': 'green' }}>
