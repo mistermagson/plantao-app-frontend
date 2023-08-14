@@ -104,35 +104,35 @@ function AdicionaEscala({escalas}) {
     return (
         <DashboardLayout>
             <DashboardNavbar />
-            <MDBox p={3}>
+            <MDBox p={2}>
                 <MDTypography variant="h2">Adicionar Escala</MDTypography>
             </MDBox>
             <Grid container spacing={2}>
                 <Grid item xs={12} xl={8} sx={{ height: "max-content" }}>
                     <Card id="escalas" sx={{ overflow: "visible" }}>
 
-                        <MDBox p={1} ml={2} my={2}>
-                            <h5 >Insira uma descrição e selecione o tipo de escala:</h5>
-                        </MDBox>
+
                         <form onSubmit={handleSubmit}>
-                            <Grid pb={3} px={3}>
+                            <Grid py={3} px={4} >
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} xl={6} >
-
+                                        <MDTypography variant="h6" mb={1} >Insira uma descrição:</MDTypography>
                                         <FormField
                                             label="Descrição"
-                                            placeholder="Insira uma descrição"
+                                            placeholder="Digite aqui"
                                             name="descricao"
                                             variant="outlined"
                                             value={modifiedData.descricao}
                                             onChange={handleChange}
                                             rows={3}
                                             multiline
+                                            required
                                         />
                                     </Grid>
                                     <Grid item xs={12}  xl={6}>
-
+                                        <MDTypography variant="h6" mb={1}>Selecione o tipo de escala:</MDTypography>
                                         <Autocomplete
+                                            required
                                             name="tipoEscala"
                                             options={opEscala}
                                             value={modifiedData.tipo} // Define o valor selecionado
@@ -144,36 +144,42 @@ function AdicionaEscala({escalas}) {
                                     </Grid>
                                 </Grid>
                                 <Grid container spacing={2} mt={2}>
-                                    <Grid item xs={6} xl={4}>
+                                    <Grid item xs={4} xl={4}>
                                         <MDTypography variant="h6">Data de Inicio:</MDTypography>
                                         <MDDatePicker
+                                            required
                                             input={{ placeholder: "Escolha uma data", format: "dd/MM/yy" }}
                                             value={modifiedData.inicio}
                                             onChange={(event, value) =>
                                                 setModifiedData({ ...modifiedData, inicio: value })}/>
 
                                     </Grid>
-                                    <Grid item xs={6} xl={4}>
+                                    <Grid item xs={4} xl={4}>
                                         <MDTypography variant="h6">Data de Fim:</MDTypography>
                                         <MDDatePicker
+                                            required
                                             name="dataFim"
                                             value={modifiedData.fim}
                                             input={{ placeholder: "Escolha uma data", format: "dd/MM/yy" }}
                                             onChange={(event, value) =>
                                                 setModifiedData({ ...modifiedData, fim: value })}/>
                                     </Grid>
-                                    <Grid item xs={6} xl={4} >
-                                        <MDTypography variant="h6">Status da Escala:</MDTypography>
-                                        <FormControlLabel
-                                            control={<Checkbox defaultChecked={modifiedData.fechada} />}
-                                            label="Fechada"
-                                            name="fechada"
-                                            checked={modifiedData.fechada}
-                                            onChange={handleChangeCheck()}
-                                        />
+                                    <Grid item xs={12} xl={4} >
+
+                                        <Grid ml={1}>
+                                            <MDTypography variant="h6">Status da Escala:</MDTypography>
+                                            <FormControlLabel
+
+                                                control={<Checkbox defaultChecked={modifiedData.fechada} />}
+                                                label="Fechada"
+                                                name="fechada"
+                                                checked={modifiedData.fechada}
+                                                onChange={handleChangeCheck}
+                                            />
+                                        </Grid>
                                     </Grid>
                                 </Grid>
-                                <Grid p={1}>
+                                <Grid mt={4}>
                                     <MDButton size="small" onClick={showJSON} lcolor="info">Exibir</MDButton>
                                     <MDButton onClick={handleSubmit} size="small" color="success" >Salvar</MDButton>
                                 </Grid>

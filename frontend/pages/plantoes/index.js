@@ -96,20 +96,7 @@ function Plantoes() {
     };
 
     const theme = createTheme({
-        components: {
-            MuiDataGrid: {
-                styleOverrides: {
-                    cellSelected: {
-                        backgroundColor: 'blue', // Cor das células selecionadas
-                    },
-                    cell: {
-                        '&.status-ocupado': {
-                            color: 'red', // Cor do texto das células com status igual a "Ocupado"
-                        },
-                    },
-                },
-            },
-        },
+
     });
 
     return (
@@ -127,7 +114,7 @@ function Plantoes() {
                             </MDBox>
 
                             <MDBox pb={3} px={3}>
-                                <Grid container spacing={2}>
+                                <Grid container spacing={2} xl={12}>
                                     <Grid item xs={12} xl={12} >
                                         <Autocomplete
                                             options={escalas}
@@ -161,11 +148,14 @@ function Plantoes() {
                                     </MDTypography>)}
                                 </MDBox>
                                 <ThemeProvider theme={theme}>
-                                <MDBox p={2}>{escalaSelecionada && (
+                                <MDBox p={2}>{escalaSelecionada && juizSelecionado &&(
                                     <DataGrid
                                         checkboxSelection
                                         disableColumnMenu
-                                        sx={{ fontSize: '17px' }}
+                                        sx={{
+                                            fontSize: '17px',
+
+                                        }}
                                         pageSizeOptions={[5,10,20]}
                                         initialState={{pagination: { paginationModel: { pageSize: 5 } },}}
                                         rows={plantoes}
@@ -173,16 +163,16 @@ function Plantoes() {
                                             {field:'data', headerName:'Datas',width: 120, sortable:false},
                                             {field: 'plantonista', headerName: 'Status', flex:1,
                                                 renderCell: (params) => (
-                                                    console.log(params.value.data[0]),
-                                                    <span style={{ color: params.value.data[0] ? 'red': 'green' }}>
-                                                            {params.value.data[0] ?  params.value.data[0].attributes.nome:'Disponível' }
-                                                        </span>
+                                                    <span style={{color: params.value.data[0] ? 'red' : 'green',}}>
+                                                        {params.value.data[0] ?  params.value.data[0].attributes.nome:'Disponível' }
+                                                    </span>
                                                 ),
                                             },]}
                                         disableSelectionOnClick={true} // Desabilita a seleção ao clicar nas células
                                         isRowSelectable={(params) => params.row.plantonista.data[0] ? false : true}
                                         onRowSelectionModelChange={(newRowSelectionModel) => {setRowSelectionModel(newRowSelectionModel);}}
                                         rowSelectionModel={rowSelectionModel}
+
                                     />)}
                                 </MDBox>
                                 </ThemeProvider>

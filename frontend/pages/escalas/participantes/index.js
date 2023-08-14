@@ -13,6 +13,7 @@ import Button from "@mui/material/Button";
 import ParticipantesList from "../../participanteslist";
 import {setParticipantesEscala} from "../../../utils/escalaUtils";
 import MDButton from "../../../components/MDButton";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 
 const headers = {
@@ -103,28 +104,25 @@ function Participantes() {
         fetchJuizes();
     }, []);
 
-
-    const handleSubmit = async e => {
-        e.preventDefault();
-
-        try {
-            const response = await fetch('http://localhost:1337/api/escalas/{', {
-                method: 'POST',
-                headers,
-                body: JSON.stringify({ data: modifiedData }),
-            })
-                .then(checkStatus)
-                .then(parseJSON);
-        } catch (error) {
-            setErrorEscalas(error);
-        }
-    };
-
+    const theme = createTheme({
+        components: {
+            MuiDataGrid: {
+                styleOverrides: {
+                    cellSelected: {
+                        backgroundColor: 'blue', // Cor das células selecionadas
+                    },
+                },
+            },
+        },
+    });
 
     // Se jsonData estiver disponível, você pode renderizar o componente ParticipantesList
     return (
         <DashboardLayout>
+            <DashboardNavbar />
+            <MDBox p={2}>
             <h1>Lista de Participantes</h1>
+            </MDBox>
             <Card sx={{ height: "100%" }}>
 
                 <MDBox pt={2} px={2}>
@@ -133,7 +131,7 @@ function Participantes() {
                     </MDTypography>
                 </MDBox>
                 <MDBox p={2}>
-                    <Grid item xs={12} xl={12} >
+                    <Grid item xs={12} xl={12} mb={3} >
                         <Autocomplete
                             options={escalas}
                             getOptionLabel={escala => escala.descricao}
@@ -141,31 +139,38 @@ function Participantes() {
                             onChange={(event, newValue) => setOpcaoSelecionada(newValue)}
                             renderInput={(params) => <TextField {...params} label="Escala" />}
                         />
-                    </Grid>{opcaoSelecionada && (
-                    <DataGrid
+                    </Grid>
+                    <Grid xs={12} xl={12} mb={3} >
+                        <ThemeProvider theme={theme}>
+                            {opcaoSelecionada && (
+                                <DataGrid
+                                    checkboxSelection
+                                    disableColumnMenu
+                                    sx={{ fontSize: '17px' }}
+                                    pageSizeOptions={[5,10,20]}
+                                    initialState={{pagination:{paginationModel:{pageSize:5}},}}
+                                    rows={juizes}
+                                    columns={[{field:'nome',headerName:'Juiz', flex:'1'},]}
+                                    onRowSelectionModelChange={(newRowSelectionModel) => {
+                                        setRowSelectionModel(newRowSelectionModel);
+                                    }}
+                                    rowSelectionModel={rowSelectionModel}
 
-                        checkboxSelection
-                        disableColumnMenu
-                        sx={{ fontSize: '17px' }}
-                        rowsPerPageOptions={[5]}
-                        initialState={{pagination:{paginationModel:{pageSize:5}},}}
-                        rows={juizes}
-                        columns={[{field:'nome',headerName:'Juiz', flex:'1'},]}
-                        onRowSelectionModelChange={(newRowSelectionModel) => {
-                            setRowSelectionModel(newRowSelectionModel);
-                        }}
-                        rowSelectionModel={rowSelectionModel}
-
-                    />)}
-                    {opcaoSelecionada && (<MDButton color="info" onClick={() => console.log(opcaoSelecionada.id,rowSelectionModel)}>Imprimir Selecionados</MDButton>)}
+                                />
+                            )}
+                        </ThemeProvider>
+                    </Grid>
                     {!opcaoSelecionada && (
                         <MDTypography variant="h6" fontWeight="light" ml={2} mt={2}>
                             Escala não selecionada
                         </MDTypography>
                     )}
-                    <MDBox  p={1}>
-                        <MDButton color="success" size="normal" onClick={() => setParticipantesEscala(opcaoSelecionada.id,rowSelectionModel,headers)}>Salvar</MDButton>
-                    </MDBox>
+                    <Grid mt={2} p={2}>{opcaoSelecionada && (
+                        <MDButton color="info" onClick={() => console.log(opcaoSelecionada.id,rowSelectionModel)}>Imprimir Selecionados</MDButton>)}
+                        <MDButton color="success" size="normal" onClick={() => setParticipantesEscala(opcaoSelecionada.id,rowSelectionModel,headers)}>Salvar</MDButton></Grid>
+
+
+
                 </MDBox>
             </Card>
         </DashboardLayout>

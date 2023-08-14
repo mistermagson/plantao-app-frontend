@@ -14,7 +14,8 @@
   "attributes": {
     "descricao": {
       "type": "string",
-      "required": true
+      "required": true,
+      "minLength": 2
     },
     "tipo": {
       "type": "enumeration",
