@@ -25,10 +25,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/plantoes": [
+    "/plantoes/meusplantoes": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/plantoes.js"
+      "static/chunks/pages/plantoes/meusplantoes.js"
     ]
   },
   "ampFirstPages": []

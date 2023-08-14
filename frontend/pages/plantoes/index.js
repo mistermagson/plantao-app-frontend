@@ -112,7 +112,6 @@ function Plantoes() {
                             <MDBox pl={3} my={2}>
                                 <h5>Selecione a escala:</h5>
                             </MDBox>
-
                             <MDBox pb={3} px={3}>
                                 <Grid container spacing={2} xl={12}>
                                     <Grid item xs={12} xl={12} >
@@ -152,10 +151,7 @@ function Plantoes() {
                                     <DataGrid
                                         checkboxSelection
                                         disableColumnMenu
-                                        sx={{
-                                            fontSize: '17px',
-
-                                        }}
+                                        sx={{fontSize: '17px',}}
                                         pageSizeOptions={[5,10,20]}
                                         initialState={{pagination: { paginationModel: { pageSize: 5 } },}}
                                         rows={plantoes}
