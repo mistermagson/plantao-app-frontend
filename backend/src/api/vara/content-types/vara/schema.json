@@ -1,0 +1,41 @@
+{
+  "kind": "collectionType",
+  "collectionName": "varas",
+  "info": {
+    "singularName": "vara",
+    "pluralName": "varas",
+    "displayName": "Vara",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "descricao": {
+      "type": "string",
+      "required": true
+    },
+    "secao": {
+      "type": "enumeration",
+      "enum": [
+        "MS",
+        "SP"
+      ],
+      "required": true
+    },
+    "subsecao": {
+      "type": "enumeration",
+      "enum": [
+        "CAMPO GRANDE",
+        "DOURADOS",
+        "TRÊS LAGOAS",
+        "CORUMBÁ",
+        "PONTA PORÃ",
+        "NAVIRAÍ",
+        "COXIM"
+      ],
+      "required": true
+    }
+  }
+}

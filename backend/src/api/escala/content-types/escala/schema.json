@@ -49,6 +49,11 @@
       "relation": "oneToMany",
       "target": "api::plantao.plantao",
       "mappedBy": "escala"
+    },
+    "preferencia": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::juiz.juiz"
     }
   }
 }
