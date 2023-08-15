@@ -84,6 +84,7 @@ import dialogTitle from "/assets/theme-dark/components/dialog/dialogTitle";
 import dialogContent from "/assets/theme-dark/components/dialog/dialogContent";
 import dialogContentText from "/assets/theme-dark/components/dialog/dialogContentText";
 import dialogActions from "/assets/theme-dark/components/dialog/dialogActions";
+import {ptBR} from "@mui/x-data-grid";
 
 export default createTheme({
   breakpoints: { ...breakpoints },
@@ -157,4 +158,6 @@ export default createTheme({
     MuiDialogContentText: { ...dialogContentText },
     MuiDialogActions: { ...dialogActions },
   },
-});
+},
+    ptBR
+);

@@ -15,6 +15,7 @@ import Checkbox from "@mui/material/Checkbox";
 import MDButton from "../../../components/MDButton";
 import {geraDatas, setDatasEscala} from "../../../utils/escalaUtils";
 import process from "next/dist/build/webpack/loaders/resolve-url-loader/lib/postcss";
+import Escalas from "../../../components/Escalas";
 
 
 const parseJSON = resp => (resp.json ? resp.json() : resp);
@@ -193,6 +194,7 @@ function AdicionaEscala({escalas}) {
                     </MDBox>
                 </Grid>
             </Grid>
+            <Escalas />
         </DashboardLayout>
     );
 }

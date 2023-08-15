@@ -1,30 +1,8 @@
-/**
-=========================================================
-* NextJS Material Dashboard 2 PRO - v2.0.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/nextjs-material-dashboard-pro
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { useState, useEffect, useMemo } from "react";
-
 import Head from "next/head";
 import { useRouter } from "next/router";
-
-// @emotion
 import createCache from "@emotion/cache";
-
-// @emotion/react components
 import { CacheProvider } from "@emotion/react";
-
-// @mui material components
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Icon from "@mui/material/Icon";

@@ -6,7 +6,7 @@ import MDTypography from "/components/MDTypography";
 import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
 import { useForm } from "react-hook-form";
-import {DataGrid} from '@mui/x-data-grid';
+import {DataGrid,ptBR} from '@mui/x-data-grid';
 import React, {useState, useEffect} from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -62,7 +62,7 @@ function Plantoes() {
         };
 
         fetchEscalas();
-        ///NECESSITA DOS PLANTOES FILTRADOS PELA ESCALA SELECIONADA PARA O DATAGRID
+
     }, []);
 
     const handleSubmit = (event) => {
@@ -95,9 +95,11 @@ function Plantoes() {
 
     };
 
-    const theme = createTheme({
+   /* const theme = createTheme({
 
-    });
+    },
+
+    );*/
 
     return (
         <DashboardLayout>
@@ -146,7 +148,7 @@ function Plantoes() {
                                         Selecione os plantões:
                                     </MDTypography>)}
                                 </MDBox>
-                                <ThemeProvider theme={theme}>
+                               {/* <ThemeProvider theme={theme}>*/}
                                 <MDBox p={2}>{escalaSelecionada && juizSelecionado &&(
                                     <DataGrid
                                         checkboxSelection
@@ -171,7 +173,7 @@ function Plantoes() {
 
                                     />)}
                                 </MDBox>
-                                </ThemeProvider>
+                               {/* </ThemeProvider>*/}
                             </MDBox>
                         </Grid>
                         <MDBox ml={2} p={3}>
