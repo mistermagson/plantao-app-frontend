@@ -31,6 +31,9 @@
       "relation": "manyToMany",
       "target": "api::plantao.plantao",
       "mappedBy": "plantonista"
+    },
+    "antiguidade": {
+      "type": "integer"
     }
   }
 }
