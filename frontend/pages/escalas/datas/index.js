@@ -50,8 +50,6 @@ function Datas() {
                 if (Array.isArray(responseJuiz.data)) {
                     const juizesData = responseJuiz.data.map((item) => ({id: item.id, ...item.attributes,}));
                     setJuizes(juizesData);
-
-
                 } else {
                     setError('Formato de dados inválido.');
                 }

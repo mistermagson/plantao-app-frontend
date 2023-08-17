@@ -19,7 +19,7 @@
     "email": {
       "type": "email",
       "unique": true,
-      "required": true
+      "required": false
     },
     "rf": {
       "type": "string",
