@@ -22,9 +22,13 @@ export const setPlantonista = (idJuiz, plantaoArray,headers ) => {
                 headers,
                 body: JSON.stringify({ data: plantoes }),
             })
-
+            if (response.ok) {
+                console.log('Plantonista atualizado com sucesso:', response);
+            } else {
+                console.log('Erro ao atualizar plantonista:', response);
+            }
         } catch (error) {
-            return error;
+            console.error('Erro ao atualizar plantonista:', error);
         }
     };
 

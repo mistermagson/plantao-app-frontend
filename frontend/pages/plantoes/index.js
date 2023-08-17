@@ -5,7 +5,7 @@ import MDBox from "/components/MDBox";
 import MDTypography from "/components/MDTypography";
 import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
-import { useForm } from "react-hook-form";
+import {set, useForm} from "react-hook-form";
 import {DataGrid} from '@mui/x-data-grid';
 import React, {useState, useEffect} from "react";
 import TextField from "@mui/material/TextField";
@@ -24,7 +24,7 @@ function Plantoes() {
     //------- CONSTANTES PARA O DATAGRID----------------------------------------
     const [escalaSelecionada, setEscalaSelecionada] = useState(null);
     const [juizSelecionado, setJuizSelecionado] = useState(null);
-    const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
+    const [rowSelectionModel, setRowSelectionModel] = useState([]);
     //--------------------------------------------------------------------------
 
     const [juizes, setJuizes] = useState([]);
@@ -33,47 +33,65 @@ function Plantoes() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchEscalas = async () => {
-            try {
+        if(escalaSelecionada) {
+            const escalaEncontrada = escalas.find(escala => escala.id === escalaSelecionada.id);
 
-                const response2 = await fetch('http://localhost:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes', {
-                    method: 'GET',
-                    headers,
-                });
-
-                if (!response2.ok) {
-                    throw new Error('Falha ao obter os dados dos juizes.');
-                }
-
-                const responseEscala = await response2.json();
-
-                if (Array.isArray(responseEscala.data)) {
-                    const escalasData = responseEscala.data.map((item) => ({id: item.id, ...item.attributes,}));
-                    setEscalas(escalasData);
-
-
-                } else {
-                    setError('Formato de dados inválido.');
-                }
-
-            } catch (error) {
-                setError(error.message);
+            if (escalaEncontrada) {
+                setEscalaSelecionada(escalaEncontrada);
+                const novaEscalaSelecionada = escalaEncontrada;
+                setPlantoes(novaEscalaSelecionada.plantaos.data.map(item => ({ id: item.id, ...item.attributes })));
             }
-        };
+        }
+    }, [escalas, escalaSelecionada]);
 
-        fetchEscalas();
-        ///NECESSITA DOS PLANTOES FILTRADOS PELA ESCALA SELECIONADA PARA O DATAGRID
-    }, []);
+    const fetchEscalas = async () => {
+        try {
+            const response = await fetch('http://localhost:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes', {
+                method: 'GET',
+                headers,
+            },{revalidate: 0});
 
-    const handleSubmit = (event) => {
+            if (!response.ok) {
+                throw new Error('Falha ao obter os dados das escalas.');
+            }
+
+            const responseEscala = await response.json();
+
+            if (Array.isArray(responseEscala.data)) {
+                const escalasData = responseEscala.data.map((item) => ({id: item.id, ...item.attributes,}));
+                setEscalas(escalasData,()=>{
+                    console.log('Escalas atualizadas:', escalasData);
+                })
+
+            } else {
+                setError('Formato de dados inválido.');
+            }
+
+        } catch (error) {
+            setError(error.message);
+        }
+    };
+
+    useEffect(() => {fetchEscalas();}, []);
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        setPlantonista(juizSelecionado.id,rowSelectionModel,headers);
-        console.log(juizSelecionado.id,rowSelectionModel,headers);
+        try {
+            await setPlantonista(juizSelecionado.id, rowSelectionModel, headers);
+            setRowSelectionModel([]);
 
+            await fetchEscalas();
+
+
+
+        } catch (error) {
+            console.error(error);
+        }
     };
     const onChangeEscala = (selected)=>{
         try{
-            if(selected==null){setJuizSelecionado(null);
+            if(!selected){
+                setJuizSelecionado(null);
             }else{
                 const participantesArray = selected.participantes.data.map((item) => ({id: item.id, ...item.attributes,}));
                 setJuizes(participantesArray);
@@ -90,14 +108,13 @@ function Plantoes() {
 
     }
     const showJSON = () => {
-
-        console.log('PLANTONISTA',plantoes);
+        console.log('PLANTONISTA',escalaSelecionada);
+        setRowSelectionModel([]);
 
     };
 
-    const theme = createTheme({
-
-    });
+    const theme = createTheme({});
+    //fetchEscalas();
 
     return (
         <DashboardLayout>
@@ -119,7 +136,9 @@ function Plantoes() {
                                             options={escalas}
                                             getOptionLabel={escala => escala.descricao}
                                             value={escalaSelecionada}
-                                            onChange={(event, newValue) =>{setEscalaSelecionada(newValue); onChangeEscala(newValue)}}
+                                            onChange={(event, newValue) =>{
+                                                setEscalaSelecionada(newValue);
+                                                onChangeEscala(newValue);}}
                                             renderInput={(params) => <TextField {...params} label="Escala" />}
                                         />
                                     </Grid>
@@ -141,13 +160,13 @@ function Plantoes() {
                         </Grid>
                         <Grid item xs={12} xl={6}>
                             <MDBox mb={3}>
-                                <MDBox pt={2} px={2}>{escalaSelecionada && juizSelecionado &&(
+                                <MDBox pt={2} px={2}>{escalaSelecionada &&(
                                     <MDTypography variant="h6" >
                                         Selecione os plantões:
                                     </MDTypography>)}
                                 </MDBox>
                                 <ThemeProvider theme={theme}>
-                                <MDBox p={2}>{escalaSelecionada && juizSelecionado &&(
+                                <MDBox p={2}>{escalaSelecionada &&(
                                     <DataGrid
                                         checkboxSelection
                                         disableColumnMenu
