@@ -5,19 +5,17 @@ import MDBox from "/components/MDBox";
 import MDTypography from "/components/MDTypography";
 import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
-<<<<<<< HEAD
-import { useForm } from "react-hook-form";
-import {DataGrid,ptBR} from '@mui/x-data-grid';
-=======
-import {set, useForm} from "react-hook-form";
 import {DataGrid} from '@mui/x-data-grid';
->>>>>>> 9a54c484348dbedcb58c87ac4b6c1c21ab599e05
 import React, {useState, useEffect} from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import MDButton from "../../components/MDButton";
-import {setPlantonista} from "../../utils/plantaoUtils";
+import {setPlantonista, removePlantonista} from "../../utils/plantaoUtils";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
+import Tooltip from '@mui/material/Tooltip';
+import { format } from 'date-fns';
+import {GridActionsCellItem,} from '@mui/x-data-grid';
 
 const headers= {
     'Content-Type': 'application/json',
@@ -49,18 +47,12 @@ function Plantoes() {
         }
     }, [escalas, escalaSelecionada]);
 
-<<<<<<< HEAD
-        fetchEscalas();
-
-    }, []);
-=======
     const fetchEscalas = async () => {
         try {
             const response = await fetch('http://localhost:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes', {
                 method: 'GET',
                 headers,
             },{revalidate: 0});
->>>>>>> 9a54c484348dbedcb58c87ac4b6c1c21ab599e05
 
             if (!response.ok) {
                 throw new Error('Falha ao obter os dados das escalas.');
@@ -119,21 +111,30 @@ function Plantoes() {
 
     }
     const showJSON = () => {
-        console.log('PLANTONISTA',escalaSelecionada);
+        console.log('PLANTONISTA',rowSelectionModel);
         setRowSelectionModel([]);
 
     };
+    const handleLimparPlantonista = async(row) => {
+        try {
+            const idJuiz = row.plantonista.data[0].id;
+            console.log("Limpando plantonista do plantão do dia:", row.id);
+            await removePlantonista(idJuiz, row.id, headers);
+            setRowSelectionModel([]);
+            await fetchEscalas();
 
-<<<<<<< HEAD
-   /* const theme = createTheme({
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
-    },
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return format(date, 'dd/MM/yyyy');
+    };
 
-    );*/
-=======
     const theme = createTheme({});
     //fetchEscalas();
->>>>>>> 9a54c484348dbedcb58c87ac4b6c1c21ab599e05
 
     return (
         <DashboardLayout>
@@ -184,37 +185,50 @@ function Plantoes() {
                                         Selecione os plantões:
                                     </MDTypography>)}
                                 </MDBox>
-<<<<<<< HEAD
-                               {/* <ThemeProvider theme={theme}>*/}
-                                <MDBox p={2}>{escalaSelecionada && juizSelecionado &&(
-=======
                                 <ThemeProvider theme={theme}>
-                                <MDBox p={2}>{escalaSelecionada &&(
->>>>>>> 9a54c484348dbedcb58c87ac4b6c1c21ab599e05
-                                    <DataGrid
-                                        checkboxSelection
-                                        disableColumnMenu
-                                        sx={{fontSize: '17px',}}
-                                        pageSizeOptions={[5,10,20]}
-                                        initialState={{pagination: { paginationModel: { pageSize: 5 } },}}
-                                        rows={plantoes}
-                                        columns={[
-                                            {field:'data', headerName:'Datas',width: 120, sortable:false},
-                                            {field: 'plantonista', headerName: 'Status', flex:1,
-                                                renderCell: (params) => (
-                                                    <span style={{color: params.value.data[0] ? 'red' : 'green',}}>
+                                    <MDBox p={2}>{escalaSelecionada &&(
+                                        <DataGrid
+                                            checkboxSelection
+                                            disableColumnMenu
+                                            sx={{fontSize: '17px',}}
+                                            pageSizeOptions={[5,10,20]}
+                                            initialState={{pagination: { paginationModel: { pageSize: 5 } },}}
+                                            rows={plantoes}
+                                            columns={[
+                                                {field:'data', headerName:'Datas',width: 120, sortable:false, renderCell: (params) => {
+                                                        const dateParts = params.value.split('-'); // Divida a string da data nos hífens
+                                                        const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`; // Formate a data no formato desejado
+                                                        return <span>{formattedDate}</span>;
+                                                    },},
+                                                {field: 'plantonista', headerName: 'Status', flex:1,
+                                                    renderCell: (params) => (
+                                                        <span style={{color: params.value.data[0] ? 'red' : 'green',}}>
                                                         {params.value.data[0] ?  params.value.data[0].attributes.nome:'Disponível' }
                                                     </span>
-                                                ),
-                                            },]}
-                                        disableSelectionOnClick={true} // Desabilita a seleção ao clicar nas células
-                                        isRowSelectable={(params) => params.row.plantonista.data[0] ? false : true}
-                                        onRowSelectionModelChange={(newRowSelectionModel) => {setRowSelectionModel(newRowSelectionModel);}}
-                                        rowSelectionModel={rowSelectionModel}
+                                                    ),
+                                                },{
+                                                    field: 'id',
+                                                    headerName: 'Ações',
+                                                    width: 120,
+                                                    renderCell: (params) => (
+                                                        <Tooltip title="Limpar o plantonista">
+                                                            <GridActionsCellItem
+                                                                icon={<CleaningServicesIcon />}
+                                                                label="Limpar Plantonista"
+                                                                onClick={() => handleLimparPlantonista(params.row)}
+                                                                color="inherit"
+                                                            />
+                                                        </Tooltip>
+                                                    ),
+                                                },]}
+                                            disableSelectionOnClick={true} // Desabilita a seleção ao clicar nas células
+                                            isRowSelectable={(params) => params.row.plantonista.data[0] ? false : true}
+                                            onRowSelectionModelChange={(newRowSelectionModel) => {setRowSelectionModel(newRowSelectionModel);}}
+                                            rowSelectionModel={rowSelectionModel}
 
-                                    />)}
-                                </MDBox>
-                               {/* </ThemeProvider>*/}
+                                        />)}
+                                    </MDBox>
+                                </ThemeProvider>
                             </MDBox>
                         </Grid>
                         <MDBox ml={2} p={3}>

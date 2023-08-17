@@ -33,5 +33,37 @@ export const setPlantonista = (idJuiz, plantaoArray,headers ) => {
     };
 
     setJuizData();
-    //dateArray.forEach(item=>setJuizData(idJuiz,item,headers));
+};
+
+export const removePlantonista = (idJuiz, plantaoArray,headers ) => {
+
+    const plantoes={
+        plantoes:{disconnect: plantaoArray}
+    }
+
+    const statusPlantoes={
+        status: false
+    }
+
+    const urlJuiz =`http://localhost:1337/api/juizs/${idJuiz}`
+    const setJuizData = async () => {
+        try {
+
+            console.log(urlJuiz);
+            const response = await fetch(urlJuiz, {
+                method: 'PUT',
+                headers,
+                body: JSON.stringify({ data: plantoes }),
+            })
+            if (response.ok) {
+                console.log('Plantonista removido com sucesso:', response);
+            } else {
+                console.log('Erro ao atualizar plantonista:', response);
+            }
+        } catch (error) {
+            console.error('Erro ao atualizar plantonista:', error);
+        }
+    };
+
+    setJuizData();
 };
