@@ -118,7 +118,7 @@ function Plantoes() {
     const handleLimparPlantonista = async(row) => {
         try {
             const idJuiz = row.plantonista.data[0].id;
-            console.log("Limpando plantonista do plantão do dia:", row.id);
+            console.log("Limpando plantonista do plantão do dia:", row.data);
             await removePlantonista(idJuiz, row.id, headers);
             setRowSelectionModel([]);
             await fetchEscalas();
@@ -185,19 +185,19 @@ function Plantoes() {
                                         Selecione os plantões:
                                     </MDTypography>)}
                                 </MDBox>
-                                <ThemeProvider theme={theme}>
+
                                     <MDBox p={2}>{escalaSelecionada &&(
                                         <DataGrid
                                             checkboxSelection
                                             disableColumnMenu
-                                            sx={{fontSize: '17px',}}
+                                            sx={{fontSize: '18px', fontWeight:'regular', }}
                                             pageSizeOptions={[5,10,20]}
                                             initialState={{pagination: { paginationModel: { pageSize: 5 } },}}
                                             rows={plantoes}
                                             columns={[
                                                 {field:'data', headerName:'Datas',width: 120, sortable:false, renderCell: (params) => {
-                                                        const dateParts = params.value.split('-'); // Divida a string da data nos hífens
-                                                        const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`; // Formate a data no formato desejado
+                                                        const dateParts = params.value.split('-');
+                                                        const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
                                                         return <span>{formattedDate}</span>;
                                                     },},
                                                 {field: 'plantonista', headerName: 'Status', flex:1,
@@ -208,7 +208,7 @@ function Plantoes() {
                                                     ),
                                                 },{
                                                     field: 'id',
-                                                    headerName: 'Ações',
+                                                    headerName: 'Opções',
                                                     width: 120,
                                                     renderCell: (params) => (
                                                         <Tooltip title="Limpar o plantonista">
@@ -228,7 +228,7 @@ function Plantoes() {
 
                                         />)}
                                     </MDBox>
-                                </ThemeProvider>
+
                             </MDBox>
                         </Grid>
                         <MDBox ml={2} p={3}>

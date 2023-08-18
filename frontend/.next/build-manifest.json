@@ -25,10 +25,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/juizes/carga": [
+    "/escalas/participantes": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/juizes/carga.js"
+      "static/chunks/pages/escalas/participantes.js"
     ]
   },
   "ampFirstPages": []
