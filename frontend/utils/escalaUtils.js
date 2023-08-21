@@ -134,3 +134,56 @@ export const removeParticipantesEscala = (idJuiz, idEscala,headers ) => {
 
     setEscalaData();
 };
+
+export const setPreferencia = (idEscala, idJuiz,headers) => {
+
+    const preferencia={
+        preferencia:{connect: [idJuiz]}
+    }
+    const urlEscala =`http://localhost:1337/api/escalas/${idEscala}`
+    console.log(idEscala, idJuiz,urlEscala)
+    const setEscolha = async () => {
+        try {
+            const response = await fetch(urlEscala, {
+                method: 'PUT',
+                headers,
+                body: JSON.stringify({ data: preferencia }),
+            })
+                .then(checkStatus)
+                .then(parseJSON);
+        } catch (error) {
+            return error;
+        }
+    };
+
+    setEscolha();
+
+};
+
+export const removePreferencial = (idJuiz, idEscala,headers ) => {
+
+    const juiz={
+        preferencia:{disconnect: idJuiz}
+    }
+
+    const urlEscala =`http://localhost:1337/api/escalas/${idEscala}`
+    const setEscalaData = async () => {
+        try {
+
+            const response = await fetch(urlEscala, {
+                method: 'PUT',
+                headers,
+                body: JSON.stringify({ data: juiz }),
+            })
+            if (response.ok) {
+                console.log('Preferencia removida com sucesso:', response);
+            } else {
+                console.log('Erro ao atualizar preferencia:', response);
+            }
+        } catch (error) {
+            console.error('Erro ao atualizar preferencia:', error);
+        }
+    };
+
+    setEscalaData();
+};

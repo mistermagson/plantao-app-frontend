@@ -109,7 +109,7 @@ function AdicionaEscala({escalas}) {
                 <MDTypography variant="h2">Adicionar Escala</MDTypography>
             </MDBox>
             <Grid container spacing={2}>
-                <Grid item xs={12} xl={8} sx={{ height: "max-content" }}>
+                <Grid item xs={12} xl={11} sx={{ height: "max-content" }}>
                     <Card id="escalas" sx={{ overflow: "visible" }}>
 
 

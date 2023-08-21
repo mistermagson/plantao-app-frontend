@@ -11,7 +11,12 @@ import React, {useState, useEffect} from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import ParticipantesList from "../../participanteslist";
-import {removeParticipantesEscala, setParticipantesEscala} from "../../../utils/escalaUtils";
+import {
+    removeParticipantesEscala,
+    removePreferencial,
+    setParticipantesEscala,
+    setPreferencia
+} from "../../../utils/escalaUtils";
 import MDButton from "../../../components/MDButton";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import DataTable from "../../../examples/Tables/DataTable";
@@ -19,7 +24,7 @@ import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 import Tooltip from '@mui/material/Tooltip';
 import { format } from 'date-fns';
 import {GridActionsCellItem,} from '@mui/x-data-grid';
-
+import HowToRegIcon from '@mui/icons-material/HowToReg';
 
 const headers = {
     'Content-Type': 'application/json',
@@ -46,6 +51,8 @@ function Participantes() {
     const [error, setError] = useState(null);
     const [jsonData, setJsonData]= useState([]);
     const [adicionados, setAdicionados] = useState([]);
+    const [juizPreferencialId, setJuizPreferencialId] = useState(null);
+
 
     const fetchJuizes = async () => {
         try {
@@ -73,7 +80,7 @@ function Participantes() {
     };
     const fetchEscalas = async () => {
         try {
-            const response2 = await fetch('http://localhost:1337/api/escalas?populate[participantes][populate][0]=plantoes', {
+            const response2 = await fetch('http://localhost:1337/api/escalas?populate[participantes][populate][0]=plantoes&populate[preferencia][populate][0]=juizs', {
                 method: 'GET',
                 headers,
             });
@@ -100,6 +107,12 @@ function Participantes() {
 
     useEffect(() => {fetchEscalas();fetchJuizes();}, []);
 
+    useEffect(() => {
+        if (opcaoSelecionada) {
+            const juizPreferencial = opcaoSelecionada.preferencia?.data?.id;
+            setJuizPreferencialId(juizPreferencial);
+        }
+    }, [opcaoSelecionada]);
 
     useEffect(() => {
         if(opcaoSelecionada) {
@@ -133,6 +146,8 @@ function Participantes() {
                     return !participantes.some(item2 => item2.id === item1.id);
                 });
                 setJuizesRestantes(naoParticipantes);
+                const juizPreferencial = selecionada.preferencia?.data?.id;
+                setJuizPreferencialId(juizPreferencial);
             }
         }catch (error) {
             setError(error.message);
@@ -141,7 +156,6 @@ function Participantes() {
     }
 
     const handleLimparParticipante = async(row) => {
-        console.log(row, opcaoSelecionada.id)
         try {
             const idJuiz = row.id;
             await removeParticipantesEscala(idJuiz, opcaoSelecionada.id, headers);
@@ -154,6 +168,11 @@ function Participantes() {
             if (juizRestante) {
                 setJuizesRestantes([...juizesRestantes, juizRestante]);
             }
+
+            if (idJuiz === juizPreferencialId) {
+                removePreferencial(idJuiz, opcaoSelecionada.id, headers);
+                setJuizPreferencialId(null);
+            }
             setRowSelectionModel([]);
             await fetchEscalas();
             await fetchJuizes();
@@ -162,6 +181,19 @@ function Participantes() {
             console.error(error);
         }
     };
+
+    const handleAlterarPreferencia = async(row) => {
+        try {
+            const idJuiz = row.id;
+            await setPreferencia(opcaoSelecionada.id, idJuiz, headers);
+            setJuizPreferencialId(null);
+
+            await fetchEscalas();
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     const handleSubmit = () => {
         try {
@@ -183,6 +215,9 @@ function Participantes() {
         }
     };
 
+    const isJuizPreferencial = (juizId) => {
+        return juizId === juizPreferencialId;
+    };
 
     return (
         <DashboardLayout>
@@ -215,24 +250,40 @@ function Participantes() {
                                 <DataGrid
                                     disableColumnMenu
                                     sx={{fontSize: '18px', fontWeight:'regular',padding: '10px'}}
-                                    pageSizeOptions={[5,10,20]}
-                                    initialState={{pagination:{paginationModel:{pageSize:5}},}}
+                                    pageSizeOptions={[10,20]}
+                                    initialState={{pagination:{paginationModel:{pageSize:10}},}}
                                     rows={adicionados}
-                                    columns={[{field:'nome',headerName:'Nomes',  minWidth: 200},
-                                        {field:'antiguidade',headerName:'Antiguidade', minWidth: 150},{
-                                        field: 'id',
-                                        headerName: 'Opções',
+                                    columns={[
+                                        {field:'nome',headerName:'Nomes',  minWidth: 200},
+                                        {field:'antiguidade',headerName:'Antiguidade', minWidth: 150},
+                                        {
+                                            field: 'id',
+                                            headerName: 'Opções',
                                             minWidth: 80,
-                                        renderCell: (params) => (
-                                            <Tooltip title="Limpar o plantonista">
-                                                <GridActionsCellItem
-                                                    icon={<CleaningServicesIcon />}
-                                                    label="Limpar Plantonista"
-                                                    onClick={() => handleLimparParticipante(params.row)}
-                                                    color="inherit"
-                                                />
-                                            </Tooltip>
-                                        ),
+                                            renderCell: (params) => (
+                                                <div>
+                                                    <Tooltip title={isJuizPreferencial(params.row.id) ? 'Escolhendo...' : 'Definir como Preferencial'}>
+                                                        <GridActionsCellItem
+                                                            icon={<HowToRegIcon />}
+                                                            label={isJuizPreferencial(params.row.id) ? 'Escolhendo...' : 'Definir como Preferencial'}
+                                                            onClick={() => {
+                                                                if (!isJuizPreferencial(params.row.id)) {
+                                                                    handleAlterarPreferencia(params.row)
+                                                                }
+                                                            }}
+                                                            color={isJuizPreferencial(params.row.id) ? 'primary' : 'default'}
+                                                        />
+                                                    </Tooltip>
+                                                    <Tooltip title="Limpar o plantonista">
+                                                        <GridActionsCellItem
+                                                            icon={<CleaningServicesIcon />}
+                                                            label="Limpar Plantonista"
+                                                            onClick={() => handleLimparParticipante(params.row)}
+                                                            color="inherit"
+                                                        />
+                                                    </Tooltip>
+                                                </div>
+                                            ),
                                     },]}
                                 />)}
 
@@ -244,8 +295,8 @@ function Participantes() {
                                     checkboxSelection
                                     disableColumnMenu
                                     sx={{fontSize: '18px', fontWeight:'regular', padding:'10px'}}
-                                    pageSizeOptions={[5,10,20]}
-                                    initialState={{pagination:{paginationModel:{pageSize:5}},}}
+                                    pageSizeOptions={[10,20]}
+                                    initialState={{pagination:{paginationModel:{pageSize:10}},}}
                                     rows={juizesRestantes}
                                     columns={[{field:'nome',headerName:'Nome', minWidth: 200},{field:'antiguidade',headerName:'Antiguidade', width:300},]}
                                     onRowSelectionModelChange={(newRowSelectionModel) => {

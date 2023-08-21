@@ -51,7 +51,7 @@ function Plantoes() {
 
     const fetchEscalas = async () => {
         try {
-            const response = await fetch('http://localhost:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes', {
+            const response = await fetch('http://localhost:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes&populate[preferencia][populate][0]=juizs', {
                 method: 'GET',
                 headers,
             },{revalidate: 0});
@@ -222,7 +222,14 @@ function Plantoes() {
                                                     ),
                                                 },]}
                                             disableSelectionOnClick={true} // Desabilita a seleção ao clicar nas células
-                                            isRowSelectable={(params) => params.row.plantonista.data[0] ? false : true}
+                                            isRowSelectable={(params) => {
+                                                if (juizSelecionado && escalaSelecionada) {
+                                                    const preferenciaJuizId = escalaSelecionada.preferencia?.data?.id;
+                                                    console.log(juizSelecionado.id,preferenciaJuizId)
+                                                    return preferenciaJuizId === juizSelecionado.id;
+                                            }
+                                                return false;
+                                            }}
                                             onRowSelectionModelChange={(newRowSelectionModel) => {setRowSelectionModel(newRowSelectionModel);}}
                                             rowSelectionModel={rowSelectionModel}
 

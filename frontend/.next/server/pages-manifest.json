@@ -3,5 +3,5 @@
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/escalas/participantes": "pages/escalas/participantes.js",
-  "/escalas/adicionaescalas": "pages/escalas/adicionaescalas.js"
+  "/plantoes": "pages/plantoes.js"
 }
