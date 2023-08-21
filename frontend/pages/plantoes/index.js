@@ -165,6 +165,18 @@ function Plantoes() {
                                             value={juizSelecionado}
                                             onChange={(event, newValue) =>setJuizSelecionado(newValue)}
                                             renderInput={(params) => <TextField {...params} label="Nome do Juiz" required />}
+                                            renderOption={(props, option, { inputValue }) => {
+                                                const preferenciaJuizId = escalaSelecionada?.preferencia?.data?.id;
+                                                const isPreferencial = preferenciaJuizId === option.id;
+                                                return (
+                                                    <li {...props}>
+                                                        {option.nome}
+                                                        {isPreferencial && (
+                                                            <span style={{ color: 'red', marginLeft: '4px' }}> - Na escolha</span>
+                                                        )}
+                                                    </li>
+                                                );
+                                            }}
                                         />
                                     </Grid>
                                 </Grid>
@@ -217,9 +229,11 @@ function Plantoes() {
                                             isRowSelectable={(params) => {
                                                 if (juizSelecionado && escalaSelecionada) {
                                                     const preferenciaJuizId = escalaSelecionada.preferencia?.data?.id;
-                                                    console.log(juizSelecionado.id,preferenciaJuizId)
-                                                    return preferenciaJuizId === juizSelecionado.id;
-                                            }
+                                                    if (preferenciaJuizId === juizSelecionado.id) {
+                                                        const plantonistaAtribuido = params.row.plantonista.data[0];
+                                                        return !plantonistaAtribuido;
+                                                    }
+                                                }
                                                 return false;
                                             }}
                                             onRowSelectionModelChange={(newRowSelectionModel) => {setRowSelectionModel(newRowSelectionModel);}}
@@ -231,7 +245,7 @@ function Plantoes() {
                             </MDBox>
                         </Grid>
                         <MDBox ml={2} p={3}>
-                            <Button color="error" size="large" type="submit">Salvar</Button>
+                            <MDButton color="success" size="small" type="submit">Salvar</MDButton>
                             <MDButton size="small" onClick={showJSON} color="info">Exibir</MDButton>
                         </MDBox>
 

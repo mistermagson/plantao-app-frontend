@@ -22,7 +22,6 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import DataTable from "../../../examples/Tables/DataTable";
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 import Tooltip from '@mui/material/Tooltip';
-import { format } from 'date-fns';
 import {GridActionsCellItem,} from '@mui/x-data-grid';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 
@@ -265,7 +264,7 @@ function Participantes() {
                                                 <div>
                                                     <Tooltip title={isJuizPreferencial(params.row.id) ? 'Escolhendo...' : 'Definir como Preferencial'}>
                                                         <GridActionsCellItem
-                                                            icon={<HowToRegIcon />}
+                                                            icon={<HowToRegIcon style={{ fontSize: 'large' }}/>}
                                                             label={isJuizPreferencial(params.row.id) ? 'Escolhendo...' : 'Definir como Preferencial'}
                                                             onClick={() => {
                                                                 if (!isJuizPreferencial(params.row.id)) {
@@ -319,7 +318,7 @@ function Participantes() {
                     </Grid>
                     <Grid my={2}>
                         {opcaoSelecionada && (<MDButton size="medium" lcolor="error" onClick={() => console.log(opcaoSelecionada,escalas,adicionados, juizes)}>Imprimir Selecionados</MDButton>)}
-                        {opcaoSelecionada && (<MDButton  size="small" color="success" onClick={() => handleSubmit()}>Salvar</MDButton>)}
+                        {opcaoSelecionada && (<MDButton  size="small" color="success" onClick={() => handleSubmit()}>Adicionar</MDButton>)}
                     </Grid>
                 </MDBox>
             </Card>
