@@ -16,6 +16,7 @@ import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 import Tooltip from '@mui/material/Tooltip';
 import { format } from 'date-fns';
 import {GridActionsCellItem,} from '@mui/x-data-grid';
+import {es} from "date-fns/locale";
 
 const headers= {
     'Content-Type': 'application/json',
@@ -43,6 +44,7 @@ function Plantoes() {
                 setEscalaSelecionada(escalaEncontrada);
                 const novaEscalaSelecionada = escalaEncontrada;
                 setPlantoes(novaEscalaSelecionada.plantaos.data.map(item => ({ id: item.id, ...item.attributes })));
+
             }
         }
     }, [escalas, escalaSelecionada]);
@@ -77,18 +79,16 @@ function Plantoes() {
 
     useEffect(() => {fetchEscalas();}, []);
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = (event) => {
         event.preventDefault();
         try {
-            await setPlantonista(juizSelecionado.id, rowSelectionModel, headers);
-            setRowSelectionModel([]);
-
-            await fetchEscalas();
-
-
+             setPlantonista(juizSelecionado.id, rowSelectionModel, headers)
 
         } catch (error) {
             console.error(error);
+        }finally {
+            setRowSelectionModel([])
+            fetchEscalas()
         }
     };
     const onChangeEscala = (selected)=>{

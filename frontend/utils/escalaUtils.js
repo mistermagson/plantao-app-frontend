@@ -106,3 +106,31 @@ export const setParticipantesEscala = (idEscala, juizesArray,headers) => {
     setEscala();
 
 };
+
+export const removeParticipantesEscala = (idJuiz, idEscala,headers ) => {
+
+    const juiz={
+        participantes:{disconnect: idJuiz}
+    }
+
+    const urlEscala =`http://localhost:1337/api/escalas/${idEscala}`
+    const setEscalaData = async () => {
+        try {
+
+            const response = await fetch(urlEscala, {
+                method: 'PUT',
+                headers,
+                body: JSON.stringify({ data: juiz }),
+            })
+            if (response.ok) {
+                console.log('Plantonista removido com sucesso:', response);
+            } else {
+                console.log('Erro ao atualizar plantonista:', response);
+            }
+        } catch (error) {
+            console.error('Erro ao atualizar plantonista:', error);
+        }
+    };
+
+    setEscalaData();
+};

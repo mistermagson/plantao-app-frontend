@@ -11,7 +11,7 @@ import React, {useState, useEffect} from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import ParticipantesList from "../../participanteslist";
-import {setParticipantesEscala} from "../../../utils/escalaUtils";
+import {removeParticipantesEscala, setParticipantesEscala} from "../../../utils/escalaUtils";
 import MDButton from "../../../components/MDButton";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import DataTable from "../../../examples/Tables/DataTable";
@@ -19,8 +19,6 @@ import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 import Tooltip from '@mui/material/Tooltip';
 import { format } from 'date-fns';
 import {GridActionsCellItem,} from '@mui/x-data-grid';
-import {removePlantonista} from "../../../utils/plantaoUtils";
-
 
 
 const headers = {
@@ -47,8 +45,7 @@ function Participantes() {
     const [juizesRestantes, setJuizesRestantes] = useState([]);
     const [error, setError] = useState(null);
     const [jsonData, setJsonData]= useState([]);
-
-    const [newJuizes, setNewJuizes] = useState([]);
+    const [adicionados, setAdicionados] = useState([]);
 
     const fetchJuizes = async () => {
         try {
@@ -61,9 +58,6 @@ function Participantes() {
             }
 
             const responseJuiz = await response1.json();
-            console.log('')
-            console.log('------------------------------------------------')
-            console.log('-------| Constante responseJuiz:', responseJuiz);
 
             if (Array.isArray(responseJuiz.data)) {
                 const juizesData = responseJuiz.data.map((item) => ({id: item.id, ...item.attributes,}));
@@ -79,7 +73,6 @@ function Participantes() {
     };
     const fetchEscalas = async () => {
         try {
-
             const response2 = await fetch('http://localhost:1337/api/escalas?populate[participantes][populate][0]=plantoes', {
                 method: 'GET',
                 headers,
@@ -105,23 +98,41 @@ function Participantes() {
         }
     };
 
+    useEffect(() => {fetchEscalas();fetchJuizes();}, []);
+
+
     useEffect(() => {
-        fetchEscalas();
-        fetchJuizes();
-    }, []);
+        if(opcaoSelecionada) {
+            const opcaoSelecionadaAtt = escalas.find(escala => escala.id === opcaoSelecionada.id);
 
-    const theme = createTheme({});
+            if (opcaoSelecionadaAtt) {
+                setOpcaoSelecionada(opcaoSelecionadaAtt)
+                try {
+                    const juizesParticipantes = escalas.participantes.data.map((item) => ({id: item.id, ...item.attributes,}));
+                    setAdicionados(juizesParticipantes)
 
-    const onChangeEscala = (selected)=>{
+                    if (juizesParticipantes) {
+                        const juizesFiltrados = juizes.filter(item1 => {
+                            return !juizesParticipantes.some(item2 => item2.id === item1.id);
+                        });
+                        setJuizesRestantes(juizesFiltrados);
+                    }
+                }catch (error) {
+                    setError(error.message);
+                }
+            }
+        }
+    }, [escalas, opcaoSelecionada]);
+    const onChangeEscala = (selecionada)=>{
         try{
-            const participantesArray = selected.participantes.data.map((item) => ({id: item.id, ...item.attributes,}));
-            setNewJuizes(participantesArray)
+            const participantes = selecionada.participantes.data.map((item) => ({id: item.id, ...item.attributes,}));
+            setAdicionados(participantes)
 
-            if(participantesArray) {
-                const juizFiltrado = juizes.filter(item1 => {
-                    return !participantesArray.some(item2 => item2.id === item1.id);
+            if(participantes) {
+                const naoParticipantes = juizes.filter(item1 => {
+                    return !participantes.some(item2 => item2.id === item1.id);
                 });
-                setJuizesRestantes(juizFiltrado);
+                setJuizesRestantes(naoParticipantes);
             }
         }catch (error) {
             setError(error.message);
@@ -129,19 +140,48 @@ function Participantes() {
 
     }
 
-    const handleLimparPlantonista = async(row) => {
+    const handleLimparParticipante = async(row) => {
+        console.log(row, opcaoSelecionada.id)
         try {
-            const idJuiz = row.plantonista.data[0].id;
-            console.log("Limpando plantonista do plantão do dia:", row.data);
-            await removePlantonista(idJuiz, row.id, headers);
+            const idJuiz = row.id;
+            await removeParticipantesEscala(idJuiz, opcaoSelecionada.id, headers);
+
+            const novosAdicionados = adicionados.filter(participante => participante.id !== idJuiz);
+            setAdicionados(novosAdicionados);
+
+            const juizRestante = juizes.find(juiz => juiz.id === idJuiz);
+
+            if (juizRestante) {
+                setJuizesRestantes([...juizesRestantes, juizRestante]);
+            }
             setRowSelectionModel([]);
             await fetchEscalas();
+            await fetchJuizes();
 
         } catch (error) {
             console.error(error);
         }
     };
 
+    const handleSubmit = () => {
+        try {
+            setParticipantesEscala(opcaoSelecionada.id,rowSelectionModel,headers)
+
+            const novosAdicionados = adicionados.concat(rowSelectionModel.map(id => juizes.find(juiz => juiz.id === id)));
+            setAdicionados(novosAdicionados);
+
+            const novosJuizesRestantes = juizesRestantes.filter(juiz => !rowSelectionModel.includes(juiz.id));
+            setJuizesRestantes(novosJuizesRestantes);
+            setRowSelectionModel([]);
+        }
+        catch (error) {
+            console.error(error);
+        }
+        finally {
+            fetchEscalas();
+            fetchJuizes();
+        }
+    };
 
 
     return (
@@ -153,7 +193,7 @@ function Participantes() {
             <Card sx={{ height: "100%" }}>
                 <MDBox pt={2} px={2}>
                     <MDTypography variant="h6" >
-                        Selecionar juizes participantes
+                        Selecionar escala
                     </MDTypography>
                 </MDBox>
                 <MDBox p={2}>
@@ -170,24 +210,25 @@ function Participantes() {
                     </Grid>
                     <Grid container spacing={4} p={2} >
                         <Grid item xs={12} md={6} xl={6}  >
-                            {opcaoSelecionada && (<h5>Adicionados:</h5>)}
+                            {opcaoSelecionada && (<h5>Juizes Adicionados:</h5>)}
                             {opcaoSelecionada && (
                                 <DataGrid
                                     disableColumnMenu
                                     sx={{fontSize: '18px', fontWeight:'regular',padding: '10px'}}
                                     pageSizeOptions={[5,10,20]}
                                     initialState={{pagination:{paginationModel:{pageSize:5}},}}
-                                    rows={newJuizes}
-                                    columns={[{field:'nome',headerName:'Juizes Adicionados', flex:'1'},{
+                                    rows={adicionados}
+                                    columns={[{field:'nome',headerName:'Nomes',  minWidth: 200},
+                                        {field:'antiguidade',headerName:'Antiguidade', minWidth: 150},{
                                         field: 'id',
                                         headerName: 'Opções',
-                                        width: 120,
+                                            minWidth: 80,
                                         renderCell: (params) => (
                                             <Tooltip title="Limpar o plantonista">
                                                 <GridActionsCellItem
                                                     icon={<CleaningServicesIcon />}
                                                     label="Limpar Plantonista"
-                                                    onClick={() => handleLimparPlantonista(params.row)}
+                                                    onClick={() => handleLimparParticipante(params.row)}
                                                     color="inherit"
                                                 />
                                             </Tooltip>
@@ -197,7 +238,7 @@ function Participantes() {
 
                         </Grid>
                         <Grid item xs={12} md={6} xl={6} >
-                            {opcaoSelecionada && (<h5>Restantes:</h5>)}
+                            {opcaoSelecionada && (<h5>Juizes Restantes:</h5>)}
                             {opcaoSelecionada && (
                                 <DataGrid
                                     checkboxSelection
@@ -206,7 +247,7 @@ function Participantes() {
                                     pageSizeOptions={[5,10,20]}
                                     initialState={{pagination:{paginationModel:{pageSize:5}},}}
                                     rows={juizesRestantes}
-                                    columns={[{field:'nome',headerName:'Juiz', flex:'1'},]}
+                                    columns={[{field:'nome',headerName:'Nome', minWidth: 200},{field:'antiguidade',headerName:'Antiguidade', width:300},]}
                                     onRowSelectionModelChange={(newRowSelectionModel) => {
                                         setRowSelectionModel(newRowSelectionModel);
                                     }}
@@ -225,8 +266,8 @@ function Participantes() {
                         </Grid>
                     </Grid>
                     <Grid my={2}>
-                        {opcaoSelecionada && (<MDButton size="medium" lcolor="error" onClick={() => console.log(opcaoSelecionada,escalas,newJuizes, juizes)}>Imprimir Selecionados</MDButton>)}
-                        {opcaoSelecionada && (<MDButton  size="small" color="success" onClick={() => setParticipantesEscala(opcaoSelecionada.id,rowSelectionModel,headers)}>Salvar</MDButton>)}
+                        {opcaoSelecionada && (<MDButton size="medium" lcolor="error" onClick={() => console.log(opcaoSelecionada,escalas,adicionados, juizes)}>Imprimir Selecionados</MDButton>)}
+                        {opcaoSelecionada && (<MDButton  size="small" color="success" onClick={() => handleSubmit()}>Salvar</MDButton>)}
                     </Grid>
                 </MDBox>
             </Card>

@@ -35,20 +35,15 @@ export const setPlantonista = (idJuiz, plantaoArray,headers ) => {
     setJuizData();
 };
 
-export const removePlantonista = (idJuiz, plantaoArray,headers ) => {
+export const removePlantonista = (idJuiz, idPlantao,headers ) => {
 
     const plantoes={
-        plantoes:{disconnect: plantaoArray}
-    }
-
-    const statusPlantoes={
-        status: false
+        plantoes:{disconnect: idPlantao}
     }
 
     const urlJuiz =`http://localhost:1337/api/juizs/${idJuiz}`
     const setJuizData = async () => {
         try {
-
             console.log(urlJuiz);
             const response = await fetch(urlJuiz, {
                 method: 'PUT',
