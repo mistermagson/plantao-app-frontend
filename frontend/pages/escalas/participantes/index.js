@@ -248,6 +248,7 @@ function Participantes() {
                             {opcaoSelecionada && (<h5>Juizes Adicionados:</h5>)}
                             {opcaoSelecionada && (
                                 <DataGrid
+                                    disableRowSelectionOnClick
                                     disableColumnMenu
                                     sx={{fontSize: '18px', fontWeight:'regular',padding: '10px'}}
                                     pageSizeOptions={[10,20]}

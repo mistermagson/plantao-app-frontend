@@ -14,9 +14,8 @@ import {setPlantonista, removePlantonista} from "../../utils/plantaoUtils";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 import Tooltip from '@mui/material/Tooltip';
-import { format } from 'date-fns';
 import {GridActionsCellItem,} from '@mui/x-data-grid';
-import {es} from "date-fns/locale";
+
 
 const headers= {
     'Content-Type': 'application/json',
@@ -42,9 +41,7 @@ function Plantoes() {
 
             if (escalaEncontrada) {
                 setEscalaSelecionada(escalaEncontrada);
-                const novaEscalaSelecionada = escalaEncontrada;
-                setPlantoes(novaEscalaSelecionada.plantaos.data.map(item => ({ id: item.id, ...item.attributes })));
-
+                setPlantoes(escalaEncontrada.plantaos.data.map(item => ({ id: item.id, ...item.attributes })));
             }
         }
     }, [escalas, escalaSelecionada]);
@@ -126,11 +123,6 @@ function Plantoes() {
         } catch (error) {
             console.error(error);
         }
-    };
-
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        return format(date, 'dd/MM/yyyy');
     };
 
     const theme = createTheme({});
