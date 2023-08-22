@@ -239,7 +239,7 @@ const routes = [
 
 
 
-  { type: "divider", key: "divider-1" },
+
 
 
 

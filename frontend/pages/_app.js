@@ -139,7 +139,7 @@ function Main({ Component, pageProps }) {
             <Sidenav
               color={sidenavColor}
               brand={brandIcon}
-              brandName="Material Dashboard PRO"
+              brandName="Plantao Juizes App"
               routes={routes}
               onMouseEnter={handleOnMouseEnter}
               onMouseLeave={handleOnMouseLeave}
@@ -160,7 +160,7 @@ function Main({ Component, pageProps }) {
           <Sidenav
             color={sidenavColor}
             brand={brandIcon}
-            brandName="Material Dashboard PRO"
+            brandName="Plantão Juízes App"
             routes={routes}
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
@@ -170,6 +170,7 @@ function Main({ Component, pageProps }) {
         </>
       )}
       {layout === "vr" && <Configurator />}
+
     </ThemeProvider>
   );
 }

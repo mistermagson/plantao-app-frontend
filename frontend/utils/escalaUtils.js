@@ -1,4 +1,6 @@
 // retorna uma lista de datas a partir de um intervalo
+import {useState} from "react";
+
 export const geraDatas = (start, end) => {
     const dateArray = [];
     let currentDate = new Date(start);
@@ -186,4 +188,33 @@ export const removePreferencial = (idJuiz, idEscala,headers ) => {
     };
 
     setEscalaData();
+};
+
+export const fetchEscalas = async (headers) => {
+
+    try {
+        const response = await fetch('http://localhost:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes&populate[preferencia][populate][0]=juizs', {
+            method: 'GET',
+            headers,
+        });
+
+        if (!response.ok) {
+            throw new Error('Falha ao obter os dados das escalas.');
+        }
+
+        const responseEscala = await response.json();
+
+        if (Array.isArray(responseEscala.data)) {
+            const escalasData = responseEscala.data.map((item) => ({id: item.id, ...item.attributes,}));
+            console.log(escalasData)
+           return (escalasData);
+
+
+        } else {
+            return ([]);
+        }
+
+    } catch (error) {
+        return(error.message);
+    }
 };

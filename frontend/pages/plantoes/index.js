@@ -15,14 +15,15 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 import Tooltip from '@mui/material/Tooltip';
 import {GridActionsCellItem,} from '@mui/x-data-grid';
+import {fetchEscalas} from "../../utils/escalaUtils";
+import {fetch} from "next/dist/compiled/@edge-runtime/primitives/fetch";
 
-
-const headers= {
+/*const headers= {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b'
-};
+};*/
 
-function Plantoes() {
+function Plantoes({data, headers}) {
 
     //------- CONSTANTES PARA O DATAGRID----------------------------------------
     const [escalaSelecionada, setEscalaSelecionada] = useState(null);
@@ -31,13 +32,15 @@ function Plantoes() {
     //--------------------------------------------------------------------------
 
     const [juizes, setJuizes] = useState([]);
-    const [escalas, setEscalas] = useState([]);
+    const [escalas, setEscalas] = useState(data);
     const [plantoes, setPlantoes] = useState([]);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         if(escalaSelecionada) {
-            const escalaEncontrada = escalas.find(escala => escala.id === escalaSelecionada.id);
+
+            const escalaEncontrada = escalas.find(escala => escala.id == escalaSelecionada.id);
+            //const escalaEncontrada = escalas.find(escalas.id === escalaSelecionada.id);
 
             if (escalaEncontrada) {
                 setEscalaSelecionada(escalaEncontrada);
@@ -46,37 +49,9 @@ function Plantoes() {
         }
     }, [escalas, escalaSelecionada]);
 
-    const fetchEscalas = async () => {
-        try {
-            const response = await fetch('http://localhost:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes&populate[preferencia][populate][0]=juizs', {
-                method: 'GET',
-                headers,
-            },{revalidate: 0});
 
-            if (!response.ok) {
-                throw new Error('Falha ao obter os dados das escalas.');
-            }
 
-            const responseEscala = await response.json();
-
-            if (Array.isArray(responseEscala.data)) {
-                const escalasData = responseEscala.data.map((item) => ({id: item.id, ...item.attributes,}));
-                setEscalas(escalasData,()=>{
-                    console.log('Escalas atualizadas:', escalasData);
-                })
-
-            } else {
-                setError('Formato de dados inválido.');
-            }
-
-        } catch (error) {
-            setError(error.message);
-        }
-    };
-
-    useEffect(() => {fetchEscalas();}, []);
-
-    const handleSubmit = (event) => {
+    const handleSubmit =  async (event) => {
         event.preventDefault();
         try {
              setPlantonista(juizSelecionado.id, rowSelectionModel, headers)
@@ -85,7 +60,9 @@ function Plantoes() {
             console.error(error);
         }finally {
             setRowSelectionModel([])
-            fetchEscalas()
+            const atualizaEscalas = await fetchEscalas(headers)
+            setEscalas(atualizaEscalas)
+
         }
     };
     const onChangeEscala = (selected)=>{
@@ -108,17 +85,16 @@ function Plantoes() {
 
     }
     const showJSON = () => {
-        console.log('PLANTONISTA',rowSelectionModel);
+
         setRowSelectionModel([]);
 
     };
     const handleLimparPlantonista = async(row) => {
         try {
             const idJuiz = row.plantonista.data[0].id;
-            console.log("Limpando plantonista do plantão do dia:", row.data);
             await removePlantonista(idJuiz, row.id, headers);
             setRowSelectionModel([]);
-            await fetchEscalas();
+            await setEscalas(fetchEscalas(headers));
 
         } catch (error) {
             console.error(error);
@@ -126,7 +102,7 @@ function Plantoes() {
     };
 
     const theme = createTheme({});
-    //fetchEscalas();
+
 
     return (
         <DashboardLayout>
@@ -160,7 +136,7 @@ function Plantoes() {
                                             <h5>Selecione o nome do juiz :</h5>
                                         </MDBox>
                                         <Autocomplete
-                                            options={juizes}
+                                            options={!juizes ?  [{label:"Carregando...", id:0}] : juizes }
                                             getOptionLabel={juiz => juiz.nome }
                                             value={juizSelecionado}
                                             onChange={(event, newValue) =>setJuizSelecionado(newValue)}
@@ -255,4 +231,22 @@ function Plantoes() {
         </DashboardLayout>
     );
 }
+
+export async function getServerSideProps() {
+    const headers= {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b'
+    };
+    const res = await fetch('http://localhost:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes&populate[preferencia][populate][0]=juizs', {
+        method: 'GET',
+        headers,
+    });
+    //const data = await res.json();
+    const responseEscala = await res.json();
+    const data = responseEscala.data.map((item) => ({id: item.id, ...item.attributes,}));
+
+    return { props: {data, headers} };
+}
+
+
 export default Plantoes;

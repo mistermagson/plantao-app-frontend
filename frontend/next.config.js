@@ -15,7 +15,7 @@ module.exports = {
     return [
       {
         source: "/",
-        destination: "/dashboards/analytics",
+        destination: "/plantoes",
         permanent: true,
       },
     ];
