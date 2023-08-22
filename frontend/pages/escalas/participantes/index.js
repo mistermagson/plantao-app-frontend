@@ -6,7 +6,7 @@ import MDTypography from "/components/MDTypography";
 import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
 import { useForm } from "react-hook-form";
-import {DataGrid, GridFooter, useGridApiContext, useGridApiEventHandler, useGridApiRef} from '@mui/x-data-grid';
+import {DataGrid} from '@mui/x-data-grid';
 import React, {useState, useEffect} from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -254,7 +254,7 @@ function Participantes() {
                                     initialState={{pagination:{paginationModel:{pageSize:10}},}}
                                     rows={adicionados}
                                     columns={[
-                                        {field:'nome',headerName:'Nomes',  minWidth: 200},
+                                        {field:'nome',headerName:'Nomes',  flex:1},
                                         {field:'antiguidade',headerName:'Antiguidade', minWidth: 150},
                                         {
                                             field: 'id',
@@ -284,7 +284,7 @@ function Participantes() {
                                                     </Tooltip>
                                                 </div>
                                             ),
-                                    },]}
+                                        },]}
                                 />)}
 
                         </Grid>
@@ -298,7 +298,7 @@ function Participantes() {
                                     pageSizeOptions={[10,20]}
                                     initialState={{pagination:{paginationModel:{pageSize:10}},}}
                                     rows={juizesRestantes}
-                                    columns={[{field:'nome',headerName:'Nome', minWidth: 200},{field:'antiguidade',headerName:'Antiguidade', width:300},]}
+                                    columns={[{field:'nome',headerName:'Nome', flex:1},{field:'antiguidade',headerName:'Antiguidade', minWidth: 150},]}
                                     onRowSelectionModelChange={(newRowSelectionModel) => {
                                         setRowSelectionModel(newRowSelectionModel);
                                     }}

@@ -16,6 +16,10 @@ import MDButton from "../../../components/MDButton";
 import {geraDatas, setDatasEscala} from "../../../utils/escalaUtils";
 import process from "next/dist/build/webpack/loaders/resolve-url-loader/lib/postcss";
 import Escalas from "../../../components/Escalas";
+import {DataGrid} from '@mui/x-data-grid';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+
 
 
 const parseJSON = resp => (resp.json ? resp.json() : resp);
@@ -45,7 +49,8 @@ const valorInicial={
     fechada:false,
 
 }
-function AdicionaEscala({escalas}) {
+
+function AdicionaEscala() {
 
     //------- CONSTANTES PARA O DATAGRID----------------------------------------
     const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
@@ -55,9 +60,38 @@ function AdicionaEscala({escalas}) {
     const [modifiedData, setModifiedData] = useState(valorInicial);
     const [errorEscalas, setErrorEscalas] = useState(null);
     const [juizes, setJuizes] = useState([]);
+    const [escalas, setEscalas] = useState([]);
+    const [error, setError] = useState(null);
 
+    const fetchEscalas = async () => {
+        try {
+            const response = await fetch('http://localhost:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes&populate[preferencia][populate][0]=juizs', {
+                method: 'GET',
+                headers,
+            },{revalidate: 0});
 
+            if (!response.ok) {
+                throw new Error('Falha ao obter os dados das escalas.');
+            }
 
+            const responseEscala = await response.json();
+
+            if (Array.isArray(responseEscala.data)) {
+                const escalasData = responseEscala.data.map((item) => ({id: item.id, ...item.attributes,}));
+                setEscalas(escalasData,()=>{
+                    console.log('Escalas atualizadas:', escalasData);
+                })
+
+            } else {
+                setError('Formato de dados inválido.');
+            }
+
+        } catch (error) {
+            setError(error.message);
+        }
+    };
+
+    useEffect(() => {fetchEscalas();}, []);
     const handleSubmit = async e => {
         e.preventDefault();
 
@@ -75,6 +109,8 @@ function AdicionaEscala({escalas}) {
                     console.table(datasEscala)
                     setDatasEscala(escala.data.id, datasEscala, headers);
                     console.log('Escala adicionada com sucesso');
+                    setModifiedData(valorInicial);
+                    fetchEscalas();
 
                 })
 
@@ -97,7 +133,7 @@ function AdicionaEscala({escalas}) {
         });
     }
     const showJSON = () => {
-        console.log('JSON:', modifiedData);
+        console.log('JSON:',escalas);
     };
     // Função para ser chamada quando a seleção mudar
 
@@ -105,18 +141,54 @@ function AdicionaEscala({escalas}) {
     return (
         <DashboardLayout>
             <DashboardNavbar />
-            <MDBox p={2}>
-                <MDTypography variant="h2">Adicionar Escala</MDTypography>
-            </MDBox>
+
             <Grid container spacing={2}>
-                <Grid item xs={12} xl={11} sx={{ height: "max-content" }}>
+                <Grid item xs={12} xl={8}>
+                    <MDBox p={2}>
+                        <MDTypography variant="h2">Escalas Criadas</MDTypography>
+                    </MDBox>
                     <Card id="escalas" sx={{ overflow: "visible" }}>
+                        <MDBox mb={3}>
+                            <MDBox p={2}>
+                                <DataGrid
+                                    /*checkboxSelection
+                                    disableColumnMenu*/
+                                    sx={{fontSize: '18px', fontWeight:'regular', }}
+                                    pageSizeOptions={[5,10,20]}
+                                    initialState={{pagination: { paginationModel: { pageSize: 20 } },}}
+                                    rows={escalas}
+                                    columns={[
+                                        {field:'descricao', headerName:'Descrição',flex:1, sortable:false},
+                                        {field:'tipo', headerName:'Tipo',flex:1, sortable:false},
+                                        {field:'fechada', headerName:'Status',width:150, sortable:false,
+                                            renderCell: (params) => (
+                                                <span style={{
+                                                    color: params.value ?  'red':'green',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                }}>
 
+                                                    {params.value ? 'Fechada':'Aberta'}
+                                                </span>),
+                                        }]}
+                                    onRowSelectionModelChange={(newRowSelectionModel) => {setRowSelectionModel(newRowSelectionModel);}}
+                                    rowSelectionModel={rowSelectionModel}
 
+                                />
+                            </MDBox>
+                        </MDBox>
+                    </Card>
+
+                </Grid>
+                <Grid item xs={12} xl={4} sx={{ height: "max-content" }}>
+                    <MDBox p={2}>
+                        <MDTypography variant="h2">Adicionar Escala</MDTypography>
+                    </MDBox>
+                    <Card id="escalas" sx={{ overflow: "visible" }}>
                         <form onSubmit={handleSubmit}>
                             <Grid py={3} px={4} >
                                 <Grid container spacing={2}>
-                                    <Grid item xs={12} xl={6} >
+                                    <Grid item xs={12} xl={12} >
                                         <MDTypography variant="h6" mb={1} >Insira uma descrição:</MDTypography>
                                         <FormField
                                             label="Descrição"
@@ -130,7 +202,7 @@ function AdicionaEscala({escalas}) {
                                             required
                                         />
                                     </Grid>
-                                    <Grid item xs={12}  xl={6}>
+                                    <Grid item xs={12}  xl={12}>
                                         <MDTypography variant="h6" mb={1}>Selecione o tipo de escala:</MDTypography>
                                         <Autocomplete
                                             required
@@ -145,7 +217,7 @@ function AdicionaEscala({escalas}) {
                                     </Grid>
                                 </Grid>
                                 <Grid container spacing={2} mt={2}>
-                                    <Grid item xs={4} xl={4}>
+                                    <Grid item xs={4} xl={6}>
                                         <MDTypography variant="h6">Data de Inicio:</MDTypography>
                                         <MDDatePicker
                                             required
@@ -155,7 +227,7 @@ function AdicionaEscala({escalas}) {
                                                 setModifiedData({ ...modifiedData, inicio: value })}/>
 
                                     </Grid>
-                                    <Grid item xs={4} xl={4}>
+                                    <Grid item xs={4} xl={6}>
                                         <MDTypography variant="h6">Data de Fim:</MDTypography>
                                         <MDDatePicker
                                             required
@@ -165,7 +237,7 @@ function AdicionaEscala({escalas}) {
                                             onChange={(event, value) =>
                                                 setModifiedData({ ...modifiedData, fim: value })}/>
                                     </Grid>
-                                    <Grid item xs={12} xl={4} >
+                                    <Grid item xs={12} xl={8} >
 
                                         <Grid ml={1}>
                                             <MDTypography variant="h6">Status da Escala:</MDTypography>
@@ -188,13 +260,9 @@ function AdicionaEscala({escalas}) {
                         </form>
                     </Card>
                 </Grid>
-                <Grid item xs={12} xl={4}>
-                    <MDBox mb={3}>
 
-                    </MDBox>
-                </Grid>
             </Grid>
-            <Escalas />
+
         </DashboardLayout>
     );
 }
