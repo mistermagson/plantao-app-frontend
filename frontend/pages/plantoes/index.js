@@ -6,7 +6,7 @@ import MDTypography from "/components/MDTypography";
 import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
 import {DataGrid} from '@mui/x-data-grid';
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, get} from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import MDButton from "../../components/MDButton";
@@ -16,19 +16,16 @@ import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 import Tooltip from '@mui/material/Tooltip';
 import {GridActionsCellItem,} from '@mui/x-data-grid';
 import {fetchEscalas} from "../../utils/escalaUtils";
-import {fetch} from "next/dist/compiled/@edge-runtime/primitives/fetch";
 
-/*const headers= {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b'
-};*/
 
-function Plantoes({data, headers}) {
+function Plantoes({data, h}) {
 
     //------- CONSTANTES PARA O DATAGRID----------------------------------------
     const [escalaSelecionada, setEscalaSelecionada] = useState(null);
     const [juizSelecionado, setJuizSelecionado] = useState(null);
     const [rowSelectionModel, setRowSelectionModel] = useState([]);
+    const [headers, setHeaders] = useState(h);
+
     //--------------------------------------------------------------------------
 
     const [juizes, setJuizes] = useState([]);
@@ -39,7 +36,7 @@ function Plantoes({data, headers}) {
     useEffect(() => {
         if(escalaSelecionada) {
 
-            const escalaEncontrada = escalas.find(escala => escala.id == escalaSelecionada.id);
+            const escalaEncontrada = escalas.find(escala => escala.id === escalaSelecionada.id);
             //const escalaEncontrada = escalas.find(escalas.id === escalaSelecionada.id);
 
             if (escalaEncontrada) {
@@ -92,9 +89,12 @@ function Plantoes({data, headers}) {
     const handleLimparPlantonista = async(row) => {
         try {
             const idJuiz = row.plantonista.data[0].id;
+            console.log(idJuiz, row.id, headers)
             await removePlantonista(idJuiz, row.id, headers);
             setRowSelectionModel([]);
-            await setEscalas(fetchEscalas(headers));
+            const escalasAtaulizadas = await fetchEscalas(headers)
+            setEscalas(escalasAtaulizadas);
+            // await setEscalas(fetchEscalas(headers));
 
         } catch (error) {
             console.error(error);
@@ -233,19 +233,19 @@ function Plantoes({data, headers}) {
 }
 
 export async function getServerSideProps() {
-    const headers= {
+    const h = {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b'
     };
     const res = await fetch('http://localhost:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes&populate[preferencia][populate][0]=juizs', {
         method: 'GET',
-        headers,
+        headers: h,
     });
     //const data = await res.json();
     const responseEscala = await res.json();
     const data = responseEscala.data.map((item) => ({id: item.id, ...item.attributes,}));
 
-    return { props: {data, headers} };
+    return { props: {data, h} };
 }
 
 

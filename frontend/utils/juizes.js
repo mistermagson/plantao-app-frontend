@@ -19,3 +19,29 @@ export const cargaJuizes = (juizArray, headers) => {
 
     return response;
 };
+
+
+export const fetchJuizes = async (headers) => {
+    try {
+        const response = await fetch('http://localhost:1337/api/juizs?populate[plantoes][populate][0]=escala', {
+            method: 'GET',
+            headers,
+        });
+        if (!response.ok) {
+            throw new Error('Falha ao obter os dados dos juizes.');
+        }
+
+        const responseJuiz = await response1.json();
+
+        if (Array.isArray(responseJuiz.data)) {
+            const juizesData = responseJuiz.data.map((item) => ({id: item.id, ...item.attributes,}));
+            return(juizesData);
+
+        } else {
+            return('Formato de dados inválido.');
+        }
+
+    } catch (error) {
+        return(error.message);
+    }
+};

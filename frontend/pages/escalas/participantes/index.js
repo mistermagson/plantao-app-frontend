@@ -5,106 +5,37 @@ import MDBox from "/components/MDBox";
 import MDTypography from "/components/MDTypography";
 import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
-import { useForm } from "react-hook-form";
 import {DataGrid} from '@mui/x-data-grid';
 import React, {useState, useEffect} from "react";
 import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import ParticipantesList from "../../participanteslist";
 import {
+    fetchEscalas,
     removeParticipantesEscala,
     removePreferencial,
     setParticipantesEscala,
     setPreferencia
 } from "../../../utils/escalaUtils";
 import MDButton from "../../../components/MDButton";
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import DataTable from "../../../examples/Tables/DataTable";
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 import Tooltip from '@mui/material/Tooltip';
 import {GridActionsCellItem,} from '@mui/x-data-grid';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
+import {fetchJuizes} from "../../../utils/juizes";
 
-const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b'
-};
-const parseJSON = resp => (resp.json ? resp.json() : resp);
-const checkStatus = resp => {
-    if (resp.status >= 200 && resp.status < 300) {
-        return resp;
-    }
-    return parseJSON(resp).then(resp => {
-        throw resp;
-    });
-};
-function Participantes() {
+function Participantes({dataEscalas, dataJuizes, h}) {
 
     //------- CONSTANTES PARA O DATAGRID----------------------------------------
     const [opcaoSelecionada, setOpcaoSelecionada] = useState(null);
     const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
+    const [headers, setHeaders] = useState(h);
     //--------------------------------------------------------------------------
-    const [escalas, setEscalas] = useState([]);
-    const [juizes, setJuizes] = useState([]);
+    const [escalas, setEscalas] = useState(dataEscalas);
+    const [juizes, setJuizes] = useState(dataJuizes);
     const [juizesRestantes, setJuizesRestantes] = useState([]);
     const [error, setError] = useState(null);
     const [jsonData, setJsonData]= useState([]);
     const [adicionados, setAdicionados] = useState([]);
     const [juizPreferencialId, setJuizPreferencialId] = useState(null);
-
-
-    const fetchJuizes = async () => {
-        try {
-            const response1 = await fetch('http://localhost:1337/api/juizs?populate[plantoes][populate][0]=escala', {
-                method: 'GET',
-                headers,
-            });
-            if (!response1.ok) {
-                throw new Error('Falha ao obter os dados dos juizes.');
-            }
-
-            const responseJuiz = await response1.json();
-
-            if (Array.isArray(responseJuiz.data)) {
-                const juizesData = responseJuiz.data.map((item) => ({id: item.id, ...item.attributes,}));
-                setJuizes(juizesData);
-
-            } else {
-                setError('Formato de dados inválido.');
-            }
-
-        } catch (error) {
-            setError(error.message);
-        }
-    };
-    const fetchEscalas = async () => {
-        try {
-            const response2 = await fetch('http://localhost:1337/api/escalas?populate[participantes][populate][0]=plantoes&populate[preferencia][populate][0]=juizs', {
-                method: 'GET',
-                headers,
-            });
-
-            if (!response2.ok) {
-                throw new Error('Falha ao obter os dados dos juizes.');
-            }
-
-            const responseEscala = await response2.json();
-            setJsonData(responseEscala);
-
-            if (Array.isArray(responseEscala.data)) {
-                const escalasData = responseEscala.data.map((item) => ({id: item.id, ...item.attributes,}));
-                setEscalas(escalasData);
-
-            } else {
-                setError('Formato de dados inválido.');
-            }
-
-        } catch (error) {
-            setError(error.message);
-        }
-    };
-
-    useEffect(() => {fetchEscalas();fetchJuizes();}, []);
 
     useEffect(() => {
         if (opcaoSelecionada) {
@@ -324,6 +255,56 @@ function Participantes() {
             </Card>
         </DashboardLayout>
     );
+}
+
+
+export async function getServerSideProps() {
+    const h = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b'
+    };
+
+    var query = `query {
+   escalas {   
+    data{
+      id
+      attributes{
+        descricao
+        participantes {
+          data {
+            id
+            attributes {
+              nome
+              antiguidade
+            }
+            
+          }
+        }
+      } 
+  }
+  }
+  juizs (sort: "antiguidade") {
+    data{
+      id,
+      attributes{
+        nome
+        antiguidade        
+      }
+    }
+  }
+}`
+    const res = await fetch('http://localhost:1337/graphql', {
+        method: 'POST',
+        headers: h,
+        body: JSON.stringify({ query }),
+    });
+
+    const responseEscala = await res.json();
+
+    const dataEscalas = responseEscala.data.escalas.data.map((item) => ({id: item.id, ...item.attributes,}));
+    const dataJuizes = responseEscala.data.juizs.data.map((item) => ({id: item.id, ...item.attributes,}));
+
+    return { props: {dataEscalas, dataJuizes,  h} };
 }
 
 export default Participantes;
