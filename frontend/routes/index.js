@@ -32,25 +32,9 @@ const routes = [
       },
     ],
   },
-  { type: "divider", key: "divider-0" },
+  { type: "divider", key: "divider-2" },
   { type: "title", title: "Área do Magistrado", key: "area-magistrado" },
-  {
-    type: "collapse",
-    name: "Meus Plantões",
-    key: "plantoes",
-    icon: <Icon fontSize="medium">dashboard</Icon>,
-    collapse: [
-      {
-        name: "Regional",
-        key: "calendar",
-        route: "/applications/calendar",
 
-      },
-
-
-    ],
-  },
-  { type: "divider", key: "divider-1" },
   { type: "title", title: "Área do Admin", key: "area-admin" },
   {
     type: "collapse",
@@ -118,7 +102,7 @@ const routes = [
     ],
   },
 
-  { type: "divider", key: "divider-0" },
+  { type: "divider", key: "divider-3" },
   {
     type: "collapse",
     name: "Plantões Varas",
@@ -149,7 +133,7 @@ const routes = [
     ],
   },
 
-  { type: "divider", key: "divider-0" },
+  { type: "divider", key: "divider-4" },
 
   { type: "title", title: "Pages", key: "title-pages" },
   {

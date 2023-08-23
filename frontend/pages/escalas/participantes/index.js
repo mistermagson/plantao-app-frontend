@@ -66,6 +66,7 @@ function Participantes({dataEscalas, dataJuizes, h}) {
             }
         }
     }, [escalas, opcaoSelecionada]);
+
     const onChangeEscala = (selecionada)=>{
         try{
             const participantes = selecionada.participantes.data.map((item) => ({id: item.id, ...item.attributes,}));
@@ -104,8 +105,12 @@ function Participantes({dataEscalas, dataJuizes, h}) {
                 setJuizPreferencialId(null);
             }
             setRowSelectionModel([]);
-            await fetchEscalas();
-            await fetchJuizes();
+
+            const atualizaEscalas =await fetchEscalas(headers);
+            setEscalas(atualizaEscalas)
+
+            const atualizaJuizes = await fetchJuizes(headers);
+            setJuizes(atualizaJuizes)
 
         } catch (error) {
             console.error(error);
@@ -118,14 +123,16 @@ function Participantes({dataEscalas, dataJuizes, h}) {
             await setPreferencia(opcaoSelecionada.id, idJuiz, headers);
             setJuizPreferencialId(null);
 
-            await fetchEscalas();
+            const atualizaEscalas =await fetchEscalas(headers);
+            setEscalas(atualizaEscalas)
+
 
         } catch (error) {
             console.error(error);
         }
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         try {
             setParticipantesEscala(opcaoSelecionada.id,rowSelectionModel,headers)
 
@@ -140,8 +147,11 @@ function Participantes({dataEscalas, dataJuizes, h}) {
             console.error(error);
         }
         finally {
-            fetchEscalas();
-            fetchJuizes();
+            const atualizaEscalas = await fetchEscalas(headers);
+            setEscalas(atualizaEscalas)
+
+            const atualizaJuizes = await fetchJuizes(headers);
+            setJuizes(atualizaJuizes)
         }
     };
 
