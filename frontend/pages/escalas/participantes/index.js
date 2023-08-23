@@ -274,7 +274,7 @@ export async function getServerSideProps() {
         'Authorization': 'Bearer ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b'
     };
 
-    var query = `query {
+    let query = `query {
    escalas {   
     data{
       id
@@ -303,7 +303,7 @@ export async function getServerSideProps() {
     }
   }
 }`
-    const res = await fetch('http://localhost:1337/graphql', {
+    const res = await fetch('http://127.0.0.1:1337/graphql', {
         method: 'POST',
         headers: h,
         body: JSON.stringify({ query }),

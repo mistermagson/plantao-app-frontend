@@ -14,11 +14,9 @@ import {FormControlLabel, InputLabel, Select} from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
 import MDButton from "../../../components/MDButton";
 import {geraDatas, setDatasEscala} from "../../../utils/escalaUtils";
-import process from "next/dist/build/webpack/loaders/resolve-url-loader/lib/postcss";
-import Escalas from "../../../components/Escalas";
 import {DataGrid} from '@mui/x-data-grid';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CancelIcon from '@mui/icons-material/Cancel';
+
+
 
 
 
@@ -170,7 +168,7 @@ function AdicionaEscala() {
 
                                                     {params.value ? 'Fechada':'Aberta'}
                                                 </span>),
-                                        }]}
+                                        },]}
                                     onRowSelectionModelChange={(newRowSelectionModel) => {setRowSelectionModel(newRowSelectionModel);}}
                                     rowSelectionModel={rowSelectionModel}
 
