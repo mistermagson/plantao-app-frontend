@@ -25,7 +25,6 @@ function Plantoes({data, h}) {
     const [juizSelecionado, setJuizSelecionado] = useState(null);
     const [rowSelectionModel, setRowSelectionModel] = useState([]);
     const [headers, setHeaders] = useState(h);
-
     //--------------------------------------------------------------------------
 
     const [juizes, setJuizes] = useState([]);
@@ -33,11 +32,11 @@ function Plantoes({data, h}) {
     const [plantoes, setPlantoes] = useState([]);
     const [error, setError] = useState(null);
 
+
     useEffect(() => {
         if(escalaSelecionada) {
 
             const escalaEncontrada = escalas.find(escala => escala.id === escalaSelecionada.id);
-            //const escalaEncontrada = escalas.find(escalas.id === escalaSelecionada.id);
 
             if (escalaEncontrada) {
                 setEscalaSelecionada(escalaEncontrada);
@@ -45,7 +44,6 @@ function Plantoes({data, h}) {
             }
         }
     }, [escalas, escalaSelecionada]);
-
 
 
     const handleSubmit =  async (event) => {
@@ -180,24 +178,30 @@ function Plantoes({data, h}) {
                                                         const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
                                                         return <span>{formattedDate}</span>;
                                                     },},
-                                                {field: 'plantonista', headerName: 'Status', flex:1,
+                                                {field: 'plantonista', headerName: 'Status', flex:1, minWidth:220,
                                                     renderCell: (params) => (
                                                         <span style={{color: params.value.data[0] ? 'red' : 'green',}}>
-                                                        {params.value.data[0] ?  params.value.data[0].attributes.nome:'Disponível' }
+                                                        {params.value.data[0] ?  `Ocupado - ${params.value.data[0].attributes.nome}`:'Disponível' }
                                                     </span>
                                                     ),
-                                                },{
+                                                },
+                                                {
                                                     field: 'id',
                                                     headerName: 'Opções',
                                                     width: 120,
                                                     renderCell: (params) => (
                                                         <Tooltip title="Limpar o plantonista">
-                                                            <GridActionsCellItem
-                                                                icon={<CleaningServicesIcon />}
-                                                                label="Limpar Plantonista"
-                                                                onClick={() => handleLimparPlantonista(params.row)}
-                                                                color="inherit"
-                                                            />
+                                                            {params.row.plantonista.data[0] ? ( // Verifica se o plantonista está definido
+                                                                <GridActionsCellItem
+                                                                    icon={<CleaningServicesIcon />}
+                                                                    label="Limpar Plantonista"
+                                                                    onClick={() => handleLimparPlantonista(params.row)}
+                                                                    color="inherit"
+                                                                />
+                                                            ) : (
+                                                                // Renderiza um espaço vazio se o plantonista estiver "Disponível"
+                                                                <div></div>
+                                                            )}
                                                         </Tooltip>
                                                     ),
                                                 },]}
@@ -216,12 +220,19 @@ function Plantoes({data, h}) {
                                             rowSelectionModel={rowSelectionModel}
 
                                         />)}
+                                        {escalaSelecionada && (
+                                            <MDBox mt={2}> {/* Adicionei a propriedade mb para adicionar espaço abaixo do DataGrid */}
+                                                <MDButton color="success" size="small" type="submit">
+                                                    Adicionar
+                                                </MDButton>
+                                            </MDBox>
+                                        )}
                                     </MDBox>
 
                             </MDBox>
                         </Grid>
                         <MDBox ml={2} p={3}>
-                            <MDButton color="success" size="small" type="submit">Salvar</MDButton>
+
                             <MDButton size="small" onClick={showJSON} color="info">Exibir</MDButton>
                         </MDBox>
 
