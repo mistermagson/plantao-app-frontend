@@ -91,6 +91,7 @@ export const setParticipantesEscala = (idEscala, juizesArray,headers) => {
     const participantes={
         participantes:{connect: juizesArray}
     }
+    console.log(idEscala, participantes,headers)
     const setEscala = async () => {
         try {
             const response = await fetch(`http://localhost:1337/api/escalas/${idEscala}`, {
@@ -206,7 +207,7 @@ export const fetchEscalas = async (headers) => {
 
         if (Array.isArray(responseEscala.data)) {
             const escalasData = responseEscala.data.map((item) => ({id: item.id, ...item.attributes,}));
-            console.log(escalasData)
+
            return (escalasData);
 
 

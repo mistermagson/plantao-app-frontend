@@ -94,11 +94,7 @@ function Participantes({dataEscalas, dataJuizes, h}) {
             const novosAdicionados = adicionados.filter(participante => participante.id !== idJuiz);
             setAdicionados(novosAdicionados);
 
-            const juizRestante = juizes.find(juiz => juiz.id === idJuiz);
-
-            if (juizRestante) {
-                setJuizesRestantes([...juizesRestantes, juizRestante]);
-            }
+            setJuizesRestantes([...juizesRestantes, row]);
 
             if (idJuiz === juizPreferencialId) {
                 removePreferencial(idJuiz, opcaoSelecionada.id, headers);
@@ -120,11 +116,16 @@ function Participantes({dataEscalas, dataJuizes, h}) {
     const handleAlterarPreferencia = async(row) => {
         try {
             const idJuiz = row.id;
+
             await setPreferencia(opcaoSelecionada.id, idJuiz, headers);
-            setJuizPreferencialId(null);
+            setJuizPreferencialId(idJuiz);
+
 
             const atualizaEscalas =await fetchEscalas(headers);
             setEscalas(atualizaEscalas)
+
+            const atualizaJuizes =await fetchJuizes(headers);
+            setJuizes(atualizaJuizes)
 
 
         } catch (error) {
@@ -132,12 +133,18 @@ function Participantes({dataEscalas, dataJuizes, h}) {
         }
     }
 
-    const handleSubmit = async () => {
+    const adicionaParticipantes = async () => {
         try {
-            setParticipantesEscala(opcaoSelecionada.id,rowSelectionModel,headers)
+            await setParticipantesEscala(opcaoSelecionada.id,rowSelectionModel,headers)
+            const atualizaEscalas = await fetchEscalas(headers)
 
-            const novosAdicionados = adicionados.concat(rowSelectionModel.map(id => juizes.find(juiz => juiz.id === id)));
-            setAdicionados(novosAdicionados);
+            setEscalas(atualizaEscalas);
+            console.log(escalas, rowSelectionModel)
+
+            console.log('teste participantes')
+            const juizesParticipantes = escalas.participantes.data.map((item) => ({id: item.id, ...item.attributes,}));
+            setAdicionados(juizesParticipantes)
+            console.log('teste1')
 
             const novosJuizesRestantes = juizesRestantes.filter(juiz => !rowSelectionModel.includes(juiz.id));
             setJuizesRestantes(novosJuizesRestantes);
@@ -158,7 +165,9 @@ function Participantes({dataEscalas, dataJuizes, h}) {
     const isJuizPreferencial = (juizId) => {
         return juizId === juizPreferencialId;
     };
-
+    const showJSON = () => {
+        console.log('JSON:',rowSelectionModel);
+    };
     return (
         <DashboardLayout>
             <DashboardNavbar />
@@ -219,7 +228,7 @@ function Participantes({dataEscalas, dataJuizes, h}) {
                                                         <GridActionsCellItem
                                                             icon={<CleaningServicesIcon />}
                                                             label="Limpar Plantonista"
-                                                            onClick={() => handleLimparParticipante(params.row)}
+                                                            onClick={() => {handleLimparParticipante(params.row);console.log(params.row)}}
                                                             color="inherit"
                                                         />
                                                     </Tooltip>
@@ -230,6 +239,7 @@ function Participantes({dataEscalas, dataJuizes, h}) {
 
                         </Grid>
                         <Grid item xs={12} md={6} xl={6} >
+                            <MDButton size="small" onClick={showJSON} lcolor="info">Exibir</MDButton>
                             {opcaoSelecionada && (<h5>Juizes Restantes:</h5>)}
                             {opcaoSelecionada && (
                                 <DataGrid
@@ -259,7 +269,7 @@ function Participantes({dataEscalas, dataJuizes, h}) {
                     </Grid>
                     <Grid my={2}>
                         {opcaoSelecionada && (<MDButton size="medium" lcolor="error" onClick={() => console.log(opcaoSelecionada,escalas,adicionados, juizes)}>Imprimir Selecionados</MDButton>)}
-                        {opcaoSelecionada && (<MDButton  size="small" color="success" onClick={() => handleSubmit()}>Adicionar</MDButton>)}
+                        {opcaoSelecionada && (<MDButton  size="small" color="success" onClick={() => adicionaParticipantes()}>Adicionar</MDButton>)}
                     </Grid>
                 </MDBox>
             </Card>

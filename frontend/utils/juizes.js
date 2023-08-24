@@ -1,3 +1,4 @@
+import {useState} from "react";
 
 export const cargaJuizes = (juizArray, headers) => {
 
@@ -22,6 +23,8 @@ export const cargaJuizes = (juizArray, headers) => {
 
 
 export const fetchJuizes = async (headers) => {
+    const [data, setData] = [];
+
     try {
         const response = await fetch('http://localhost:1337/api/juizs?populate[plantoes][populate][0]=escala', {
             method: 'GET',
@@ -31,7 +34,7 @@ export const fetchJuizes = async (headers) => {
             throw new Error('Falha ao obter os dados dos juizes.');
         }
 
-        const responseJuiz = await response1.json();
+        const responseJuiz = await response.json();
 
         if (Array.isArray(responseJuiz.data)) {
             const juizesData = responseJuiz.data.map((item) => ({id: item.id, ...item.attributes,}));
