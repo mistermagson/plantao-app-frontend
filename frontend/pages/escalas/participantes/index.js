@@ -8,20 +8,14 @@ import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
 import {DataGrid} from '@mui/x-data-grid';
 import React, {useState, useEffect} from "react";
 import TextField from "@mui/material/TextField";
-import {
-    fetchEscalas,
-    removeParticipantesEscala,
-    removePreferencial,
-    setParticipantesEscala,
-    setPreferencia
-} from "../../../utils/escalaUtils";
+import {fetchEscalas, removeParticipantesEscala, removePreferencial, setParticipantesEscala, setPreferencia} from "../../../utils/escalaUtils";
 import MDButton from "../../../components/MDButton";
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 import Tooltip from '@mui/material/Tooltip';
 import {GridActionsCellItem,} from '@mui/x-data-grid';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 import {fetchJuizes} from "../../../utils/juizes";
-
+import {removePlantonista} from "../../../utils/plantaoUtils";
 function Participantes({dataEscalas, dataJuizes, h}) {
 
     //------- CONSTANTES PARA O DATAGRID----------------------------------------
@@ -67,6 +61,8 @@ function Participantes({dataEscalas, dataJuizes, h}) {
         }
     }, [escalas, opcaoSelecionada]);
 
+
+
     const onChangeEscala = (selecionada)=>{
         try{
             const participantes = selecionada.participantes.data.map((item) => ({id: item.id, ...item.attributes,}));
@@ -100,7 +96,11 @@ function Participantes({dataEscalas, dataJuizes, h}) {
                 removePreferencial(idJuiz, opcaoSelecionada.id, headers);
                 setJuizPreferencialId(null);
             }
-            setRowSelectionModel([]);
+
+
+
+
+
 
             const atualizaEscalas =await fetchEscalas(headers);
             setEscalas(atualizaEscalas)
@@ -139,12 +139,9 @@ function Participantes({dataEscalas, dataJuizes, h}) {
             const atualizaEscalas = await fetchEscalas(headers)
 
             setEscalas(atualizaEscalas);
-            console.log(escalas, rowSelectionModel)
 
-            console.log('teste participantes')
-            const juizesParticipantes = escalas.participantes.data.map((item) => ({id: item.id, ...item.attributes,}));
-            setAdicionados(juizesParticipantes)
-            console.log('teste1')
+            const participantes = opcaoSelecionada.participantes.data.map((item) => ({id: item.id, ...item.attributes,}));
+            setAdicionados(participantes)
 
             const novosJuizesRestantes = juizesRestantes.filter(juiz => !rowSelectionModel.includes(juiz.id));
             setJuizesRestantes(novosJuizesRestantes);
@@ -239,7 +236,6 @@ function Participantes({dataEscalas, dataJuizes, h}) {
 
                         </Grid>
                         <Grid item xs={12} md={6} xl={6} >
-                            <MDButton size="small" onClick={showJSON} lcolor="info">Exibir</MDButton>
                             {opcaoSelecionada && (<h5>Juizes Restantes:</h5>)}
                             {opcaoSelecionada && (
                                 <DataGrid
@@ -257,7 +253,9 @@ function Participantes({dataEscalas, dataJuizes, h}) {
                                     /*isRowSelectable={(params) => console.log('PARAMS', params)}*/
 
                                 />)}
-
+                            {opcaoSelecionada && (<MDBox mt={2}> {/* Adicionei a propriedade mb para adicionar espaço abaixo do DataGrid */}
+                                <MDButton color="primary" size="small"  onClick={() => adicionaParticipantes()}>Adicionar</MDButton>
+                            </MDBox>)}
                         </Grid>
                         <Grid>
                             {!opcaoSelecionada && (
@@ -267,17 +265,15 @@ function Participantes({dataEscalas, dataJuizes, h}) {
                             )}
                         </Grid>
                     </Grid>
-                    <Grid my={2}>
-                        {opcaoSelecionada && (<MDButton size="medium" lcolor="error" onClick={() => console.log(opcaoSelecionada,escalas,adicionados, juizes)}>Imprimir Selecionados</MDButton>)}
-                        {opcaoSelecionada && (<MDButton  size="small" color="success" onClick={() => adicionaParticipantes()}>Adicionar</MDButton>)}
+                    <Grid p={2} mt={2}>
+                        <MDButton size="regular" onClick={showJSON} color="info">Exibir</MDButton>
+
                     </Grid>
                 </MDBox>
             </Card>
         </DashboardLayout>
     );
 }
-
-
 export async function getServerSideProps() {
     const h = {
         'Content-Type': 'application/json',
@@ -285,34 +281,33 @@ export async function getServerSideProps() {
     };
 
     let query = `query {
-   escalas {   
-    data{
-      id
-      attributes{
-        descricao
-        participantes {
-          data {
-            id
-            attributes {
-              nome
-              antiguidade
-            }
-            
-          }
-        }
-      } 
-  }
-  }
-  juizs (sort: "antiguidade") {
-    data{
-      id,
-      attributes{
-        nome
-        antiguidade        
-      }
-    }
-  }
-}`
+                               escalas {   
+                                data{
+                                  id
+                                  attributes{
+                                    descricao
+                                    participantes {
+                                      data {
+                                        id
+                                        attributes {
+                                          nome
+                                          antiguidade
+                                        }             
+                                      }
+                                    }
+                                  } 
+                              }
+                              }
+                              juizs (sort: "antiguidade") {
+                                data{
+                                  id,
+                                  attributes{
+                                    nome
+                                    antiguidade        
+                                  }
+                                }
+                              }
+                            }`
     const res = await fetch('http://127.0.0.1:1337/graphql', {
         method: 'POST',
         headers: h,
@@ -326,5 +321,4 @@ export async function getServerSideProps() {
 
     return { props: {dataEscalas, dataJuizes,  h} };
 }
-
 export default Participantes;

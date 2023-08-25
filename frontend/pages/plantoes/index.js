@@ -101,7 +101,6 @@ function Plantoes({data, h}) {
 
     const theme = createTheme({});
 
-
     return (
         <DashboardLayout>
             <DashboardNavbar />
