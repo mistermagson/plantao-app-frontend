@@ -139,7 +139,6 @@ function AdicionaEscala() {
     return (
         <DashboardLayout>
             <DashboardNavbar />
-
             <Grid container spacing={2}>
                 <Grid item xs={12} xl={8}>
                     <MDBox p={2}>

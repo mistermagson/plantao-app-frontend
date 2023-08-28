@@ -5,31 +5,106 @@ import MDBox from "/components/MDBox";
 import MDTypography from "/components/MDTypography";
 import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
+import { useForm } from "react-hook-form";
 import {DataGrid} from '@mui/x-data-grid';
 import React, {useState, useEffect} from "react";
 import TextField from "@mui/material/TextField";
-import {fetchEscalas, removeParticipantesEscala, removePreferencial, setParticipantesEscala, setPreferencia} from "../../../utils/escalaUtils";
+import Button from "@mui/material/Button";
+import ParticipantesList from "../../participanteslist";
+import {
+    removeParticipantesEscala,
+    removePreferencial,
+    setParticipantesEscala,
+    setPreferencia
+} from "../../../utils/escalaUtils";
 import MDButton from "../../../components/MDButton";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import DataTable from "../../../examples/Tables/DataTable";
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 import Tooltip from '@mui/material/Tooltip';
 import {GridActionsCellItem,} from '@mui/x-data-grid';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
-import {fetchJuizes} from "../../../utils/juizes";
-import {removePlantonista} from "../../../utils/plantaoUtils";
-function Participantes({dataEscalas, dataJuizes, h}) {
+
+const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b'
+};
+const parseJSON = resp => (resp.json ? resp.json() : resp);
+const checkStatus = resp => {
+    if (resp.status >= 200 && resp.status < 300) {
+        return resp;
+    }
+    return parseJSON(resp).then(resp => {
+        throw resp;
+    });
+};
+function Participantes() {
 
     //------- CONSTANTES PARA O DATAGRID----------------------------------------
     const [opcaoSelecionada, setOpcaoSelecionada] = useState(null);
     const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
-    const [headers, setHeaders] = useState(h);
     //--------------------------------------------------------------------------
-    const [escalas, setEscalas] = useState(dataEscalas);
-    const [juizes, setJuizes] = useState(dataJuizes);
+    const [escalas, setEscalas] = useState([]);
+    const [juizes, setJuizes] = useState([]);
     const [juizesRestantes, setJuizesRestantes] = useState([]);
     const [error, setError] = useState(null);
     const [jsonData, setJsonData]= useState([]);
     const [adicionados, setAdicionados] = useState([]);
     const [juizPreferencialId, setJuizPreferencialId] = useState(null);
+
+
+    const fetchJuizes = async () => {
+        try {
+            const response1 = await fetch('http://localhost:1337/api/juizs?populate[plantoes][populate][0]=escala', {
+                method: 'GET',
+                headers,
+            });
+            if (!response1.ok) {
+                throw new Error('Falha ao obter os dados dos juizes.');
+            }
+
+            const responseJuiz = await response1.json();
+
+            if (Array.isArray(responseJuiz.data)) {
+                const juizesData = responseJuiz.data.map((item) => ({id: item.id, ...item.attributes,}));
+                setJuizes(juizesData);
+
+            } else {
+                setError('Formato de dados inválido.');
+            }
+
+        } catch (error) {
+            setError(error.message);
+        }
+    };
+    const fetchEscalas = async () => {
+        try {
+            const response2 = await fetch('http://localhost:1337/api/escalas?populate[participantes][populate][0]=plantoes&populate[preferencia][populate][0]=juizs', {
+                method: 'GET',
+                headers,
+            });
+
+            if (!response2.ok) {
+                throw new Error('Falha ao obter os dados dos juizes.');
+            }
+
+            const responseEscala = await response2.json();
+            setJsonData(responseEscala);
+
+            if (Array.isArray(responseEscala.data)) {
+                const escalasData = responseEscala.data.map((item) => ({id: item.id, ...item.attributes,}));
+                setEscalas(escalasData);
+
+            } else {
+                setError('Formato de dados inválido.');
+            }
+
+        } catch (error) {
+            setError(error.message);
+        }
+    };
+
+    useEffect(() => {fetchEscalas();fetchJuizes();}, []);
 
     useEffect(() => {
         if (opcaoSelecionada) {
@@ -60,9 +135,6 @@ function Participantes({dataEscalas, dataJuizes, h}) {
             }
         }
     }, [escalas, opcaoSelecionada]);
-
-
-
     const onChangeEscala = (selecionada)=>{
         try{
             const participantes = selecionada.participantes.data.map((item) => ({id: item.id, ...item.attributes,}));
@@ -90,23 +162,19 @@ function Participantes({dataEscalas, dataJuizes, h}) {
             const novosAdicionados = adicionados.filter(participante => participante.id !== idJuiz);
             setAdicionados(novosAdicionados);
 
-            setJuizesRestantes([...juizesRestantes, row]);
+            const juizRestante = juizes.find(juiz => juiz.id === idJuiz);
+
+            if (juizRestante) {
+                setJuizesRestantes([...juizesRestantes, juizRestante]);
+            }
 
             if (idJuiz === juizPreferencialId) {
                 removePreferencial(idJuiz, opcaoSelecionada.id, headers);
                 setJuizPreferencialId(null);
             }
-
-
-
-
-
-
-            const atualizaEscalas =await fetchEscalas(headers);
-            setEscalas(atualizaEscalas)
-
-            const atualizaJuizes = await fetchJuizes(headers);
-            setJuizes(atualizaJuizes)
+            setRowSelectionModel([]);
+            await fetchEscalas();
+            await fetchJuizes();
 
         } catch (error) {
             console.error(error);
@@ -116,32 +184,22 @@ function Participantes({dataEscalas, dataJuizes, h}) {
     const handleAlterarPreferencia = async(row) => {
         try {
             const idJuiz = row.id;
-
             await setPreferencia(opcaoSelecionada.id, idJuiz, headers);
-            setJuizPreferencialId(idJuiz);
+            setJuizPreferencialId(null);
 
-
-            const atualizaEscalas =await fetchEscalas(headers);
-            setEscalas(atualizaEscalas)
-
-            const atualizaJuizes =await fetchJuizes(headers);
-            setJuizes(atualizaJuizes)
-
+            await fetchEscalas();
 
         } catch (error) {
             console.error(error);
         }
     }
 
-    const adicionaParticipantes = async () => {
+    const handleSubmit = () => {
         try {
-            await setParticipantesEscala(opcaoSelecionada.id,rowSelectionModel,headers)
-            const atualizaEscalas = await fetchEscalas(headers)
+            setParticipantesEscala(opcaoSelecionada.id,rowSelectionModel,headers)
 
-            setEscalas(atualizaEscalas);
-
-            const participantes = opcaoSelecionada.participantes.data.map((item) => ({id: item.id, ...item.attributes,}));
-            setAdicionados(participantes)
+            const novosAdicionados = adicionados.concat(rowSelectionModel.map(id => juizes.find(juiz => juiz.id === id)));
+            setAdicionados(novosAdicionados);
 
             const novosJuizesRestantes = juizesRestantes.filter(juiz => !rowSelectionModel.includes(juiz.id));
             setJuizesRestantes(novosJuizesRestantes);
@@ -151,11 +209,8 @@ function Participantes({dataEscalas, dataJuizes, h}) {
             console.error(error);
         }
         finally {
-            const atualizaEscalas = await fetchEscalas(headers);
-            setEscalas(atualizaEscalas)
-
-            const atualizaJuizes = await fetchJuizes(headers);
-            setJuizes(atualizaJuizes)
+            fetchEscalas();
+            fetchJuizes();
         }
     };
 
@@ -165,12 +220,15 @@ function Participantes({dataEscalas, dataJuizes, h}) {
     const showJSON = () => {
         console.log('JSON:',rowSelectionModel);
     };
+
     return (
         <DashboardLayout>
             <DashboardNavbar />
             <MDBox p={2}>
                 <h1>Lista de Participantes</h1>
             </MDBox>
+            <Grid container  >
+                <Grid item xs={12} md={6} xl={11} >
             <Card sx={{ height: "100%" }}>
                 <MDBox pt={2} px={2}>
                     <MDTypography variant="h6" >
@@ -178,7 +236,8 @@ function Participantes({dataEscalas, dataJuizes, h}) {
                     </MDTypography>
                 </MDBox>
                 <MDBox p={2}>
-                    <Grid item xs={12} md={6} xl={4}  sx={{ padding: '8px' }} >
+                    <Grid container spacing={4} p={2} >
+                        <Grid item xs={12} md={6} xl={6} >
                         <Autocomplete
                             options={escalas}
                             getOptionLabel={escala => escala.descricao}
@@ -188,7 +247,9 @@ function Participantes({dataEscalas, dataJuizes, h}) {
                                 onChangeEscala(newValue);}}
                             renderInput={(params) => <TextField {...params} label="Escala" />}
                         />
+                        </Grid>
                     </Grid>
+
                     <Grid container spacing={4} p={2} >
                         <Grid item xs={12} md={6} xl={6}  >
                             {opcaoSelecionada && (<h5>Juizes Adicionados:</h5>)}
@@ -225,7 +286,7 @@ function Participantes({dataEscalas, dataJuizes, h}) {
                                                         <GridActionsCellItem
                                                             icon={<CleaningServicesIcon />}
                                                             label="Limpar Plantonista"
-                                                            onClick={() => {handleLimparParticipante(params.row);console.log(params.row)}}
+                                                            onClick={() => handleLimparParticipante(params.row)}
                                                             color="inherit"
                                                         />
                                                     </Tooltip>
@@ -242,8 +303,8 @@ function Participantes({dataEscalas, dataJuizes, h}) {
                                     checkboxSelection
                                     disableColumnMenu
                                     sx={{fontSize: '18px', fontWeight:'regular', padding:'10px'}}
-                                    pageSizeOptions={[10,20]}
-                                    initialState={{pagination:{paginationModel:{pageSize:10}},}}
+                                    pageSizeOptions={[5,10,20]}
+                                    initialState={{pagination:{paginationModel:{pageSize:5}},}}
                                     rows={juizesRestantes}
                                     columns={[{field:'nome',headerName:'Nome', flex:1},{field:'antiguidade',headerName:'Antiguidade', minWidth: 150},]}
                                     onRowSelectionModelChange={(newRowSelectionModel) => {
@@ -253,8 +314,9 @@ function Participantes({dataEscalas, dataJuizes, h}) {
                                     /*isRowSelectable={(params) => console.log('PARAMS', params)}*/
 
                                 />)}
+
                             {opcaoSelecionada && (<MDBox mt={2}> {/* Adicionei a propriedade mb para adicionar espaço abaixo do DataGrid */}
-                                <MDButton color="primary" size="small"  onClick={() => adicionaParticipantes()}>Adicionar</MDButton>
+                                <MDButton color="success" size="small"  onClick={() => adicionaParticipantes()}>Adicionar</MDButton>
                             </MDBox>)}
                         </Grid>
                         <Grid>
@@ -271,54 +333,10 @@ function Participantes({dataEscalas, dataJuizes, h}) {
                     </Grid>
                 </MDBox>
             </Card>
+                </Grid>
+            </Grid>
         </DashboardLayout>
     );
 }
-export async function getServerSideProps() {
-    const h = {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b'
-    };
 
-    let query = `query {
-                               escalas {   
-                                data{
-                                  id
-                                  attributes{
-                                    descricao
-                                    participantes {
-                                      data {
-                                        id
-                                        attributes {
-                                          nome
-                                          antiguidade
-                                        }             
-                                      }
-                                    }
-                                  } 
-                              }
-                              }
-                              juizs (sort: "antiguidade") {
-                                data{
-                                  id,
-                                  attributes{
-                                    nome
-                                    antiguidade        
-                                  }
-                                }
-                              }
-                            }`
-    const res = await fetch('http://127.0.0.1:1337/graphql', {
-        method: 'POST',
-        headers: h,
-        body: JSON.stringify({ query }),
-    });
-
-    const responseEscala = await res.json();
-
-    const dataEscalas = responseEscala.data.escalas.data.map((item) => ({id: item.id, ...item.attributes,}));
-    const dataJuizes = responseEscala.data.juizs.data.map((item) => ({id: item.id, ...item.attributes,}));
-
-    return { props: {dataEscalas, dataJuizes,  h} };
-}
 export default Participantes;

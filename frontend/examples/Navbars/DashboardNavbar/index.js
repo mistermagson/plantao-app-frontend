@@ -145,6 +145,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
   });
 
   return (
+
     <AppBar
       position={absolute ? "absolute" : navbarType}
       color="inherit"
@@ -152,28 +153,35 @@ function DashboardNavbar({ absolute, light, isMini }) {
         navbar(theme, { transparentNavbar, absolute, light, darkMode })
       }
     >
+
+
       <Toolbar sx={(theme) => navbarContainer(theme)}>
+
         <MDBox
           color="inherit"
           mb={{ xs: 1, md: 0 }}
           sx={(theme) => navbarRow(theme, { isMini })}
         >
+          <MDBox mr={3} >
+            <IconButton
+                sx={navbarDesktopMenu}
+                onClick={handleMiniSidenav}
+                size="small"
+                disableRipple
+
+            >
+              <Icon fontSize="MEDIUM" sx={iconsStyle}>
+                {miniSidenav ? "menu":"menu_open" }
+              </Icon>
+            </IconButton>
+          </MDBox>
           <Breadcrumbs
             icon="home"
             title={route[route.length - 1]}
             route={route}
             light={light}
           />
-          <IconButton
-            sx={navbarDesktopMenu}
-            onClick={handleMiniSidenav}
-            size="small"
-            disableRipple
-          >
-            <Icon fontSize="medium" sx={iconsStyle}>
-              {miniSidenav ? "menu_open" : "menu"}
-            </Icon>
-          </IconButton>
+
         </MDBox>
         {isMini ? null : (
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
@@ -181,6 +189,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
               <MDInput label="Search here" />
             </MDBox>
             <MDBox color={light ? "white" : "inherit"}>
+
               <Link href="/authentication/sign-in/basic" passHref>
                 <IconButton sx={navbarIconButton} size="small" disableRipple>
                   <Icon sx={iconsStyle}>account_circle</Icon>
