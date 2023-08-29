@@ -14,7 +14,7 @@ import {FormControlLabel, InputLabel, Select} from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
 import MDButton from "../../../components/MDButton";
 import {geraDatas, setDatasEscala} from "../../../utils/escalaUtils";
-import {DataGrid} from '@mui/x-data-grid';
+import {DataGrid, GridToolbar} from '@mui/x-data-grid';
 
 
 
@@ -104,9 +104,7 @@ function AdicionaEscala() {
                 .then(escala => {
                     //console.log(geraDatas(escala.data.attributes.inicio, escala.data.attributes.fim));
                     const datasEscala =  geraDatas(escala.data.attributes.inicio, escala.data.attributes.fim);
-                    console.table(datasEscala)
                     setDatasEscala(escala.data.id, datasEscala, headers);
-                    console.log('Escala adicionada com sucesso');
                     setModifiedData(valorInicial);
                     fetchEscalas();
 
@@ -133,7 +131,7 @@ function AdicionaEscala() {
     const showJSON = () => {
         console.log('JSON:',escalas);
     };
-    // Função para ser chamada quando a seleção mudar
+
 
 
     return (
@@ -148,16 +146,15 @@ function AdicionaEscala() {
                         <MDBox mb={3}>
                             <MDBox p={2}>
                                 <DataGrid
-                                    /*checkboxSelection
-                                    disableColumnMenu*/
+                                    disableColumnMenu
                                     sx={{fontSize: '18px', fontWeight:'regular', }}
                                     pageSizeOptions={[5,10,20]}
                                     initialState={{pagination: { paginationModel: { pageSize: 20 } },}}
                                     rows={escalas}
                                     columns={[
-                                        {field:'descricao', headerName:'Descrição',flex:1, sortable:false},
-                                        {field:'tipo', headerName:'Tipo',flex:1, sortable:false},
-                                        {field:'fechada', headerName:'Status',width:150, sortable:false,
+                                        {field:'descricao', headerName:'Descrição',flex:1},
+                                        {field:'tipo', headerName:'Tipo',flex:1},
+                                        {field:'fechada', headerName:'Status',width:150,
                                             renderCell: (params) => (
                                                 <span style={{
                                                     color: params.value ?  'red':'green',
@@ -170,6 +167,16 @@ function AdicionaEscala() {
                                         },]}
                                     onRowSelectionModelChange={(newRowSelectionModel) => {setRowSelectionModel(newRowSelectionModel);}}
                                     rowSelectionModel={rowSelectionModel}
+                                    disableColumnFilter
+                                    disableColumnSelector
+                                    disableDensitySelector
+                                    disablE
+                                    slots={{ toolbar: GridToolbar }}
+                                    slotProps={{
+                                        toolbar: {
+                                            showQuickFilter: true,
+                                        },
+                                    }}
 
                                 />
                             </MDBox>

@@ -6,7 +6,7 @@ import MDTypography from "/components/MDTypography";
 import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
 import { useForm } from "react-hook-form";
-import {DataGrid} from '@mui/x-data-grid';
+import {DataGrid, GridToolbar} from '@mui/x-data-grid';
 import React, {useState, useEffect} from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -259,7 +259,12 @@ function Participantes() {
                                     disableColumnMenu
                                     sx={{fontSize: '18px', fontWeight:'regular',padding: '10px'}}
                                     pageSizeOptions={[10,20]}
-                                    initialState={{pagination:{paginationModel:{pageSize:10}},}}
+                                    initialState={{
+                                        pagination:{paginationModel:{pageSize:5}},
+                                        sorting: {
+                                            sortModel: [{ field: 'antiguidade', sort: 'asc' }],
+                                        },
+                                    }}
                                     rows={adicionados}
                                     columns={[
                                         {field:'nome',headerName:'Nomes',  flex:1},
@@ -293,6 +298,15 @@ function Participantes() {
                                                 </div>
                                             ),
                                         },]}
+                                    disableColumnFilter
+                                    disableColumnSelector
+                                    disableDensitySelector
+                                    slots={{ toolbar: GridToolbar }}
+                                    slotProps={{
+                                        toolbar: {
+                                            showQuickFilter: true,
+                                        },
+                                    }}
                                 />)}
 
                         </Grid>
@@ -304,19 +318,32 @@ function Participantes() {
                                     disableColumnMenu
                                     sx={{fontSize: '18px', fontWeight:'regular', padding:'10px'}}
                                     pageSizeOptions={[5,10,20]}
-                                    initialState={{pagination:{paginationModel:{pageSize:5}},}}
+                                    initialState={{
+                                        pagination:{paginationModel:{pageSize:5}},
+                                        sorting: {
+                                            sortModel: [{ field: 'antiguidade', sort: 'asc' }],
+                                        },
+                                    }}
                                     rows={juizesRestantes}
                                     columns={[{field:'nome',headerName:'Nome', flex:1},{field:'antiguidade',headerName:'Antiguidade', minWidth: 150},]}
                                     onRowSelectionModelChange={(newRowSelectionModel) => {
                                         setRowSelectionModel(newRowSelectionModel);
                                     }}
                                     rowSelectionModel={rowSelectionModel}
-                                    /*isRowSelectable={(params) => console.log('PARAMS', params)}*/
+                                    disableColumnFilter
+                                    disableColumnSelector
+                                    disableDensitySelector
+                                    slots={{ toolbar: GridToolbar }}
+                                    slotProps={{
+                                        toolbar: {
+                                            showQuickFilter: true,
+                                        },
+                                    }}
 
                                 />)}
 
                             {opcaoSelecionada && (<MDBox mt={2}> {/* Adicionei a propriedade mb para adicionar espaço abaixo do DataGrid */}
-                                <MDButton color="success" size="small"  onClick={() => adicionaParticipantes()}>Adicionar</MDButton>
+                                <MDButton color="success" size="small"  onClick={() => handleSubmit()}>Adicionar</MDButton>
                             </MDBox>)}
                         </Grid>
                         <Grid>

@@ -1,7 +1,6 @@
 // @mui material components
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-// NextJS Material Dashboard 2 PRO components
 import MDBox from "/components/MDBox";
 import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
@@ -15,7 +14,7 @@ import React, {useState, useEffect} from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import Card from "@mui/material/Card";
 import MDButton from "../../../components/MDButton";
-import {DataGrid, GridActionsCellItem} from "@mui/x-data-grid";
+import {DataGrid, GridActionsCellItem, GridToolbar} from "@mui/x-data-grid";
 import Tooltip from "@mui/material/Tooltip";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
@@ -69,17 +68,33 @@ function Meusplantoes() {
 
     const showJSON = () => {
 
-        console.log('PLANTONISTA',juizes);
+        console.log('PLANTONISTA',plantoes);
 
     };
+
+
+    const rows = plantoes.map((plantao) => ({
+        id: plantao.id,
+        data: plantao.data,
+        descricao: plantao.escala.data.attributes.descricao,
+        tipo: plantao.escala.data.attributes.tipo,
+    }));
+
+    const setTabela= (dadosJuiz)=>{
+
+        if(dadosJuiz) {
+            setPlantoes(dadosJuiz.plantoes.data.map(item => ({ id: item.id, ...item.attributes })))
+
+        }
+    }
 
     return (
         <DashboardLayout>
             <DashboardNavbar />
-            <Card id="escalas" sx={{ overflow: "visible" }}>
+            <Card  sx={{ overflow: "visible" }}>
                 <MDBox p={3}>
                     <Grid container spacing={3}>
-                        <Grid item xs={12}  xl={12}>
+                        <Grid item xs={12}  xl={6}>
                             <MDBox my={1}>
                                 <h5>Juiz :</h5>
                             </MDBox>
@@ -87,31 +102,47 @@ function Meusplantoes() {
                                 options={juizes}
                                 getOptionLabel={juiz => juiz.nome }
                                 value={juizSelecionado}
-                                onChange={(event, newValue) =>setJuizSelecionado(newValue)}
+                                onChange={(event, newValue) =>{setJuizSelecionado(newValue),setTabela(newValue)}}
                                 renderInput={(params) => <TextField {...params} label="Nome do Juiz" required />}
                             />
-                            <MDButton size="small" onClick={showJSON} color="info">Exibir</MDButton>
+
                         </Grid>
-                        <MDBox mb={3}>
+                        <Grid item xs={12} md={6} xl={7} >
+                            <DataGrid
 
-                                <DataGrid
-                                    checkboxSelection
-                                    disableColumnMenu
-                                    sx={{fontSize: '18px', fontWeight:'regular', }}
-                                    pageSizeOptions={[5,10,20]}
-                                    initialState={{pagination: { paginationModel: { pageSize: 20 } },}}
-                                    rows={escalas}
-                                    columns={[
-                                        {field:'data', headerName:'Data',flex:1, sortable:false},
-                                        {field:'descricao', headerName:'Escala',flex:1, sortable:false},
-                                        {field:'tipo', headerName:'Tipo da Escala',flex:1, sortable:false},]}
-                                    onRowSelectionModelChange={(newRowSelectionModel) => {setRowSelectionModel(newRowSelectionModel);}}
-                                    rowSelectionModel={rowSelectionModel}
-                                />
+                                disableColumnMenu
+                                sx={{fontSize: '18px', fontWeight:'regular', padding:'10px'}}
+                                pageSizeOptions={[5,10,20]}
+                                initialState={{pagination:{paginationModel:{pageSize:5}},}}
+                                rows={rows}
+                                columns={[{ field: 'data', headerName: 'Data do Plantão', width: 180,
+                                    renderCell: (params) => {
+                                        const dateParts = params.value.split('-');
+                                        const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+                                        return <span>{formattedDate}</span>;
+                                    }, },
+                                    { field: 'descricao', headerName: 'Descrição da Escala', width: 300 },
+                                    { field: 'tipo', headerName: 'Tipo da Escala', width: 150 },]}
+                                onRowSelectionModelChange={(newRowSelectionModel) => {
+                                    setRowSelectionModel(newRowSelectionModel);
+                                }}
+                                rowSelectionModel={rowSelectionModel}
+                                disableColumnFilter
+                                disableColumnSelector
+                                disableDensitySelector
+                                slots={{ toolbar: GridToolbar }}
+                                slotProps={{
+                                    toolbar: {
+                                        showQuickFilter: true,
+                                    },
+                                }}
 
-                        </MDBox>
+                            />
+
+                        </Grid>
                     </Grid>
                 </MDBox>
+                <MDButton size="small" onClick={showJSON} color="error">Exibir</MDButton>
             </Card>
             <Footer />
         </DashboardLayout>

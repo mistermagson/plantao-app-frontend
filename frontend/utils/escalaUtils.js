@@ -81,8 +81,6 @@ export const setDatasEscala = (idEscala, dateArray, headers) => {
 
     dateArray.forEach(item => setEscala(idEscala, item,headers));
 
-
-    return response;
 };
 
 export const setParticipantesEscala = (idEscala, juizesArray,headers) => {
