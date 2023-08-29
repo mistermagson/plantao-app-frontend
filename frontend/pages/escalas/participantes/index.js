@@ -24,6 +24,7 @@ import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 import Tooltip from '@mui/material/Tooltip';
 import {GridActionsCellItem,} from '@mui/x-data-grid';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
+import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 
 const headers = {
     'Content-Type': 'application/json',
@@ -220,10 +221,15 @@ function Participantes() {
     const showJSON = () => {
         console.log('JSON:',rowSelectionModel);
     };
+    const handleButtonClick = () => {
+        setShowSuccess(true);
+    };
+
 
     return (
         <DashboardLayout>
             <DashboardNavbar />
+            <button onClick={handleButtonClick}>Clique aqui</button>
             <MDBox p={2}>
                 <h1>Lista de Participantes</h1>
             </MDBox>
@@ -258,7 +264,7 @@ function Participantes() {
                                     disableRowSelectionOnClick
                                     disableColumnMenu
                                     sx={{fontSize: '18px', fontWeight:'regular',padding: '10px'}}
-                                    pageSizeOptions={[10,20]}
+                                    pageSizeOptions={[5,10,20]}
                                     initialState={{
                                         pagination:{paginationModel:{pageSize:5}},
                                         sorting: {

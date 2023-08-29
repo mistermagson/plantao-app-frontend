@@ -10,12 +10,21 @@ import MDDatePicker from "/components/MDDatePicker";
 import FormField from "/pagesComponents/pages/account/components/FormField";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-import {FormControlLabel, InputLabel, Select} from "@mui/material";
+import {
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    FormControlLabel,
+    InputLabel,
+    Select
+} from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
 import MDButton from "../../../components/MDButton";
 import {geraDatas, setDatasEscala} from "../../../utils/escalaUtils";
 import {DataGrid, GridToolbar} from '@mui/x-data-grid';
-
+import Button from "@mui/material/Button";
 
 
 
@@ -60,6 +69,7 @@ function AdicionaEscala() {
     const [juizes, setJuizes] = useState([]);
     const [escalas, setEscalas] = useState([]);
     const [error, setError] = useState(null);
+    const [showSuccess, setShowSuccess] = useState(false);
 
     const fetchEscalas = async () => {
         try {
@@ -105,6 +115,7 @@ function AdicionaEscala() {
                     //console.log(geraDatas(escala.data.attributes.inicio, escala.data.attributes.fim));
                     const datasEscala =  geraDatas(escala.data.attributes.inicio, escala.data.attributes.fim);
                     setDatasEscala(escala.data.id, datasEscala, headers);
+                    setShowSuccess(true);
                     setModifiedData(valorInicial);
                     fetchEscalas();
 
@@ -129,14 +140,27 @@ function AdicionaEscala() {
         });
     }
     const showJSON = () => {
-        console.log('JSON:',escalas);
+        console.log('JSON:',modifiedData.descricao);
     };
 
-
+    const handleClose = () => {
+        setShowSuccess(false);
+    };
 
     return (
         <DashboardLayout>
             <DashboardNavbar />
+            <div>
+                <Dialog open={showSuccess} onClose={handleClose}>
+                    <DialogTitle>Adição Realizada</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>A Escala {modifiedData.descricao} foi criada com sucesso! </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose}>Fechar</Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
             <Grid container spacing={2}>
                 <Grid item xs={12} xl={8}>
                     <MDBox p={2}>
