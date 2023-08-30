@@ -10,12 +10,21 @@ import MDDatePicker from "/components/MDDatePicker";
 import FormField from "/pagesComponents/pages/account/components/FormField";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
-import {FormControlLabel, InputLabel, Select} from "@mui/material";
+import {
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    FormControlLabel,
+    InputLabel,
+    Select
+} from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
 import MDButton from "../../../components/MDButton";
 import {geraDatas, setDatasEscala} from "../../../utils/escalaUtils";
-import {DataGrid} from '@mui/x-data-grid';
-
+import {DataGrid, GridToolbar} from '@mui/x-data-grid';
+import Button from "@mui/material/Button";
 
 
 
@@ -60,6 +69,7 @@ function AdicionaEscala() {
     const [juizes, setJuizes] = useState([]);
     const [escalas, setEscalas] = useState([]);
     const [error, setError] = useState(null);
+    const [showSuccess, setShowSuccess] = useState(false);
 
     const fetchEscalas = async () => {
         try {
@@ -104,9 +114,8 @@ function AdicionaEscala() {
                 .then(escala => {
                     //console.log(geraDatas(escala.data.attributes.inicio, escala.data.attributes.fim));
                     const datasEscala =  geraDatas(escala.data.attributes.inicio, escala.data.attributes.fim);
-                    console.table(datasEscala)
                     setDatasEscala(escala.data.id, datasEscala, headers);
-                    console.log('Escala adicionada com sucesso');
+                    setShowSuccess(true);
                     setModifiedData(valorInicial);
                     fetchEscalas();
 
@@ -131,15 +140,27 @@ function AdicionaEscala() {
         });
     }
     const showJSON = () => {
-        console.log('JSON:',escalas);
+        console.log('JSON:',modifiedData.descricao);
     };
-    // Função para ser chamada quando a seleção mudar
 
+    const handleClose = () => {
+        setShowSuccess(false);
+    };
 
     return (
         <DashboardLayout>
             <DashboardNavbar />
-
+            <div>
+                <Dialog open={showSuccess} onClose={handleClose}>
+                    <DialogTitle>Adição Realizada</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>A Escala {modifiedData.descricao} foi criada com sucesso! </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose}>Fechar</Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
             <Grid container spacing={2}>
                 <Grid item xs={12} xl={8}>
                     <MDBox p={2}>
@@ -149,16 +170,16 @@ function AdicionaEscala() {
                         <MDBox mb={3}>
                             <MDBox p={2}>
                                 <DataGrid
-                                    /*checkboxSelection
-                                    disableColumnMenu*/
+                                    disableColumnMenu
                                     sx={{fontSize: '18px', fontWeight:'regular', }}
                                     pageSizeOptions={[5,10,20]}
                                     initialState={{pagination: { paginationModel: { pageSize: 20 } },}}
                                     rows={escalas}
                                     columns={[
-                                        {field:'descricao', headerName:'Descrição',flex:1, sortable:false},
-                                        {field:'tipo', headerName:'Tipo',flex:1, sortable:false},
-                                        {field:'fechada', headerName:'Status',width:150, sortable:false,
+                                        {field:'id', headerName:'ID',width:50},
+                                        {field:'descricao', headerName:'Descrição',flex:1},
+                                        {field:'tipo', headerName:'Tipo',flex:1},
+                                        {field:'fechada', headerName:'Status',width:150,
                                             renderCell: (params) => (
                                                 <span style={{
                                                     color: params.value ?  'red':'green',
@@ -171,6 +192,16 @@ function AdicionaEscala() {
                                         },]}
                                     onRowSelectionModelChange={(newRowSelectionModel) => {setRowSelectionModel(newRowSelectionModel);}}
                                     rowSelectionModel={rowSelectionModel}
+                                    disableColumnFilter
+                                    disableColumnSelector
+                                    disableDensitySelector
+                                    disablE
+                                    slots={{ toolbar: GridToolbar }}
+                                    slotProps={{
+                                        toolbar: {
+                                            showQuickFilter: true,
+                                        },
+                                    }}
 
                                 />
                             </MDBox>
@@ -240,7 +271,6 @@ function AdicionaEscala() {
                                         <Grid ml={1}>
                                             <MDTypography variant="h6">Status da Escala:</MDTypography>
                                             <FormControlLabel
-
                                                 control={<Checkbox defaultChecked={modifiedData.fechada} />}
                                                 label="Fechada"
                                                 name="fechada"

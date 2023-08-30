@@ -1,12 +1,6 @@
-import { useMemo } from "react";
-
-import dynamic from "next/dynamic";
-
 // @mui material components
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
-
-// NextJS Material Dashboard 2 PRO components
 import MDBox from "/components/MDBox";
 import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
@@ -20,6 +14,11 @@ import React, {useState, useEffect} from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import Card from "@mui/material/Card";
 import MDButton from "../../../components/MDButton";
+import {DataGrid, GridActionsCellItem, GridToolbar} from "@mui/x-data-grid";
+import Tooltip from "@mui/material/Tooltip";
+import HowToRegIcon from "@mui/icons-material/HowToReg";
+import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
+import MDTypography from "../../../components/MDTypography";
 
 const headers= {
     'Content-Type': 'application/json',
@@ -33,6 +32,7 @@ function Meusplantoes() {
     const [plantoes, setPlantoes] = useState([]);
     const [error, setError] = useState(null);
     const [juizSelecionado, setJuizSelecionado] = useState(null);
+    const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
 
     useEffect(() => {
         const fetchEscalas = async () => {
@@ -69,53 +69,87 @@ function Meusplantoes() {
 
     const showJSON = () => {
 
-        console.log('PLANTONISTA',juizes);
+        console.log('PLANTONISTA',plantoes);
 
     };
+
+
+    const rows = plantoes.map((plantao) => ({
+        id: plantao.id,
+        data: plantao.data,
+        descricao: plantao.escala.data.attributes.descricao,
+        tipo: plantao.escala.data.attributes.tipo,
+    }));
+
+    const setTabela= (dadosJuiz)=>{
+
+        if(dadosJuiz) {
+            setPlantoes(dadosJuiz.plantoes.data.map(item => ({ id: item.id, ...item.attributes })))
+
+        }
+    }
 
     return (
         <DashboardLayout>
             <DashboardNavbar />
-            <Card>
-            <MDBox p={3}>
-                <Grid container spacing={3}>
-                    {/*<Grid item xs={12} xl={9} sx={{ height: "max-content" }}>
-                        {useMemo(
-                            () => (
-                                <EventCalendar
-                                    initialView="dayGridMonth"
-                                    initialDate="2021-08-10"
-                                    events={calendarEventsData}
-                                    selectable
-                                    editable
-                                    sx={{bgcolor:'info'}}
+            <Grid item xs={12} xl={8}>
+                <MDBox p={2}>
+                    <MDTypography variant="h2">Meus plantões</MDTypography>
+                </MDBox>
+                <Card  sx={{ overflow: "visible" }}>
+                    <MDBox p={3}>
+                        <Grid container spacing={3}>
+                            <Grid item xs={12}  xl={6}>
+                                <MDBox my={1}>
+                                    <h5>Juiz :</h5>
+                                </MDBox>
+                                <Autocomplete
+                                    options={juizes}
+                                    getOptionLabel={juiz => juiz.nome }
+                                    value={juizSelecionado}
+                                    onChange={(event, newValue) =>{setJuizSelecionado(newValue),setTabela(newValue)}}
+                                    renderInput={(params) => <TextField {...params} label="Nome do Juiz" required />}
                                 />
-                            ),
-                            // eslint-disable-next-line react-hooks/exhaustive-deps
-                            [calendarEventsData],
-                        )}
-                    </Grid>
-                    <Grid item xs={12} xl={3}>
-                        <MDBox mb={3}>
-                            <NextEvents />
-                        </MDBox>
-                    </Grid>*/}
-                    <Grid item xs={12}  xl={12}>
-                        <MDBox my={1}>
-                            <h5>Juiz :</h5>
-                        </MDBox>
-                        <Autocomplete
-                            options={juizes}
-                            getOptionLabel={juiz => juiz.nome }
-                            value={juizSelecionado}
-                            onChange={(event, newValue) =>setJuizSelecionado(newValue)}
-                            renderInput={(params) => <TextField {...params} label="Nome do Juiz" required />}
-                        />
-                        <MDButton size="small" onClick={showJSON} color="info">Exibir</MDButton>
-                    </Grid>
-                </Grid>
-            </MDBox>
-            </Card>
+
+                            </Grid>
+                            <Grid item xs={12} md={6} xl={7} >
+                                <DataGrid
+
+                                    disableColumnMenu
+                                    sx={{fontSize: '18px', fontWeight:'regular', padding:'10px'}}
+                                    pageSizeOptions={[5,10,20]}
+                                    initialState={{pagination:{paginationModel:{pageSize:5}},}}
+                                    rows={rows}
+                                    columns={[{ field: 'data', headerName: 'Data do Plantão', width: 180,
+                                        renderCell: (params) => {
+                                            const dateParts = params.value.split('-');
+                                            const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+                                            return <span>{formattedDate}</span>;
+                                        }, },
+                                        { field: 'descricao', headerName: 'Descrição da Escala', width: 300 },
+                                        { field: 'tipo', headerName: 'Tipo da Escala', width: 150 },]}
+                                    onRowSelectionModelChange={(newRowSelectionModel) => {
+                                        setRowSelectionModel(newRowSelectionModel);
+                                    }}
+                                    rowSelectionModel={rowSelectionModel}
+                                    disableColumnFilter
+                                    disableColumnSelector
+                                    disableDensitySelector
+                                    slots={{ toolbar: GridToolbar }}
+                                    slotProps={{
+                                        toolbar: {
+                                            showQuickFilter: true,
+                                        },
+                                    }}
+
+                                />
+
+                            </Grid>
+                        </Grid>
+                    </MDBox>
+                    <MDButton size="small" onClick={showJSON} color="error">Exibir</MDButton>
+                </Card>
+            </Grid>
             <Footer />
         </DashboardLayout>
     );

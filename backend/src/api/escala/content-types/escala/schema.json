@@ -22,7 +22,8 @@
       "enum": [
         "regional",
         "local",
-        "distribuidor"
+        "distribuidor",
+        "recesso"
       ],
       "required": true
     },
