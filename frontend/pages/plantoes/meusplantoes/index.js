@@ -18,6 +18,7 @@ import {DataGrid, GridActionsCellItem, GridToolbar} from "@mui/x-data-grid";
 import Tooltip from "@mui/material/Tooltip";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
+import MDTypography from "../../../components/MDTypography";
 
 const headers= {
     'Content-Type': 'application/json',
@@ -91,59 +92,64 @@ function Meusplantoes() {
     return (
         <DashboardLayout>
             <DashboardNavbar />
-            <Card  sx={{ overflow: "visible" }}>
-                <MDBox p={3}>
-                    <Grid container spacing={3}>
-                        <Grid item xs={12}  xl={6}>
-                            <MDBox my={1}>
-                                <h5>Juiz :</h5>
-                            </MDBox>
-                            <Autocomplete
-                                options={juizes}
-                                getOptionLabel={juiz => juiz.nome }
-                                value={juizSelecionado}
-                                onChange={(event, newValue) =>{setJuizSelecionado(newValue),setTabela(newValue)}}
-                                renderInput={(params) => <TextField {...params} label="Nome do Juiz" required />}
-                            />
-
-                        </Grid>
-                        <Grid item xs={12} md={6} xl={7} >
-                            <DataGrid
-
-                                disableColumnMenu
-                                sx={{fontSize: '18px', fontWeight:'regular', padding:'10px'}}
-                                pageSizeOptions={[5,10,20]}
-                                initialState={{pagination:{paginationModel:{pageSize:5}},}}
-                                rows={rows}
-                                columns={[{ field: 'data', headerName: 'Data do Plantão', width: 180,
-                                    renderCell: (params) => {
-                                        const dateParts = params.value.split('-');
-                                        const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
-                                        return <span>{formattedDate}</span>;
-                                    }, },
-                                    { field: 'descricao', headerName: 'Descrição da Escala', width: 300 },
-                                    { field: 'tipo', headerName: 'Tipo da Escala', width: 150 },]}
-                                onRowSelectionModelChange={(newRowSelectionModel) => {
-                                    setRowSelectionModel(newRowSelectionModel);
-                                }}
-                                rowSelectionModel={rowSelectionModel}
-                                disableColumnFilter
-                                disableColumnSelector
-                                disableDensitySelector
-                                slots={{ toolbar: GridToolbar }}
-                                slotProps={{
-                                    toolbar: {
-                                        showQuickFilter: true,
-                                    },
-                                }}
-
-                            />
-
-                        </Grid>
-                    </Grid>
+            <Grid item xs={12} xl={8}>
+                <MDBox p={2}>
+                    <MDTypography variant="h2">Meus plantões</MDTypography>
                 </MDBox>
-                <MDButton size="small" onClick={showJSON} color="error">Exibir</MDButton>
-            </Card>
+                <Card  sx={{ overflow: "visible" }}>
+                    <MDBox p={3}>
+                        <Grid container spacing={3}>
+                            <Grid item xs={12}  xl={6}>
+                                <MDBox my={1}>
+                                    <h5>Juiz :</h5>
+                                </MDBox>
+                                <Autocomplete
+                                    options={juizes}
+                                    getOptionLabel={juiz => juiz.nome }
+                                    value={juizSelecionado}
+                                    onChange={(event, newValue) =>{setJuizSelecionado(newValue),setTabela(newValue)}}
+                                    renderInput={(params) => <TextField {...params} label="Nome do Juiz" required />}
+                                />
+
+                            </Grid>
+                            <Grid item xs={12} md={6} xl={7} >
+                                <DataGrid
+
+                                    disableColumnMenu
+                                    sx={{fontSize: '18px', fontWeight:'regular', padding:'10px'}}
+                                    pageSizeOptions={[5,10,20]}
+                                    initialState={{pagination:{paginationModel:{pageSize:5}},}}
+                                    rows={rows}
+                                    columns={[{ field: 'data', headerName: 'Data do Plantão', width: 180,
+                                        renderCell: (params) => {
+                                            const dateParts = params.value.split('-');
+                                            const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+                                            return <span>{formattedDate}</span>;
+                                        }, },
+                                        { field: 'descricao', headerName: 'Descrição da Escala', width: 300 },
+                                        { field: 'tipo', headerName: 'Tipo da Escala', width: 150 },]}
+                                    onRowSelectionModelChange={(newRowSelectionModel) => {
+                                        setRowSelectionModel(newRowSelectionModel);
+                                    }}
+                                    rowSelectionModel={rowSelectionModel}
+                                    disableColumnFilter
+                                    disableColumnSelector
+                                    disableDensitySelector
+                                    slots={{ toolbar: GridToolbar }}
+                                    slotProps={{
+                                        toolbar: {
+                                            showQuickFilter: true,
+                                        },
+                                    }}
+
+                                />
+
+                            </Grid>
+                        </Grid>
+                    </MDBox>
+                    <MDButton size="small" onClick={showJSON} color="error">Exibir</MDButton>
+                </Card>
+            </Grid>
             <Footer />
         </DashboardLayout>
     );

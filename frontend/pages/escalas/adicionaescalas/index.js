@@ -176,6 +176,7 @@ function AdicionaEscala() {
                                     initialState={{pagination: { paginationModel: { pageSize: 20 } },}}
                                     rows={escalas}
                                     columns={[
+                                        {field:'id', headerName:'ID',width:50},
                                         {field:'descricao', headerName:'Descrição',flex:1},
                                         {field:'tipo', headerName:'Tipo',flex:1},
                                         {field:'fechada', headerName:'Status',width:150,
@@ -270,7 +271,6 @@ function AdicionaEscala() {
                                         <Grid ml={1}>
                                             <MDTypography variant="h6">Status da Escala:</MDTypography>
                                             <FormControlLabel
-
                                                 control={<Checkbox defaultChecked={modifiedData.fechada} />}
                                                 label="Fechada"
                                                 name="fechada"
