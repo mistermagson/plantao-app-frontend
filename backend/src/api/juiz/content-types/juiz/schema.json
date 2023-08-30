@@ -34,6 +34,12 @@
     },
     "antiguidade": {
       "type": "integer"
+    },
+    "lotacao": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::vara.vara",
+      "inversedBy": "juizes"
     }
   }
 }

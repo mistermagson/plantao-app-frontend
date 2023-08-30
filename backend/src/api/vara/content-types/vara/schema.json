@@ -36,6 +36,15 @@
         "COXIM"
       ],
       "required": true
+    },
+    "regional": {
+      "type": "integer"
+    },
+    "juizes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::juiz.juiz",
+      "mappedBy": "lotacao"
     }
   }
 }
