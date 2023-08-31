@@ -5,19 +5,11 @@ import MDBox from "/components/MDBox";
 import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
 import Footer from "/examples/Footer";
-import EventCalendar from "/examples/Calendar";
-import Header from "/pagesComponents/applications/calendar/components/Header";
-import NextEvents from "/pagesComponents/applications/calendar/components/NextEvents";
-import ProductivityChart from "/pagesComponents/applications/calendar/components/ProductivityChart";
-import calendarEventsData from "/pagesComponents/applications/calendar/data/calendarEventsData";
-import React, {useState, useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import Card from "@mui/material/Card";
 import MDButton from "../../../components/MDButton";
-import {DataGrid, GridActionsCellItem, GridToolbar} from "@mui/x-data-grid";
-import Tooltip from "@mui/material/Tooltip";
-import HowToRegIcon from "@mui/icons-material/HowToReg";
-import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
+import {DataGrid, GridToolbar} from "@mui/x-data-grid";
 import MDTypography from "../../../components/MDTypography";
 
 const headers= {
@@ -87,6 +79,7 @@ function Meusplantoes() {
 
     return (
         <DashboardLayout>
+            <div>olá</div>
             <DashboardNavbar />
             <Grid item xs={12} xl={8}>
                 <MDBox p={2}>
