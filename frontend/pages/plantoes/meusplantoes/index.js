@@ -95,9 +95,9 @@ function Meusplantoes() {
                 <Card  sx={{ overflow: "visible" }}>
                     <MDBox p={3}>
                         <Grid container spacing={3}>
-                            <Grid item xs={12}  xl={6}>
+                            <Grid item xs={12} md={8}  xl={6}>
                                 <MDBox my={1}>
-                                    <h5>Juiz :</h5>
+                                    <h5>Selecione um Juiz :</h5>
                                 </MDBox>
                                 <Autocomplete
                                     options={juizes}
@@ -107,42 +107,46 @@ function Meusplantoes() {
                                     renderInput={(params) => <TextField {...params} label="Nome do Juiz" required />}
                                 />
                             </Grid>
-                            <Grid item xs={12} md={6} xl={7} >
-                                <DataGrid
+                            <Grid item xs={12} md={12} xl={12} >
+                                {juizSelecionado && (
+                                    <DataGrid
+                                        style={{ minHeight: '300px' }}
+                                        disableColumnMenu
+                                        sx={{fontSize: '18px', fontWeight:'regular', padding:'10px'}}
+                                        pageSizeOptions={[5,10,20]}
+                                        initialState={{pagination:{paginationModel:{pageSize:5}},}}
+                                        rows={rows}
+                                        columns={[{ field: 'data', headerName: 'Data do Plantão', flex:1,
+                                            renderCell: (params) => {
+                                                const dateParts = params.value.split('-');
+                                                const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+                                                return <span>{formattedDate}</span>;
+                                            }, },
+                                            { field: 'descricao', headerName: 'Descrição da Escala', flex:1 },
+                                            { field: 'tipo', headerName: 'Tipo da Escala', flex:1 },]}
+                                        onRowSelectionModelChange={(newRowSelectionModel) => {
+                                            setRowSelectionModel(newRowSelectionModel);
+                                        }}
+                                        rowSelectionModel={rowSelectionModel}
+                                        disableColumnFilter
+                                        disableColumnSelector
+                                        disableDensitySelector
+                                        slots={{ toolbar: GridToolbar }}
+                                        slotProps={{
+                                            toolbar: {
+                                                showQuickFilter: true,
+                                            },
+                                        }}
 
-                                    disableColumnMenu
-                                    sx={{fontSize: '18px', fontWeight:'regular', padding:'10px'}}
-                                    pageSizeOptions={[5,10,20]}
-                                    initialState={{pagination:{paginationModel:{pageSize:5}},}}
-                                    rows={rows}
-                                    columns={[{ field: 'data', headerName: 'Data do Plantão', width: 180,
-                                        renderCell: (params) => {
-                                            const dateParts = params.value.split('-');
-                                            const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
-                                            return <span>{formattedDate}</span>;
-                                        }, },
-                                        { field: 'descricao', headerName: 'Descrição da Escala', width: 300 },
-                                        { field: 'tipo', headerName: 'Tipo da Escala', width: 150 },]}
-                                    onRowSelectionModelChange={(newRowSelectionModel) => {
-                                        setRowSelectionModel(newRowSelectionModel);
-                                    }}
-                                    rowSelectionModel={rowSelectionModel}
-                                    disableColumnFilter
-                                    disableColumnSelector
-                                    disableDensitySelector
-                                    slots={{ toolbar: GridToolbar }}
-                                    slotProps={{
-                                        toolbar: {
-                                            showQuickFilter: true,
-                                        },
-                                    }}
-
-                                />
+                                    />
+                                )}
 
                             </Grid>
                         </Grid>
                     </MDBox>
-                    <MDButton size="small" onClick={showJSON} color="error">Exibir</MDButton>
+                    <MDBox p={3}>
+                        <MDButton size="small" onClick={showJSON} color="error">Exibir</MDButton>
+                    </MDBox>
                 </Card>
             </Grid>
             <Footer />
