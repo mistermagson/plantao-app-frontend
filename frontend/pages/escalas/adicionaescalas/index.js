@@ -204,6 +204,9 @@ function AdicionaEscala() {
                                     }}
 
                                 />
+                                <span style={{color:'red', display: 'flex', fontSize:'13px'}}>
+                                    Adicionar edição de escala e remoção de escala (necessário apagar os plantoes pertencentes)
+                                </span>
                             </MDBox>
                         </MDBox>
                     </Card>

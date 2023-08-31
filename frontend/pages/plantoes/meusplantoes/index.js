@@ -68,9 +68,7 @@ function Meusplantoes() {
     }, []);
 
     const showJSON = () => {
-
         console.log('PLANTONISTA',plantoes);
-
     };
 
 
@@ -82,10 +80,8 @@ function Meusplantoes() {
     }));
 
     const setTabela= (dadosJuiz)=>{
-
         if(dadosJuiz) {
             setPlantoes(dadosJuiz.plantoes.data.map(item => ({ id: item.id, ...item.attributes })))
-
         }
     }
 
@@ -110,7 +106,6 @@ function Meusplantoes() {
                                     onChange={(event, newValue) =>{setJuizSelecionado(newValue),setTabela(newValue)}}
                                     renderInput={(params) => <TextField {...params} label="Nome do Juiz" required />}
                                 />
-
                             </Grid>
                             <Grid item xs={12} md={6} xl={7} >
                                 <DataGrid

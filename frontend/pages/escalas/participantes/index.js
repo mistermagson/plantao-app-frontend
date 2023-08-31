@@ -52,6 +52,7 @@ function Participantes() {
     const [jsonData, setJsonData]= useState([]);
     const [adicionados, setAdicionados] = useState([]);
     const [juizPreferencialId, setJuizPreferencialId] = useState(null);
+    const hideExibir = true;
 
 
     const fetchJuizes = async () => {
@@ -221,29 +222,25 @@ function Participantes() {
     const showJSON = () => {
         console.log('JSON:',rowSelectionModel);
     };
-    const handleButtonClick = () => {
-        setShowSuccess(true);
-    };
 
 
     return (
         <DashboardLayout>
             <DashboardNavbar />
-            <button onClick={handleButtonClick}>Clique aqui</button>
             <MDBox p={2}>
                 <h1>Lista de Participantes</h1>
             </MDBox>
             <Grid container  >
                 <Grid item xs={12} md={6} xl={11} >
             <Card sx={{ height: "100%" }}>
-                <MDBox pt={2} px={2}>
+                <MDBox pt={2} px={4}>
                     <MDTypography variant="h6" >
                         Selecionar escala
                     </MDTypography>
                 </MDBox>
-                <MDBox p={2}>
+                <MDBox p={2} pt={0}>
                     <Grid container spacing={4} p={2} >
-                        <Grid item xs={12} md={6} xl={6} >
+                        <Grid item xs={12} md={12} xl={6} >
                         <Autocomplete
                             options={escalas}
                             getOptionLabel={escala => escala.descricao}
@@ -256,8 +253,8 @@ function Participantes() {
                         </Grid>
                     </Grid>
 
-                    <Grid container spacing={4} p={2} >
-                        <Grid item xs={12} md={6} xl={6}  >
+                    <Grid container spacing={6} p={2} >
+                        <Grid item xs={12} md={12} xl={6}  >
                             {opcaoSelecionada && (<h5>Juizes Adicionados:</h5>)}
                             {opcaoSelecionada && (
                                 <DataGrid
@@ -316,7 +313,7 @@ function Participantes() {
                                 />)}
 
                         </Grid>
-                        <Grid item xs={12} md={6} xl={6} >
+                        <Grid item xs={12} md={12} xl={6} >
                             {opcaoSelecionada && (<h5>Juizes Restantes:</h5>)}
                             {opcaoSelecionada && (
                                 <DataGrid
@@ -354,16 +351,13 @@ function Participantes() {
                         </Grid>
                         <Grid>
                             {!opcaoSelecionada && (
-                                <MDTypography variant="h6" mx={6} mt={2} mb={-3} fontWeight="light">
+                                <MDTypography variant="h6" mx={5} mt={-1} mb={-2} fontWeight="light">
                                     Escala não selecionada
                                 </MDTypography>
                             )}
                         </Grid>
                     </Grid>
-                    <Grid p={2} mt={2}>
-                        <MDButton size="regular" onClick={showJSON} color="info">Exibir</MDButton>
-
-                    </Grid>
+                    {opcaoSelecionada && (<Grid p={4} mt={2}></Grid>)}
                 </MDBox>
             </Card>
                 </Grid>
