@@ -40,6 +40,10 @@
       "relation": "manyToOne",
       "target": "api::vara.vara",
       "inversedBy": "juizes"
+    },
+    "cargo": {
+      "type": "string",
+      "required": true
     }
   }
 }

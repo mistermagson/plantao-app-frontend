@@ -20,10 +20,12 @@
     "tipo": {
       "type": "enumeration",
       "enum": [
-        "regional",
-        "local",
-        "distribuidor",
-        "recesso"
+        "juiz-regional",
+        "juiz-local",
+        "juiz-distribuidor",
+        "juiz-recesso",
+        "vara-recesso",
+        "vara-anual"
       ],
       "required": true
     },
@@ -55,6 +57,11 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::juiz.juiz"
+    },
+    "varas": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::vara.vara"
     }
   }
 }
