@@ -133,7 +133,9 @@ function Meusplantoes() {
 
                                     />
                                 )}
-
+                                <span style={{color:'red', fontSize:'13px'}}>
+                                    alterar tabela, permitir que ele acesse as escalas que participa, indicar se ele precisa escolher algum plantao
+                                </span>
                             </Grid>
                         </Grid>
                     </MDBox>
