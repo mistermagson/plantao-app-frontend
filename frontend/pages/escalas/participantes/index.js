@@ -5,12 +5,10 @@ import MDBox from "/components/MDBox";
 import MDTypography from "/components/MDTypography";
 import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
-import { useForm } from "react-hook-form";
 import {DataGrid, GridToolbar} from '@mui/x-data-grid';
 import React, {useState, useEffect} from "react";
 import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import ParticipantesList from "../../participanteslist";
+
 import {
     removeParticipantesEscala,
     removePreferencial,
@@ -18,13 +16,11 @@ import {
     setPreferencia
 } from "../../../utils/escalaUtils";
 import MDButton from "../../../components/MDButton";
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import DataTable from "../../../examples/Tables/DataTable";
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 import Tooltip from '@mui/material/Tooltip';
 import {GridActionsCellItem,} from '@mui/x-data-grid';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
-import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+
 
 const headers = {
     'Content-Type': 'application/json',
