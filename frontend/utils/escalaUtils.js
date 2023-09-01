@@ -108,6 +108,31 @@ export const setParticipantesEscala = (idEscala, juizesArray,headers) => {
 
 };
 
+export const setVarasEscala = (idEscala, varasArray,headers) => {
+
+
+    const varas={
+        varas:{connect: varasArray}
+    }
+    console.log(idEscala, varas,headers)
+    const setEscala = async () => {
+        try {
+            const response = await fetch(`http://localhost:1337/api/escalas/${idEscala}`, {
+                method: 'PUT',
+                headers,
+                body: JSON.stringify({ data: varas }),
+            })
+                .then(checkStatus)
+                .then(parseJSON);
+        } catch (error) {
+            return error;
+        }
+    };
+
+    setEscala();
+
+};
+
 export const removeParticipantesEscala = (idJuiz, idEscala,headers ) => {
 
     const juiz={
