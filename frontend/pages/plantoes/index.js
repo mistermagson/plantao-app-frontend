@@ -150,9 +150,7 @@ function Plantoes({data, h}) {
                                             }}
                                         />
                                     </Grid>
-                                    <span style={{color:'red', display: 'flex', fontSize:'13px'}}>
-                                        Corrigir quais usuarios podem limpar os plantões, permitir que apaguem somente o deles
-                                    </span>
+
                                 </Grid>
                             </MDBox>
                         </Grid>
