@@ -17,6 +17,8 @@ import Tooltip from '@mui/material/Tooltip';
 import {GridActionsCellItem,} from '@mui/x-data-grid';
 import {fetchEscalas} from "../../utils/escalaUtils";
 import Minuta from './Minuta';
+import Calendar from 'react-calendar'; // Importe a biblioteca do calendário
+
 
 
 function Escalas({data, h}) {
@@ -116,12 +118,85 @@ function Escalas({data, h}) {
 
                                 </Grid>
                             </MDBox>
+
+                        </Grid>
+                        <Grid item xs={12} xl={10}>
+                            <MDBox mt={2} display="flex" justifyContent="space-between">
+                                <div>
+                                    <h6>Descrição da escala</h6>
+                                    <TextField
+                                        id="outlined-descricao-input"
+                                        value={escalaSelecionada ? escalaSelecionada.descricao : ""}
+                                        InputProps={{
+                                            readOnly: true,
+                                        }}
+                                        variant="outlined"
+                                        style={{ flex: 1, marginRight: '8px' }}
+                                    />
+                                </div>
+                                <div>
+                                    <h6>Tipo da escala</h6>
+                                    <TextField
+                                        id="outlined-tipo-input"
+                                        value={escalaSelecionada ? escalaSelecionada.tipo : ""}
+                                        InputProps={{
+                                            readOnly: true,
+                                        }}
+                                        variant="outlined"
+                                        style={{ flex: 1, marginRight: '8px' }}
+                                    />
+                                </div>
+                                <div>
+                                    <h6>Data de início</h6>
+                                    <TextField
+                                        id="outlined-inicio-input"
+                                        value={escalaSelecionada ? escalaSelecionada.inicio : ""}
+                                        InputProps={{
+                                            readOnly: true,
+                                        }}
+                                        variant="outlined"
+                                        style={{ flex: 1, marginRight: '8px' }}
+                                    />
+                                </div>
+                                <div>
+                                    <h6>Data de término</h6>
+                                    <TextField
+                                        id="outlined-fim-input"
+                                        value={escalaSelecionada ? escalaSelecionada.fim : ""}
+                                        InputProps={{
+                                            readOnly: true,
+                                        }}
+                                        variant="outlined"
+                                        style={{ flex: 1, marginRight: '8px' }}
+                                    />
+                                </div>
+                                <div>
+                                    <h6>Escala fechada</h6>
+                                    <TextField
+                                        id="outlined-fechada-input"
+                                        value={escalaSelecionada ? escalaSelecionada.fechada : ""}
+                                        InputProps={{
+                                            readOnly: true,
+                                        }}
+                                        variant="outlined"
+                                        style={{ flex: 1 }}
+                                    />
+                                </div>
+                            </MDBox>
                         </Grid>
                         <Grid item xs={12} xl={12}>{escalaSelecionada &&(
                             <Minuta plantoes={plantoes}/>)}
                         </Grid>
-                        <MDBox ml={2} p={3}>
+                        <Grid container spacing={2} justifyContent="center">
+                            <Grid item>
 
+                                <Calendar
+
+                                />
+
+                            </Grid>
+                        </Grid>
+                        <MDBox ml={2} p={3}>
                             <MDButton size="small" onClick={showJSON} color="info">Exibir</MDButton>
                         </MDBox>
 
@@ -132,84 +207,20 @@ function Escalas({data, h}) {
     );
 }
 
-export const getServerSideProps = async () => {
-    const h = {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b'
-    };
-    const query=
-        `query GET_ESCALAS {
-          escalas {
-            data {
-              id
-              attributes {
-                descricao
-                plantaos {
-                  data {
-                    id
-                    attributes {
-                      data
-                      plantonista {
-                        data {
-                          id
-                          attributes {
-                            nome
-                            cargo
-                            lotacao {
-                              data {
-                                id
-                                attributes {
-                                  descricao
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-                participantes {
-                  data {
-                    id
-                    attributes {
-                      nome
-                      cargo
-                      lotacao {
-                        data {
-                          id
-                          attributes {
-                            descricao
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }`
-    let data1;
+    export async function getServerSideProps() {
+        const h = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b'
+        };
+        const res = await fetch('http://127.0.0.1:1337/api/escalas?populate=plantaos.plantonista.lotacao.varas,participantes.plantoes,preferencia.juizs', {
+            method: 'GET',
+            headers: h,
+        });
+        //const data = await res.json();
+        const responseEscala = await res.json();
+        const data = responseEscala.data.map((item) => ({id: item.id, ...item.attributes,}));
 
-    fetch('http://localhost:1337/graphql/', {
-        method: 'POST',
-        headers: h,
-        body: JSON.stringify({ query }),
-    })
-        .then(res=>res.json())
-        .then(data=>{
-            data1 = data.data.map((item) => ({id: item.id, ...item.attributes,}));
-            console.log(data)
-        })
-
-    return { props: {data1, h} };
-    /*const responseEscala = res;
-    const data = responseEscala.data.map((item) => ({id: item.id, ...item.attributes,}));
-    console.log(data)
-
-    return { props: {data, h} };*/
-}
-
+        return { props: {data, h} };
+    }
 
 export default Escalas;

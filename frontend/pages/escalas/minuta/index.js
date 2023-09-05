@@ -11,6 +11,9 @@ function Minuta({ plantoes }) {
         padding: '8px',
         textAlign: 'center',
         verticalAlign: 'middle',
+        fontFamily: 'Times New Roman',
+        fontSize: '22px',
+        color: 'black',
     };
 
     const dataAjustada = (dateString) => {
@@ -22,7 +25,7 @@ function Minuta({ plantoes }) {
 
 
     return (
-        <div style={{ border: '1px solid #ccc', padding: '10px', width: '60%' }}>
+        <div style={{ border: '1px solid #ccc', padding: '10px', width: '70%' }}>
             <table
                 id="minuta-table"
                 style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #ccc' }}
@@ -41,7 +44,7 @@ function Minuta({ plantoes }) {
                             {plantao.plantonista?.data.length > 0 ? (
                                 <>
                                     {plantao.plantonista.data[0].attributes.nome} <br />
-                                    {`${plantao.plantonista.data[0].attributes.cargo} da ${plantao.plantonista.data[0].attributes.lotacao}`}
+                                    {`${plantao.plantonista.data[0].attributes.cargo} da ${plantao.plantonista.data[0].attributes.lotacao.data.attributes.descricao}`}
                                 </>
                             ) : (
                                 'Nenhum plantonista'
@@ -51,12 +54,12 @@ function Minuta({ plantoes }) {
                 ))}
                 </tbody>
             </table>
-            <CopyToClipboard text={tableHtml}>
+            {/*<CopyToClipboard text={tableHtml}>
                 <MDButton style={{ marginBottom: '10px', marginTop: '10px', padding: '10px' }} size='small' color='secondary'>
                     Copiar Tabela
                 </MDButton>
             </CopyToClipboard>
-            {copied && <h5>Tabela copiada com sucesso!</h5>}
+            {copied && <h5>Tabela copiada com sucesso!</h5>}*/}
         </div>
     );
 }

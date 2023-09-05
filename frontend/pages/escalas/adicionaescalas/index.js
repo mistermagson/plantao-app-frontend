@@ -55,7 +55,7 @@ function AdicionaEscala() {
     const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
     //--------------------------------------------------------------------------
 
-    const opEscala = ["local", "regional", "distribuidor", "recesso"];
+    const opEscala = ["juiz-regional", "juiz-local", "juiz-distribuidor", "juiz-recesso", "vara-recesso", "vara-anual"];
     const [modifiedData, setModifiedData] = useState(valorInicial);
     const [errorEscalas, setErrorEscalas] = useState(null);
     const [juizes, setJuizes] = useState([]);

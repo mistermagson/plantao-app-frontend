@@ -57,6 +57,33 @@ function Plantoes({data, h}) {
 
         }
     };
+
+    const statusEscala =() =>{
+
+        const fechada={
+            fechada:`${!escalaSelecionada.fechada}`
+        }
+        console.log('REAL',escalaSelecionada.fechada)
+        console.log(fechada)
+
+        const setStatus = async () => {
+            try {
+                const response = await fetch(`http://localhost:1337/api/escalas/${escalaSelecionada.id}`, {
+                    method: 'PUT',
+                    headers,
+                    body: JSON.stringify({ data: fechada }),
+                })
+            } catch (error) {
+                return error;
+            }finally {
+                const atualizaEscalas = await fetchEscalas(headers)
+                setEscalas(atualizaEscalas)
+                setPlantaoSelecionado([]);
+            }
+        };
+
+        setStatus();
+    }
     const onChangeEscala = (selected)=>{
         try{
             if(!selected){
@@ -205,7 +232,7 @@ function Plantoes({data, h}) {
                                                     },]}
                                                 disableSelectionOnClick={true}
                                                 isRowSelectable={(params) => {
-                                                    if (juizSelecionado && escalaSelecionada) {
+                                                    if (juizSelecionado && escalaSelecionada && !escalaSelecionada.fechada) {
                                                         const preferenciaJuizId = escalaSelecionada.preferencia?.data?.id;
                                                         if (preferenciaJuizId === juizSelecionado.id) {
                                                             const plantonistaAtribuido = params.row.plantonista.data[0];
@@ -218,19 +245,30 @@ function Plantoes({data, h}) {
                                                 rowSelectionModel={plantaoSelecionado}
                                             />
                                         )}
-                                        {escalaSelecionada && plantaoSelecionado.length > 0 &&(
-                                            <MDBox mt={2}>
-                                                <MDButton color="success" size="small" type="submit">
-                                                    Adicionar
-                                                </MDButton>
+                                        {escalaSelecionada && (
+                                            <MDBox mt={2} display="flex" justifyContent="flex-end">
+                                                {plantaoSelecionado.length > 0 && (
+                                                    <MDButton color="success" size="small" type="submit" sx={{ marginRight: '10px' }}>
+                                                        Adicionar
+                                                    </MDButton>
+                                                )}
+
+                                                {!escalaSelecionada.fechada &&(
+                                                    <MDButton color="error" size="small" onClick={statusEscala} >
+                                                        Fechar Escala
+                                                    </MDButton>
+                                                )}
+                                                {escalaSelecionada.fechada &&(
+                                                    <MDButton color="success" size="small" onClick={statusEscala}>
+                                                        Abrir Escala
+                                                    </MDButton>
+                                                )}
                                             </MDBox>
                                         )}
                                     </MDBox>
-
                             </MDBox>
                         </Grid>
                         <MDBox ml={2} p={3}>
-
                             <MDButton size="small" onClick={showJSON} color="info">Exibir</MDButton>
                         </MDBox>
 
