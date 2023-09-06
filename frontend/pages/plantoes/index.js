@@ -217,7 +217,7 @@ function Plantoes({data, h}) {
                                                         width: 120,
                                                         renderCell: (params) => (
                                                             <Tooltip title="Limpar o plantonista">
-                                                                {params.row.plantonista.data[0] && juizSelecionado && juizSelecionado.id === params.row.plantonista.data[0].id ? ( // Verifica se o plantonista está definido
+                                                                {params.row.plantonista.data[0] && !escalaSelecionada.fechada && juizSelecionado && juizSelecionado.id === params.row.plantonista.data[0].id ? ( // Verifica se o plantonista está definido
                                                                     <GridActionsCellItem
                                                                         icon={<CleaningServicesIcon />}
                                                                         label="Limpar Plantonista"

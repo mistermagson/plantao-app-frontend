@@ -25,7 +25,7 @@ function Minuta({ plantoes }) {
 
 
     return (
-        <div style={{ border: '1px solid #ccc', padding: '10px', width: '70%' }}>
+        <div style={{ border: '1px solid #ccc', padding: '10px', width: '100%' }}>
             <table
                 id="minuta-table"
                 style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #ccc' }}

@@ -5,7 +5,7 @@ import MDBox from "/components/MDBox";
 import MDTypography from "/components/MDTypography";
 import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
-import {DataGrid} from '@mui/x-data-grid';
+import {DataGrid, GridToolbar} from '@mui/x-data-grid';
 import React, {useState, useEffect, get} from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -17,14 +17,13 @@ import Tooltip from '@mui/material/Tooltip';
 import {GridActionsCellItem,} from '@mui/x-data-grid';
 import {fetchEscalas} from "../../utils/escalaUtils";
 import Minuta from './Minuta';
-import Calendar from 'react-calendar'; // Importe a biblioteca do calendário
+import Calendario from "./calendario";
 
 
 
 function Escalas({data, h}) {
 
     const [escalaSelecionada, setEscalaSelecionada] = useState(null);
-    const [juizSelecionado, setJuizSelecionado] = useState(null);
     const [plantaoSelecionado, setPlantaoSelecionado] = useState([]);
     const [headers, setHeaders] = useState(h);
     const [juizes, setJuizes] = useState([]);
@@ -49,12 +48,11 @@ function Escalas({data, h}) {
     const handleSubmit =  async (event) => {
         event.preventDefault();
         try {
-            setPlantonista(juizSelecionado.id, plantaoSelecionado, headers)
+            //EDITAR ALTERAÇÕES DA ESCALA
 
         } catch (error) {
             console.error(error);
         }finally {
-            setPlantaoSelecionado([])
             const atualizaEscalas = await fetchEscalas(headers)
             setEscalas(atualizaEscalas)
 
@@ -62,16 +60,14 @@ function Escalas({data, h}) {
     };
     const onChangeEscala = (selected)=>{
         try{
-            if(!selected){
-                setJuizSelecionado(null);
-            }else{
+            if(selected){
                 const participantesArray = selected.participantes.data.map((item) => ({id: item.id, ...item.attributes,}));
                 setJuizes(participantesArray);
 
                 const plantaosArray = selected.plantaos.data.map((item) => ({id: item.id, ...item.attributes,}));
                 setPlantoes(plantaosArray);
 
-                setJuizSelecionado(null);
+
             }
 
         }catch (error) {
@@ -79,15 +75,34 @@ function Escalas({data, h}) {
         }
 
     }
+
+    const calcularNumeroPlantoesPorJuiz = (juizes, plantoes) => {
+        // Mapear os juízes e calcular o número de plantões para cada um
+        return juizes.map((juiz) => {
+            const juizPlantoes = plantoes.filter((plantao) =>
+                plantao.plantonista.data.some((item) => item.id === juiz.id)
+            );
+            return {
+                ...juiz,
+                plantoesEscolhidos: juizPlantoes.length,
+            };
+        });
+        return juizesComPlantoesCalculados;
+    };
+
+    const juizesComPlantoesCalculados = calcularNumeroPlantoesPorJuiz(juizes, plantoes);
     const showJSON = () => {
 
         console.log('plantao',plantoes);
-        console.log('juiz',juizSelecionado);
+        console.log('juiz',juizes);
         console.log('escalas',escalaSelecionada);
 
     };
 
-    const theme = createTheme({});
+    const theme = createTheme({
+
+    });
+
 
     return (
         <DashboardLayout>
@@ -120,10 +135,10 @@ function Escalas({data, h}) {
                             </MDBox>
 
                         </Grid>
-                        <Grid item xs={12} xl={10}>
+                        <Grid item xs={12} xl={10}>{escalaSelecionada &&(
                             <MDBox mt={2} display="flex" justifyContent="space-between">
                                 <div>
-                                    <h6>Descrição da escala</h6>
+                                    <h5>Descrição da escala</h5>
                                     <TextField
                                         id="outlined-descricao-input"
                                         value={escalaSelecionada ? escalaSelecionada.descricao : ""}
@@ -135,7 +150,7 @@ function Escalas({data, h}) {
                                     />
                                 </div>
                                 <div>
-                                    <h6>Tipo da escala</h6>
+                                    <h5>Tipo da escala</h5>
                                     <TextField
                                         id="outlined-tipo-input"
                                         value={escalaSelecionada ? escalaSelecionada.tipo : ""}
@@ -147,7 +162,7 @@ function Escalas({data, h}) {
                                     />
                                 </div>
                                 <div>
-                                    <h6>Data de início</h6>
+                                    <h5>Data de início</h5>
                                     <TextField
                                         id="outlined-inicio-input"
                                         value={escalaSelecionada ? escalaSelecionada.inicio : ""}
@@ -159,7 +174,7 @@ function Escalas({data, h}) {
                                     />
                                 </div>
                                 <div>
-                                    <h6>Data de término</h6>
+                                    <h5>Data de término</h5>
                                     <TextField
                                         id="outlined-fim-input"
                                         value={escalaSelecionada ? escalaSelecionada.fim : ""}
@@ -171,7 +186,7 @@ function Escalas({data, h}) {
                                     />
                                 </div>
                                 <div>
-                                    <h6>Escala fechada</h6>
+                                    <h5>Escala fechada</h5>
                                     <TextField
                                         id="outlined-fechada-input"
                                         value={escalaSelecionada ? escalaSelecionada.fechada : ""}
@@ -182,17 +197,72 @@ function Escalas({data, h}) {
                                         style={{ flex: 1 }}
                                     />
                                 </div>
-                            </MDBox>
+                            </MDBox>)}
                         </Grid>
-                        <Grid item xs={12} xl={12}>{escalaSelecionada &&(
+                        <Grid item xs={12} xl={7}>{escalaSelecionada &&(
+                            <DataGrid
+                                editMode="row"
+                                disableColumnMenu
+                                sx={{fontSize: '18px', fontWeight: 'regular',color:'dark'}}
+                                pageSizeOptions={[5, 10, 20]}
+                                initialState={{pagination: {paginationModel: {pageSize: 20}},}}
+                                rows={juizesComPlantoesCalculados}
+                                columns={[
+                                    {field: 'id', headerName: 'ID', width: 50},
+                                    {field: 'nome', headerName: 'Nome', flex:1, minWidth:150},
+                                    {field: 'email', headerName: 'Email',flex:2, minWidth:220},
+                                    {field: 'rf', headerName: 'RF',width: 70, editable:true},
+                                    {
+                                        field: 'plantoesEscolhidos', // Adicione a coluna para exibir o número de plantões escolhidos
+                                        headerName: 'N°',
+                                        width:50,
+                                        renderCell: (params) => {
+                                            const numeroPlantoes = params.value;
+                                            let textColor = '';
+
+
+                                            if (numeroPlantoes === 0) {
+                                                textColor = '#ff0000'; // Vermelho para 0 plantões
+                                            } else if (numeroPlantoes === 1) {
+                                                textColor = '#ff9900'; // Laranja para 1 plantão
+                                            } else if (numeroPlantoes === 2) {
+                                                textColor = '#ffff00'; // Amarelo para 2 plantões
+                                            } else if (numeroPlantoes === 3) {
+                                                textColor = '#00ff00'; // Verde para 3 plantões
+                                            } else if (numeroPlantoes === 4) {
+                                                textColor = '#0000ff'; // Azul para 4 plantões
+                                            }
+
+                                            return (
+                                                <div
+                                                    style={{
+                                                        color: textColor,
+                                                        fontWeight: 'bold',
+                                                    }}
+                                                >
+                                                    {numeroPlantoes}
+                                                </div>
+                                            );
+                                        },
+                                    },
+                                ]}
+                                onRowSelectionModelChange={(newRowSelectionModel) => {setRowSelectionModel(newRowSelectionModel);}}
+                                disableColumnFilter
+                                disableRowSelectionOnClick
+                                slots={{toolbar: GridToolbar}}
+                                slotProps={{toolbar: {showQuickFilter: true,},}}
+                            />)}
+                        </Grid>
+                        <Grid item xs={12} xl={6}>{escalaSelecionada &&(
                             <Minuta plantoes={plantoes}/>)}
                         </Grid>
-                        <Grid container spacing={2} justifyContent="center">
-                            <Grid item>
-
-                                <Calendar
-
-                                />
+                        <Grid container spacing={2}  p={3}>
+                            <Grid item xs={12} xl={12}>
+                                <ThemeProvider theme={theme}>
+                                    {escalaSelecionada && (
+                                        <Calendario plantoes={plantoes} />
+                                    )}
+                                </ThemeProvider>
 
                             </Grid>
                         </Grid>
