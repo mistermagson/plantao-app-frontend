@@ -1,23 +1,36 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css'
 
 function Calendario({ plantoes }) {
-    if (!plantoes) {
-        // Trate o caso em que 'plantoes' é undefined ou vazio, se necessário
-        return null; // ou exiba uma mensagem de erro
-    }
+    // Use um estado para rastrear as datas dos plantões
+    const [datesWithPlantonista, setDatesWithPlantonista] = useState(
+        plantoes
+            .filter((plantao) => plantao.plantonista.data.length > 0)
+            .map((plantao) => new Date(plantao.data))
+    );
 
-    const plantaoDates = plantoes.map((plantao) => new Date(plantao.data));
-    const handlePrintDates = () => {
-        console.log(plantaoDates);
+    // Função para determinar se uma data possui um plantonista
+    const hasPlantonista = (date) => {
+        return datesWithPlantonista.some(
+            (dateWithPlantonista) =>
+                dateWithPlantonista.getDate() === date.getDate() &&
+                dateWithPlantonista.getMonth() === date.getMonth() &&
+                dateWithPlantonista.getFullYear() === date.getFullYear()
+        );
     };
-
     return (
         <div>
             <h2>Calendário de Plantões</h2>
-            <Calendar value={plantaoDates} />
-            <button onClick={handlePrintDates}>Imprimir Datas</button>
+            <Calendar
+                tileContent={({ date }) => {
+                    if (hasPlantonista(date)) {
+                        return <div className="calendar-marker"></div>;
+                    }
+                    return null;
+                }}
+            />
+
         </div>
     );
 }

@@ -44,7 +44,6 @@ function Escalas({data, h}) {
         }
     }, [escalas, escalaSelecionada]);
 
-
     const handleSubmit =  async (event) => {
         event.preventDefault();
         try {
@@ -61,6 +60,7 @@ function Escalas({data, h}) {
     const onChangeEscala = (selected)=>{
         try{
             if(selected){
+
                 const participantesArray = selected.participantes.data.map((item) => ({id: item.id, ...item.attributes,}));
                 setJuizes(participantesArray);
 
@@ -226,7 +226,7 @@ function Escalas({data, h}) {
                                             } else if (numeroPlantoes === 1) {
                                                 textColor = '#ff9900'; // Laranja para 1 plantão
                                             } else if (numeroPlantoes === 2) {
-                                                textColor = '#ffff00'; // Amarelo para 2 plantões
+                                                textColor = '#ffd503'; // Amarelo para 2 plantões
                                             } else if (numeroPlantoes === 3) {
                                                 textColor = '#00ff00'; // Verde para 3 plantões
                                             } else if (numeroPlantoes === 4) {

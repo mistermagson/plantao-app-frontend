@@ -43,6 +43,7 @@ function Minuta({ plantoes }) {
                         <td style={tableCellStyle}>
                             {plantao.plantonista?.data.length > 0 ? (
                                 <>
+
                                     {plantao.plantonista.data[0].attributes.nome} <br />
                                     {`${plantao.plantonista.data[0].attributes.cargo} da ${plantao.plantonista.data[0].attributes.lotacao.data.attributes.descricao}`}
                                 </>
