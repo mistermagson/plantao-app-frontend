@@ -341,11 +341,10 @@ function Participantes() {
 
                                         />)}
 
-                                    {opcaoSelecionada && (<MDBox
-                                        mt={2}> {/* Adicionei a propriedade mb para adicionar espaço abaixo do DataGrid */}
-                                        <MDButton color="success" size="small"
-                                                  onClick={() => handleSubmit()}>Adicionar</MDButton>
-                                    </MDBox>)}
+                                    {opcaoSelecionada && (
+                                        <MDBox mt={2} mr={1} display="flex" justifyContent="flex-end">
+                                            <MDButton color="success" size="small" onClick={() => handleSubmit()}>Adicionar</MDButton>
+                                        </MDBox>)}
                                 </Grid>
                                 <Grid>
                                     {!opcaoSelecionada && (

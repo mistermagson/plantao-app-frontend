@@ -3,8 +3,6 @@ import MDButton from "../../../components/MDButton";
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 function Minuta({ plantoes }) {
-    const [copied, setCopied] = useState(false);
-    const [tableHtml, setTableHtml] = useState(''); // Adicione o estado para armazenar o HTML da tabela
 
     const tableCellStyle = {
         border: '1px solid #ccc',
@@ -12,23 +10,20 @@ function Minuta({ plantoes }) {
         textAlign: 'center',
         verticalAlign: 'middle',
         fontFamily: 'Times New Roman',
-        fontSize: '22px',
+        fontSize: '20px',
         color: 'black',
     };
 
     const dataAjustada = (dateString) => {
         const dateParts = dateString.split('-');
         return `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
-
     };
 
-
-
     return (
-        <div style={{ border: '1px solid #ccc', padding: '10px', width: '100%' }}>
+        <div >
             <table
                 id="minuta-table"
-                style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #ccc' }}
+                style={{ width: '95%', borderCollapse: 'collapse', border: '1px solid #ccc' }}
             >
                 <thead>
                 <tr>
@@ -41,11 +36,10 @@ function Minuta({ plantoes }) {
                     <tr key={plantao.id}>
                         <td style={tableCellStyle}>{dataAjustada(plantao.data)}</td>
                         <td style={tableCellStyle}>
-                            {plantao.plantonista?.data.length > 0 ? (
+                            {plantao.plantonista && plantao.plantonista.data && plantao.plantonista.data.length > 0 ? (
                                 <>
-
                                     {plantao.plantonista.data[0].attributes.nome} <br />
-                                    {`${plantao.plantonista.data[0].attributes.cargo} da ${plantao.plantonista.data[0].attributes.lotacao.data.attributes.descricao}`}
+                                    {`${plantao.plantonista.data[0].attributes.cargo} da ${plantao.plantonista.data[0].attributes.lotacao && plantao.plantonista.data[0].attributes.lotacao.data && plantao.plantonista.data[0].attributes.lotacao.data.attributes.descricao}`}
                                 </>
                             ) : (
                                 'Nenhum plantonista'

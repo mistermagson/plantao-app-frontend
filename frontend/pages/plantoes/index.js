@@ -16,6 +16,7 @@ import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 import Tooltip from '@mui/material/Tooltip';
 import {GridActionsCellItem,} from '@mui/x-data-grid';
 import {fetchEscalas} from "../../utils/escalaUtils";
+import Switch from "@mui/material/Switch";
 
 
 function Plantoes({data, h}) {
@@ -183,12 +184,15 @@ function Plantoes({data, h}) {
                         </Grid>
                         <Grid item xs={12} xl={6}>
                             <MDBox mb={3}>
-                                <MDBox pt={2} px={2}>{escalaSelecionada &&(
-                                    <MDTypography variant="h6" >
-                                        Selecione os plantões:
-                                    </MDTypography>)}
+                                <MDBox pt={2} px={2}>
+                                    {escalaSelecionada && (<>
+                                        <MDTypography variant="h6" style={{ marginBottom: '-10px' }}>Plantões:</MDTypography>
+                                        {escalaSelecionada.fechada && (
+                                            <span style={{ color: 'red', fontSize: '14px'}}>
+                                              Escala fechada, não é possível modificar os plantões
+                                            </span>)}
+                                    </>)}
                                 </MDBox>
-
                                     <MDBox p={2}>
                                         {escalaSelecionada &&(
                                             <DataGrid
@@ -247,22 +251,15 @@ function Plantoes({data, h}) {
                                         )}
                                         {escalaSelecionada && (
                                             <MDBox mt={2} display="flex" justifyContent="flex-end">
-                                                {plantaoSelecionado.length > 0 && (
-                                                    <MDButton color="success" size="small" type="submit" sx={{ marginRight: '10px' }}>
-                                                        Adicionar
-                                                    </MDButton>
-                                                )}
-
-                                                {!escalaSelecionada.fechada &&(
-                                                    <MDButton color="error" size="small" onClick={statusEscala} >
-                                                        Fechar Escala
-                                                    </MDButton>
-                                                )}
-                                                {escalaSelecionada.fechada &&(
-                                                    <MDButton color="success" size="small" onClick={statusEscala}>
-                                                        Abrir Escala
-                                                    </MDButton>
-                                                )}
+                                                <h5 style={{ color: escalaSelecionada ? (escalaSelecionada.fechada ? "red" : "green") : "inherit" }}>
+                                                    {escalaSelecionada ? (escalaSelecionada.fechada ? "Fechada" : "Aberta") : ""}
+                                                </h5>
+                                                <Switch
+                                                    checked={escalaSelecionada ? escalaSelecionada.fechada : false}
+                                                    color="primary"
+                                                    inputProps={{ "aria-label": "toggle escala" }}
+                                                    onChange={() => statusEscala()}
+                                                />
                                             </MDBox>
                                         )}
                                     </MDBox>
