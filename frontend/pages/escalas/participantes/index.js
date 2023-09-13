@@ -10,7 +10,7 @@ import React, {useEffect, useState} from "react";
 import TextField from "@mui/material/TextField";
 import {removeParticipantesEscala, removePreferencial, setParticipantesEscala, setPreferencia} from "../../../utils/escalaUtils";
 import MDButton from "../../../components/MDButton";
-import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import Tooltip from '@mui/material/Tooltip';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 
@@ -282,10 +282,10 @@ function Participantes() {
                                                                     color={isJuizPreferencial(params.row.id) ? 'primary' : 'default'}
                                                                 />
                                                             </Tooltip>
-                                                            <Tooltip title="Limpar o plantonista">
+                                                            <Tooltip title="Remover Juiz">
                                                                 <GridActionsCellItem
-                                                                    icon={<CleaningServicesIcon/>}
-                                                                    label="Limpar Plantonista"
+                                                                    icon={<RemoveCircleOutlineIcon/>}
+                                                                    label="Remover Juiz"
                                                                     onClick={() => handleLimparParticipante(params.row)}
                                                                     color="inherit"
                                                                 />
@@ -315,19 +315,11 @@ function Participantes() {
                                             pageSizeOptions={[5, 10, 20]}
                                             initialState={{
                                                 pagination: {paginationModel: {pageSize: 5}},
-                                                sorting: {
-                                                    sortModel: [{field: 'antiguidade', sort: 'asc'}],
-                                                },
+                                                sorting: {sortModel: [{field: 'antiguidade', sort: 'asc'}],},
                                             }}
                                             rows={juizesRestantes}
-                                            columns={[{
-                                                field: 'nome',
-                                                headerName: 'Nome',
-                                                flex: 1
-                                            }, {field: 'antiguidade', headerName: 'Antiguidade', minWidth: 150},]}
-                                            onRowSelectionModelChange={(newRowSelectionModel) => {
-                                                setRowSelectionModel(newRowSelectionModel);
-                                            }}
+                                            columns={[{field: 'nome', headerName: 'Nome', flex: 1}, {field: 'antiguidade', headerName: 'Antiguidade', minWidth: 150},]}
+                                            onRowSelectionModelChange={(newRowSelectionModel) => {setRowSelectionModel(newRowSelectionModel);}}
                                             rowSelectionModel={rowSelectionModel}
                                             disableColumnFilter
                                             disableColumnSelector
@@ -348,7 +340,7 @@ function Participantes() {
                                 </Grid>
                                 <Grid>
                                     {!opcaoSelecionada && (
-                                        <MDTypography variant="h6" mx={5} mt={-1} mb={-2} fontWeight="light">
+                                        <MDTypography variant="h6" mx={5} ml={7} mt={-1} mb={-2} fontWeight="light">
                                             Escala não selecionada
                                         </MDTypography>
                                     )}

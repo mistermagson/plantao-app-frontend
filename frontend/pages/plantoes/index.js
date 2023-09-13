@@ -12,12 +12,12 @@ import Button from "@mui/material/Button";
 import MDButton from "../../components/MDButton";
 import {setPlantonista, removePlantonista} from "../../utils/plantaoUtils";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import Tooltip from '@mui/material/Tooltip';
 import {GridActionsCellItem,} from '@mui/x-data-grid';
 import {fetchEscalas} from "../../utils/escalaUtils";
 import Switch from "@mui/material/Switch";
-
+import Calendario from "../escalas/calendario";
 
 function Plantoes({data, h}) {
 
@@ -135,14 +135,13 @@ function Plantoes({data, h}) {
             </MDBox>
             <Card>
                 <form onSubmit={handleSubmit}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} sm={5} sx={{ height: "max-content" }}>
-                            <MDBox pl={3} my={2}>
-                                <h5>Selecione a escala:</h5>
-                            </MDBox>
-                            <MDBox pb={3} px={3}>
-                                <Grid container spacing={2} xl={12}>
-                                    <Grid item xs={12} xl={12} >
+                    <Grid container style={{ border: '1px solid #ccc' }}>
+                        <Grid item xs={12} xl={12} >
+                            <Grid container spacing={2}  pl={3} >
+                                    <Grid item xs={9} xl={4}>
+                                        <MDBox  my={2}>
+                                            <h5>Selecione a escala:</h5>
+                                        </MDBox>
                                         <Autocomplete
                                             options={escalas}
                                             getOptionLabel={escala => escala.descricao}
@@ -152,9 +151,9 @@ function Plantoes({data, h}) {
                                                 onChangeEscala(newValue);}}
                                             renderInput={(params) => <TextField {...params} label="Escala" />}
                                         />
-                                    </Grid>
+                                    </Grid>{/* AUTOCOMPLETE ESCALA*/}
 
-                                    <Grid item xs={12}  xl={12}>
+                                    <Grid item xs={9}  xl={4}>
                                         <MDBox my={2}>
                                             <h5>Selecione o nome do juiz :</h5>
                                         </MDBox>
@@ -177,14 +176,12 @@ function Plantoes({data, h}) {
                                                 );
                                             }}
                                         />
-                                    </Grid>
-
-                                </Grid>
-                            </MDBox>
+                                    </Grid>{/* AUTOCOMPLETE JUIZ*/}
+                            </Grid>
                         </Grid>
-                        <Grid item xs={12} xl={6}>
-                            <MDBox mb={3}>
-                                <MDBox pt={2} px={2}>
+                        <Grid item xs={12} xl={6.5} >
+                            <MDBox px={2}>
+                                <MDBox p={2}  >
                                     {escalaSelecionada && (<>
                                         <MDTypography variant="h6" style={{ marginBottom: '-10px' }}>Plantões:</MDTypography>
                                         {escalaSelecionada.fechada && (
@@ -193,81 +190,90 @@ function Plantoes({data, h}) {
                                             </span>)}
                                     </>)}
                                 </MDBox>
-                                    <MDBox p={2}>
-                                        {escalaSelecionada &&(
-                                            <DataGrid
-                                                checkboxSelection
-                                                disableColumnMenu
-                                                sx={{fontSize: '18px', fontWeight:'regular', }}
-                                                pageSizeOptions={[5,10,20]}
-                                                initialState={{pagination: { paginationModel: { pageSize: 5 } },}}
-                                                rows={plantoes}
-                                                columns={[
-                                                    {field:'data', headerName:'Datas',width: 120, sortable:false, renderCell: (params) => {
-                                                            const dateParts = params.value.split('-');
-                                                            const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
-                                                            return <span>{formattedDate}</span>;
-                                                        },},
-                                                    {field: 'plantonista', headerName: 'Status', flex:1, minWidth:220,
-                                                        renderCell: (params) => (
-                                                            <span style={{color: params.value.data[0] ? 'red' : 'green',}}>
-                                                            {params.value.data[0] ?  `Ocupado - ${params.value.data[0].attributes.nome}`:'Disponível' }
-                                                        </span>
-                                                        ),
-                                                    },
-                                                    {
-                                                        field: 'id',
-                                                        headerName: 'Opções',
-                                                        width: 120,
-                                                        renderCell: (params) => (
-                                                            <Tooltip title="Limpar o plantonista">
-                                                                {params.row.plantonista.data[0] && !escalaSelecionada.fechada && juizSelecionado && juizSelecionado.id === params.row.plantonista.data[0].id ? ( // Verifica se o plantonista está definido
-                                                                    <GridActionsCellItem
-                                                                        icon={<CleaningServicesIcon />}
-                                                                        label="Limpar Plantonista"
-                                                                        onClick={() => handleLimparPlantonista(params.row)}
-                                                                        color="inherit"
-                                                                    />
-                                                                ) : (
-                                                                    <div></div>
-                                                                )}
-                                                            </Tooltip>
-                                                        ),
-                                                    },]}
-                                                disableSelectionOnClick={true}
-                                                isRowSelectable={(params) => {
-                                                    if (juizSelecionado && escalaSelecionada && !escalaSelecionada.fechada) {
-                                                        const preferenciaJuizId = escalaSelecionada.preferencia?.data?.id;
-                                                        if (preferenciaJuizId === juizSelecionado.id) {
-                                                            const plantonistaAtribuido = params.row.plantonista.data[0];
-                                                            return !plantonistaAtribuido;
-                                                        }
+                                <MDBox p>
+                                    {escalaSelecionada &&(
+                                        <DataGrid
+                                            checkboxSelection
+                                            disableColumnMenu
+                                            sx={{fontSize: '18px', fontWeight:'regular', height:'80%'}}
+                                            pageSizeOptions={[5,10,20]}
+                                            initialState={{pagination: { paginationModel: { pageSize: 5 } },}}
+                                            rows={plantoes}
+                                            columns={[
+                                                {field:'data', headerName:'Datas',width: 120, sortable:false, renderCell: (params) => {
+                                                        const dateParts = params.value.split('-');
+                                                        const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+                                                        return <span>{formattedDate}</span>;
+                                                    },},
+                                                {field: 'plantonista', headerName: 'Status', flex:1, minWidth:220,
+                                                    renderCell: (params) => (
+                                                        <span style={{color: params.value.data[0] ? 'red' : 'green',}}>
+                                                        {params.value.data[0] ?  `Ocupado - ${params.value.data[0].attributes.nome}`:'Disponível' }
+                                                    </span>
+                                                    ),
+                                                },
+                                                {
+                                                    field: 'id',
+                                                    headerName: 'Opções',
+                                                    width: 120,
+                                                    renderCell: (params) => (
+                                                        <Tooltip title="Limpar o plantonista">
+                                                            {params.row.plantonista.data[0] && !escalaSelecionada.fechada && juizSelecionado && juizSelecionado.id === params.row.plantonista.data[0].id ? ( // Verifica se o plantonista está definido
+                                                                <GridActionsCellItem
+                                                                    icon={<RemoveCircleOutlineIcon/>}
+                                                                    label="Limpar Plantonista"
+                                                                    onClick={() => handleLimparPlantonista(params.row)}
+                                                                    color="inherit"
+                                                                />
+                                                            ) : (
+                                                                <div></div>
+                                                            )}
+                                                        </Tooltip>
+                                                    ),
+                                                },]}
+                                            disableSelectionOnClick={true}
+                                            isRowSelectable={(params) => {
+                                                if (juizSelecionado && escalaSelecionada && !escalaSelecionada.fechada) {
+                                                    const preferenciaJuizId = escalaSelecionada.preferencia?.data?.id;
+                                                    if (preferenciaJuizId === juizSelecionado.id) {
+                                                        const plantonistaAtribuido = params.row.plantonista.data[0];
+                                                        return !plantonistaAtribuido;
                                                     }
-                                                    return false;
-                                                }}
-                                                onRowSelectionModelChange={(newRowSelectionModel) => {setPlantaoSelecionado(newRowSelectionModel);}}
-                                                rowSelectionModel={plantaoSelecionado}
+                                                }
+                                                return false;
+                                            }}
+                                            onRowSelectionModelChange={(newRowSelectionModel) => {setPlantaoSelecionado(newRowSelectionModel);}}
+                                            rowSelectionModel={plantaoSelecionado}
+                                        />
+                                    )}
+                                    {escalaSelecionada && (
+                                        <MDBox mt={2} display="flex" justifyContent="flex-end">
+                                            {plantaoSelecionado.length > 0 && (
+                                                <MDButton color="success" size="small" type="submit" sx={{ marginRight: '10px' }}>
+                                                    Adicionar
+                                                </MDButton>
+                                            )}
+                                            <h5 style={{ color: escalaSelecionada ? (escalaSelecionada.fechada ? "red" : "green") : "inherit" }}>
+                                                {escalaSelecionada ? (escalaSelecionada.fechada ? "Fechada" : "Aberta") : ""}
+                                            </h5>
+                                            <Switch
+                                                checked={escalaSelecionada ? escalaSelecionada.fechada : false}
+                                                color="primary"
+                                                inputProps={{ "aria-label": "toggle escala" }}
+                                                onChange={() => statusEscala()}
                                             />
-                                        )}
-                                        {escalaSelecionada && (
-                                            <MDBox mt={2} display="flex" justifyContent="flex-end">
-                                                <h5 style={{ color: escalaSelecionada ? (escalaSelecionada.fechada ? "red" : "green") : "inherit" }}>
-                                                    {escalaSelecionada ? (escalaSelecionada.fechada ? "Fechada" : "Aberta") : ""}
-                                                </h5>
-                                                <Switch
-                                                    checked={escalaSelecionada ? escalaSelecionada.fechada : false}
-                                                    color="primary"
-                                                    inputProps={{ "aria-label": "toggle escala" }}
-                                                    onChange={() => statusEscala()}
-                                                />
-                                            </MDBox>
-                                        )}
-                                    </MDBox>
+                                        </MDBox>
+                                    )}
+                                </MDBox>
                             </MDBox>
                         </Grid>
-                        <MDBox ml={2} p={3}>
+                        <Grid item xs={12} xl={5} pt={2}>
+                            {escalaSelecionada && (
+                            <Calendario plantoes={plantoes} escalaSelecionada={escalaSelecionada}/>)}
+                        </Grid>
+                        <Grid item xs={12} xl={5} m={2}>
                             <MDButton size="small" onClick={showJSON} color="info">Exibir</MDButton>
-                        </MDBox>
+                        </Grid>
 
                     </Grid>
                 </form>

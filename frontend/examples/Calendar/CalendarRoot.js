@@ -65,8 +65,8 @@ export default styled(Box)(({ theme, ownerState }) => {
 
     "& .fc .fc-daygrid-day-number": {
       color: darkMode ? white.main : grey[700],
-      fontSize: size.sm,
-      fontWeight: fontWeightLight,
+      fontSize: '15px',
+      fontWeight: fontWeightBold,
       width: "100%",
       textAlign: "center",
     },

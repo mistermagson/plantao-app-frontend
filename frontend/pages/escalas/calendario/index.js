@@ -1,36 +1,44 @@
-import React, {useState} from 'react';
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css'
+import React from 'react';
+import Calendar from "/examples/Calendar";
+import MDTypography from "../../../components/MDTypography";
+import MDBox from "../../../components/MDBox";
 
 function Calendario({ plantoes }) {
-    // Use um estado para rastrear as datas dos plantões
-    const [datesWithPlantonista, setDatesWithPlantonista] = useState(
-        plantoes
-            .filter((plantao) => plantao.plantonista.data.length > 0)
-            .map((plantao) => new Date(plantao.data))
-    );
+    // Mapeie os plantões e determine o título e a classe com base no plantonista
+    const eventos = plantoes.map((plantao) => {
+        const plantonista = plantao.plantonista;
 
-    // Função para determinar se uma data possui um plantonista
-    const hasPlantonista = (date) => {
-        return datesWithPlantonista.some(
-            (dateWithPlantonista) =>
-                dateWithPlantonista.getDate() === date.getDate() &&
-                dateWithPlantonista.getMonth() === date.getMonth() &&
-                dateWithPlantonista.getFullYear() === date.getFullYear()
-        );
-    };
+        const title = plantonista && plantonista.data.length > 0 && plantonista.data[0].attributes.nome
+            ? plantonista.data[0].attributes.nome
+            : "Vazio";
+
+        const className = plantonista && plantonista.data.length > 0 ? "info" : "secondary";
+
+        return {
+            title,
+            date: plantao.data,
+            className,
+        };
+    });
+
+    // Verifique se há pelo menos um plantão antes de acessar o primeiro e último elementos
+    const inicio = plantoes.length > 0 ? plantoes[0].data : "";
+    const fim = plantoes.length > 0 ? plantoes[plantoes.length - 1].data : "";
+
     return (
         <div>
-            <h2>Calendário de Plantões</h2>
+            <MDBox pb={1}>
+                <MDTypography variant="h6" >Calendário de Plantões:</MDTypography>
+            </MDBox>
             <Calendar
-                tileContent={({ date }) => {
-                    if (hasPlantonista(date)) {
-                        return <div className="calendar-marker"></div>;
-                    }
-                    return null;
-                }}
+                initialView="dayGridMonth"
+                initialDate={inicio}
+                events={eventos}
+                selectable
+                editable
             />
 
+            {/* Exibir informações da data selecionada (se necessário) */}
         </div>
     );
 }

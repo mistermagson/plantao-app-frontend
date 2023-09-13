@@ -139,7 +139,7 @@ function Escalas({ data, h }) {
 
     const redirectToParticipantes = () => {
         // Redirecionar para a página de participantes
-        window.location.href = "http://localhost:3000/escalas/participantes";
+        window.location.href = `http://localhost:3000/escalas/participantes?valor=${escalaSelecionada.descricao}`;
     };
 
 
@@ -150,6 +150,9 @@ function Escalas({ data, h }) {
                 <MDTypography variant="h2">Dados da Escala</MDTypography>
             </MDBox>
             <Card>
+                <MDBox ml={2} p={3}>
+                    <MDButton size="small" onClick={showJSON} color="info">Exibir</MDButton>
+                </MDBox>
                 <form onSubmit={handleSubmit}>
                     <Grid container spacing={3} pb={3} px={3}>
                         <Grid item xs={12} sm={5} sx={{ height: "max-content" }}>
@@ -167,9 +170,7 @@ function Escalas({ data, h }) {
                                                 setEscalaSelecionada(newValue);
                                                 onChangeEscala(newValue);
                                             }}
-                                            renderInput={(params) => (
-                                                <TextField {...params} label="Escala" />
-                                            )}
+                                            renderInput={(params) => (<TextField {...params} label="Escala" />)}
                                         />
                                     </Grid>
                                 </Grid>
@@ -184,9 +185,7 @@ function Escalas({ data, h }) {
                                             fullWidth
                                             id="outlined-descricao-input"
                                             value={escalaSelecionada ? escalaSelecionada.descricao : ""}
-                                            InputProps={{
-                                                readOnly: true,
-                                            }}
+                                            InputProps={{readOnly: true,}}
                                             variant="outlined"
                                             style={{ flex: 1, marginRight: "8px" }}
                                         />
@@ -197,9 +196,7 @@ function Escalas({ data, h }) {
                                             fullWidth
                                             id="outlined-tipo-input"
                                             value={escalaSelecionada ? escalaSelecionada.tipo : ""}
-                                            InputProps={{
-                                                readOnly: true,
-                                            }}
+                                            InputProps={{readOnly: true,}}
                                             variant="outlined"
                                             style={{ flex: 1, marginRight: "8px" }}
                                         />
@@ -211,12 +208,10 @@ function Escalas({ data, h }) {
                                     <Grid item xs={6} xl={3}>
                                         <h5 style={{ color: "#344767" }}>Data de início</h5>
                                         <TextField
-                                            fullWidth
+
                                             id="outlined-inicio-input"
                                             value={escalaSelecionada ? escalaSelecionada.inicio : ""}
-                                            InputProps={{
-                                                readOnly: true,
-                                            }}
+                                            InputProps={{readOnly: true,}}
                                             variant="outlined"
                                             style={{ flex: 1, marginRight: "8px" }}
                                         />
@@ -226,33 +221,16 @@ function Escalas({ data, h }) {
                                         <TextField
                                             id="outlined-fim-input"
                                             value={escalaSelecionada ? escalaSelecionada.fim : ""}
-                                            InputProps={{
-                                                readOnly: true,
-                                            }}
+                                            InputProps={{readOnly: true,}}
                                             variant="outlined"
                                             style={{ flex: 1, marginRight: "8px" }}
                                         />
                                     </Grid>
                                     <Grid item xs={6} xl={4}>
                                         <h5 style={{ color: "#344767" }}>Status</h5>
-                                        <div
-                                            style={{ display: "flex", alignItems: "center", marginTop: "5px" }}
-                                        >
-                                            <h5
-                                                style={{
-                                                    color: escalaSelecionada
-                                                        ? escalaSelecionada.fechada
-                                                            ? "red"
-                                                            : "green"
-                                                        : "inherit",
-                                                    marginLeft: "8px"
-                                                }}
-                                            >
-                                                {escalaSelecionada
-                                                    ? escalaSelecionada.fechada
-                                                        ? "Fechada"
-                                                        : "Aberta"
-                                                    : ""}
+                                        <div style={{ display: "flex", alignItems: "center", marginTop: "5px" }}>
+                                            <h5 style={{color: escalaSelecionada ? escalaSelecionada.fechada ? "red" : "green" : "inherit", marginLeft: "8px"}}>
+                                                {escalaSelecionada ? escalaSelecionada.fechada ? "Fechada" : "Aberta" : ""}
                                             </h5>
                                             <Switch
                                                 checked={escalaSelecionada ? escalaSelecionada.fechada : false}
@@ -277,20 +255,20 @@ function Escalas({ data, h }) {
                                     </AccordionSummary>
                                     <AccordionDetails>
                                         <DataGrid
+                                            density="compact"
                                             style={{ minHeight: "300px" }}
                                             editMode="row"
                                             disableColumnMenu
                                             sx={{ fontSize: "18px", fontWeight: "regular", color: "dark" }}
                                             pageSizeOptions={[5, 10, 20]}
-                                            initialState={{
-                                                pagination: { paginationModel: { pageSize: 20 } },
-                                            }}
+                                            initialState={{pagination: { paginationModel: { pageSize: 20 } },}}
                                             rows={juizesComPlantoesCalculados}
                                             columns={[
-                                                { field: "id", headerName: "ID", width: 50 },
-                                                { field: "nome", headerName: "Nome", flex: 1, minWidth: 150 },
-                                                { field: "email", headerName: "Email", flex: 2, minWidth: 220 },
                                                 { field: "rf", headerName: "RF", width: 70, editable: true },
+                                                { field: "nome", headerName: "Nome", flex: 1, minWidth: 150 },
+
+                                                { field: "email", headerName: "Email", flex: 2, minWidth: 220 },
+
                                                 {
                                                     field: "plantoesEscolhidos",
                                                     headerName: "N°",
@@ -315,21 +293,14 @@ function Escalas({ data, h }) {
                                                         }
 
                                                         return (
-                                                            <div
-                                                                style={{
-                                                                    color: textColor,
-                                                                    fontWeight: "bold",
-                                                                }}
-                                                            >
+                                                            <div style={{color: textColor, fontWeight: "bold",}}>
                                                                 {numeroPlantoesEscolhidos}
                                                             </div>
                                                         );
                                                     },
                                                 },
                                             ]}
-                                            onRowSelectionModelChange={(newRowSelectionModel) => {
-                                                setRowSelectionModel(newRowSelectionModel);
-                                            }}
+                                            onRowSelectionModelChange={(newRowSelectionModel) => {setRowSelectionModel(newRowSelectionModel);}}
                                             disableColumnFilter
                                             disableRowSelectionOnClick
                                             slots={{ toolbar: GridToolbar }}
@@ -342,7 +313,6 @@ function Escalas({ data, h }) {
                                                 </MDButton>
 
                                             </MDBox>
-
                                     </AccordionDetails>
                                 </Accordion>
                             )}
@@ -360,6 +330,9 @@ function Escalas({ data, h }) {
                                     </AccordionSummary>
                                     <AccordionDetails>
                                         <Minuta plantoes={plantoes} />
+                                        <Grid  xs={12} xl={6}>
+                                            <Calendario plantoes={plantoes} escalaSelecionada={escalaSelecionada}/>
+                                        </Grid>
                                     </AccordionDetails>
                                 </Accordion>
                             )}
@@ -379,7 +352,7 @@ export async function getServerSideProps() {
             "Bearer ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b",
     };
     const res = await fetch(
-        "http://127.0.0.1:1337/api/escalas?populate=plantaos.plantonista.lotacao.varas,participantes.plantoes,preferencia.juizs",
+        "http://127.0.0.1:1337/api/escalas?populate=plantaos.plantonista.lotacao.varas,participantes.plantoes,participantes.lotacao,preferencia.juizs",
         {
             method: "GET",
             headers: h,
