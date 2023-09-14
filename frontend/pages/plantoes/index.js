@@ -108,6 +108,7 @@ function Plantoes({data, h}) {
 
         console.log('plantao',plantaoSelecionado);
         console.log('juiz',juizSelecionado);
+        console.log('inicio',plantoes[0].data);
 
     };
     const handleLimparPlantonista = async(row) => {
@@ -135,7 +136,7 @@ function Plantoes({data, h}) {
             </MDBox>
             <Card>
                 <form onSubmit={handleSubmit}>
-                    <Grid container style={{ border: '1px solid #ccc' }}>
+                    <Grid container >
                         <Grid item xs={12} xl={12} >
                             <Grid container spacing={2}  pl={3} >
                                     <Grid item xs={9} xl={4}>
@@ -179,7 +180,7 @@ function Plantoes({data, h}) {
                                     </Grid>{/* AUTOCOMPLETE JUIZ*/}
                             </Grid>
                         </Grid>
-                        <Grid item xs={12} xl={6.5} >
+                        <Grid item xs={12} xl={6.5} pt={2} >
                             <MDBox px={2}>
                                 <MDBox p={2}  >
                                     {escalaSelecionada && (<>
@@ -193,6 +194,7 @@ function Plantoes({data, h}) {
                                 <MDBox p>
                                     {escalaSelecionada &&(
                                         <DataGrid
+
                                             checkboxSelection
                                             disableColumnMenu
                                             sx={{fontSize: '18px', fontWeight:'regular', height:'80%'}}
@@ -218,15 +220,15 @@ function Plantoes({data, h}) {
                                                     width: 120,
                                                     renderCell: (params) => (
                                                         <Tooltip title="Limpar o plantonista">
-                                                            {params.row.plantonista.data[0] && !escalaSelecionada.fechada && juizSelecionado && juizSelecionado.id === params.row.plantonista.data[0].id ? ( // Verifica se o plantonista está definido
+                                                            {params.row.plantonista.data[0] && !escalaSelecionada.fechada && /*juizSelecionado && juizSelecionado.id === params.row.plantonista.data[0].id ?*/ (
                                                                 <GridActionsCellItem
                                                                     icon={<RemoveCircleOutlineIcon/>}
                                                                     label="Limpar Plantonista"
                                                                     onClick={() => handleLimparPlantonista(params.row)}
                                                                     color="inherit"
                                                                 />
-                                                            ) : (
-                                                                <div></div>
+                                                                /*) : (
+                                                                    <div></div>*/
                                                             )}
                                                         </Tooltip>
                                                     ),
@@ -235,10 +237,10 @@ function Plantoes({data, h}) {
                                             isRowSelectable={(params) => {
                                                 if (juizSelecionado && escalaSelecionada && !escalaSelecionada.fechada) {
                                                     const preferenciaJuizId = escalaSelecionada.preferencia?.data?.id;
-                                                    if (preferenciaJuizId === juizSelecionado.id) {
+                                                    /*if (preferenciaJuizId === juizSelecionado.id) {
                                                         const plantonistaAtribuido = params.row.plantonista.data[0];
                                                         return !plantonistaAtribuido;
-                                                    }
+                                                    }*/ return true;
                                                 }
                                                 return false;
                                             }}
@@ -267,9 +269,12 @@ function Plantoes({data, h}) {
                                 </MDBox>
                             </MDBox>
                         </Grid>
-                        <Grid item xs={12} xl={5} pt={2}>
+                        <Grid item xs={12} xl={5} pt={4}>
                             {escalaSelecionada && (
-                            <Calendario plantoes={plantoes} escalaSelecionada={escalaSelecionada}/>)}
+                                <MDBox px={4}>
+                                    <Calendario plantoes={plantoes} escalaSelecionada={escalaSelecionada}/>
+                                </MDBox>)}
+
                         </Grid>
                         <Grid item xs={12} xl={5} m={2}>
                             <MDButton size="small" onClick={showJSON} color="info">Exibir</MDButton>
@@ -291,7 +296,6 @@ export async function getServerSideProps() {
         method: 'GET',
         headers: h,
     });
-    //const data = await res.json();
     const responseEscala = await res.json();
     const data = responseEscala.data.map((item) => ({id: item.id, ...item.attributes,}));
 

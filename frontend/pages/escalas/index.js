@@ -150,9 +150,7 @@ function Escalas({ data, h }) {
                 <MDTypography variant="h2">Dados da Escala</MDTypography>
             </MDBox>
             <Card>
-                <MDBox ml={2} p={3}>
-                    <MDButton size="small" onClick={showJSON} color="info">Exibir</MDButton>
-                </MDBox>
+
                 <form onSubmit={handleSubmit}>
                     <Grid container spacing={3} pb={3} px={3}>
                         <Grid item xs={12} sm={5} sx={{ height: "max-content" }}>
@@ -243,7 +241,7 @@ function Escalas({ data, h }) {
                                 </Grid>
                             )}
                         </Grid>
-                        <Grid item xs={12} xl={11} mt={2}>
+                        <Grid item xs={12} xl={7} mt={2}>
                             {escalaSelecionada && (
                                 <Accordion style={{ boxShadow: "none" }}>
                                     <AccordionSummary
@@ -274,27 +272,9 @@ function Escalas({ data, h }) {
                                                     headerName: "N°",
                                                     width: 50,
                                                     renderCell: (params) => {
-                                                        const numeroPlantoesEscolhidos = params.value;
-                                                        const totalPlantoes = plantoes.length;
-                                                        const porcentagemPlantoes =
-                                                            (numeroPlantoesEscolhidos / totalPlantoes) * 100;
-                                                        let textColor = "";
-
-                                                        if (porcentagemPlantoes === 0) {
-                                                            textColor = "#ff0000";
-                                                        } else if (porcentagemPlantoes <= 25) {
-                                                            textColor = "#ff9900";
-                                                        } else if (porcentagemPlantoes <= 50) {
-                                                            textColor = "#ffd503";
-                                                        } else if (porcentagemPlantoes <= 75) {
-                                                            textColor = "#00ff00";
-                                                        } else {
-                                                            textColor = "#0000ff";
-                                                        }
-
                                                         return (
-                                                            <div style={{color: textColor, fontWeight: "bold",}}>
-                                                                {numeroPlantoesEscolhidos}
+                                                            <div style={{ fontWeight: "bold",}}>
+                                                                {params.value}
                                                             </div>
                                                         );
                                                     },
@@ -318,7 +298,7 @@ function Escalas({ data, h }) {
                             )}
 
                         </Grid>
-                        <Grid item xs={12} xl={11}>
+                        <Grid item xs={12} xl={12}>
                             {escalaSelecionada && (
                                 <Accordion style={{ boxShadow: "none" }}>
                                     <AccordionSummary
@@ -329,8 +309,13 @@ function Escalas({ data, h }) {
                                         <h5 style={{ color: "#344767" }}>Minuta</h5>
                                     </AccordionSummary>
                                     <AccordionDetails>
+                                        {plantoes.length <= 0 &&(
+                                            <MDBox pb={1.5}>
+                                                <MDTypography variant="h6" sx={{fontWeight: 'regular'}} >Não há plantões vinculados a esta escala.</MDTypography>
+                                            </MDBox>
+                                        )}
                                         <Minuta plantoes={plantoes} />
-                                        <Grid  xs={12} xl={6}>
+                                        <Grid  xs={12} xl={4}>
                                             <Calendario plantoes={plantoes} escalaSelecionada={escalaSelecionada}/>
                                         </Grid>
                                     </AccordionDetails>

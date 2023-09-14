@@ -35,10 +35,10 @@ export const setPlantonista = (idJuiz, plantaoArray,headers ) => {
     setJuizData();
 };
 
-export const removePlantonista = (idJuiz, idPlantao,headers ) => {
+export const removePlantonista = (idJuiz, plantaoArray,headers ) => {
 
     const plantoes={
-        plantoes:{disconnect: idPlantao}
+        plantoes:{disconnect: plantaoArray}
     }
 
     const urlJuiz =`http://localhost:1337/api/juizs/${idJuiz}`

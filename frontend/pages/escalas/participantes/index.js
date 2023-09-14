@@ -13,6 +13,7 @@ import MDButton from "../../../components/MDButton";
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import Tooltip from '@mui/material/Tooltip';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
+import {removePlantonista} from "../../../utils/plantaoUtils";
 
 const headers = {
     'Content-Type': 'application/json',
@@ -41,7 +42,6 @@ function Participantes() {
     const [jsonData, setJsonData] = useState([]);
     const [adicionados, setAdicionados] = useState([]);
     const [juizPreferencialId, setJuizPreferencialId] = useState(null);
-    const hideExibir = true;
 
 
     const fetchJuizes = async () => {
@@ -148,9 +148,35 @@ function Participantes() {
 
     }
 
-    const handleLimparParticipante = async (row) => {
+    const extrairPlantoes = (juizId) => {
+        const escalaId = opcaoSelecionada.id;
+
+        const juizSelecionado = juizes.find((juiz) => juiz.id === juizId);
+
+        if (juizSelecionado) {
+            // Acesse a lista de plantões do juiz
+            const plantoesJuiz = juizSelecionado.plantoes.data;
+
+            // Filtre os plantões que pertencem à mesma escala selecionada
+            const plantoesEscala = plantoesJuiz.filter((plantao) => plantao.attributes.escala.data.id === escalaId);
+
+            // Extrair os IDs dos plantões em um array
+            const idPlantoes = plantoesEscala.map((plantao) => plantao.id);
+
+            // Retornar o array de IDs dos plantões
+            return idPlantoes;
+        } else {
+            console.log('Juiz selecionado não encontrado no array de juízes.');
+            return []; // Retorna um array vazio em caso de juiz não encontrado
+        }
+    };
+
+
+
+    const handleLimparParticipante = async (idJuiz) => {
         try {
-            const idJuiz = row.id;
+            const plantaoArray = extrairPlantoes(idJuiz);
+            await removePlantonista(idJuiz, plantaoArray,headers )
             await removeParticipantesEscala(idJuiz, opcaoSelecionada.id, headers);
 
             const novosAdicionados = adicionados.filter(participante => participante.id !== idJuiz);
@@ -210,7 +236,11 @@ function Participantes() {
         return juizId === juizPreferencialId;
     };
     const showJSON = () => {
-        console.log('JSON:', rowSelectionModel);
+
+        console.log('escala',opcaoSelecionada);
+        console.log('juiz',juizes);
+        console.log('ARRAY PLANTOES',headers);
+
     };
 
 
@@ -249,6 +279,7 @@ function Participantes() {
                                     {opcaoSelecionada && (<h5>Juizes Adicionados:</h5>)}
                                     {opcaoSelecionada && (
                                         <DataGrid
+                                            density="compact"
                                             disableRowSelectionOnClick
                                             disableColumnMenu
                                             sx={{fontSize: '18px', fontWeight: 'regular', padding: '10px'}}
@@ -286,7 +317,7 @@ function Participantes() {
                                                                 <GridActionsCellItem
                                                                     icon={<RemoveCircleOutlineIcon/>}
                                                                     label="Remover Juiz"
-                                                                    onClick={() => handleLimparParticipante(params.row)}
+                                                                    onClick={() => handleLimparParticipante(params.row.id)}
                                                                     color="inherit"
                                                                 />
                                                             </Tooltip>
@@ -345,6 +376,9 @@ function Participantes() {
                                         </MDTypography>
                                     )}
                                 </Grid>
+                            </Grid>
+                            <Grid item xs={12} xl={5} m={2}>
+                                <MDButton size="small" onClick={showJSON} color="info">Exibir</MDButton>
                             </Grid>
                             {opcaoSelecionada && (<Grid p={4} mt={2}></Grid>)}
                         </MDBox>

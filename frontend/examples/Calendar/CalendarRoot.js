@@ -33,10 +33,10 @@ export default styled(Box)(({ theme, ownerState }) => {
   const { md } = boxShadows;
 
   return {
-    height: "100%",
+    height: "50%",
 
     "& .fc-media-screen": {
-      height: "100%",
+      height: "50%",
       color: dark.main,
     },
 
@@ -86,7 +86,7 @@ export default styled(Box)(({ theme, ownerState }) => {
 
     "& .fc .fc-view-harness-active > .fc-view": {
       position: "static",
-      height: "100%",
+      height: "50%",
     },
 
     "& .fc .fc-scroller-liquid-absolute": {
@@ -94,7 +94,7 @@ export default styled(Box)(({ theme, ownerState }) => {
     },
 
     "& .fc-daygrid-event": {
-      margin: `${pxToRem(0.5)} ${pxToRem(2)}`,
+      margin: `${pxToRem(1)} ${pxToRem(2)}`,
       border: "none",
       borderRadius: pxToRem(5.6),
       fontSize: size.sm,
@@ -102,7 +102,7 @@ export default styled(Box)(({ theme, ownerState }) => {
     },
 
     "& .fc .fc-daygrid-body-unbalanced .fc-daygrid-day-events": {
-      minHeight: pxToRem(32),
+      minHeight: pxToRem(5),
     },
 
     "& .fc-event-title": {
