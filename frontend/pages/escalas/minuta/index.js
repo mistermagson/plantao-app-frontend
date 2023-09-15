@@ -27,7 +27,7 @@ function Minuta({ plantoes }) {
             <div >
                 <table
                     id="minuta-table"
-                    style={{ width: '70%', borderCollapse: 'collapse', border: '1px solid #ccc' }}
+                    style={{ width: '99%', borderCollapse: 'collapse', border: '1px solid #ccc' }}
                 >
                     <thead>
                     <tr>

@@ -167,6 +167,7 @@ function AdicionaEscala() {
                                     disableColumnMenu
                                     sx={{fontSize: '18px', fontWeight: 'regular',color:'dark'}}
                                     pageSizeOptions={[5, 10, 20]}
+                                    style={{height: '500px'}}
                                     initialState={{pagination: {paginationModel: {pageSize: 20}},}}
                                     rows={escalas}
                                     columns={[
@@ -190,7 +191,7 @@ function AdicionaEscala() {
                                             renderCell: (params) => (
                                                 <div >
                                                     <GridActionsCellItem
-                                                        icon={<InsertDriveFileIcon />}
+                                                        icon={<EditIcon />}
                                                         label="Abrir minuta"
                                                         className="textPrimary"
                                                         onClick={console.log('teste')}
@@ -208,13 +209,13 @@ function AdicionaEscala() {
                                                     label="Delete"
                                                     onClick={console.log('teste')}
                                                     color="dark"
-                                                    />
+                                                    />*/
                                                     <GridActionsCellItem
                                                         icon={<DeleteIcon color="filled" />}
                                                         label="Delete"
                                                         onClick={console.log('teste')}
                                                         color="error"
-                                                    />*/}
+                                                    />}
                                                 </div>
                                             )
                                         },]}
@@ -223,7 +224,6 @@ function AdicionaEscala() {
                                     disableColumnFilter
                                     disableColumnSelector
                                     disableDensitySelector
-                                    disablE
                                     slots={{toolbar: GridToolbar}}
                                     slotProps={{toolbar: {showQuickFilter: true,},}}
                                 />

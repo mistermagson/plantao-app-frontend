@@ -171,8 +171,6 @@ function Participantes() {
         }
     };
 
-
-
     const handleLimparParticipante = async (idJuiz) => {
         try {
             const plantaoArray = extrairPlantoes(idJuiz);
@@ -279,13 +277,13 @@ function Participantes() {
                                     {opcaoSelecionada && (<h5>Juizes Adicionados:</h5>)}
                                     {opcaoSelecionada && (
                                         <DataGrid
-                                            density="compact"
                                             disableRowSelectionOnClick
                                             disableColumnMenu
                                             sx={{fontSize: '18px', fontWeight: 'regular', padding: '10px'}}
-                                            pageSizeOptions={[5, 10, 20]}
+                                            style={{height: '500px'}}
+                                            pageSizeOptions={[5, 10, 20,50,100]}
                                             initialState={{
-                                                pagination: {paginationModel: {pageSize: 5}},
+                                                pagination: {paginationModel: {pageSize: 50}},
                                                 sorting: {
                                                     sortModel: [{field: 'antiguidade', sort: 'asc'}],
                                                 },
@@ -340,10 +338,11 @@ function Participantes() {
                                     {opcaoSelecionada && (<h5>Juizes Restantes:</h5>)}
                                     {opcaoSelecionada && (
                                         <DataGrid
-                                            checkboxSelection
+                                            editMode="row"                                            checkboxSelection
                                             disableColumnMenu
                                             sx={{fontSize: '18px', fontWeight: 'regular', padding: '10px'}}
-                                            pageSizeOptions={[5, 10, 20]}
+                                            style={{height: '500px'}}
+                                            pageSizeOptions={[5, 10, 20,50,100]}
                                             initialState={{
                                                 pagination: {paginationModel: {pageSize: 5}},
                                                 sorting: {sortModel: [{field: 'antiguidade', sort: 'asc'}],},
@@ -356,11 +355,7 @@ function Participantes() {
                                             disableColumnSelector
                                             disableDensitySelector
                                             slots={{toolbar: GridToolbar}}
-                                            slotProps={{
-                                                toolbar: {
-                                                    showQuickFilter: true,
-                                                },
-                                            }}
+                                            slotProps={{toolbar: {showQuickFilter: true,},}}
 
                                         />)}
 

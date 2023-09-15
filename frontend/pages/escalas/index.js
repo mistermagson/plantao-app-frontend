@@ -153,7 +153,7 @@ function Escalas({ data, h }) {
 
                 <form onSubmit={handleSubmit}>
                     <Grid container spacing={3} pb={3} px={3}>
-                        <Grid item xs={12} sm={5} sx={{ height: "max-content" }}>
+                        <Grid item xs={12} sm={5}  sx={{ height: "max-content" }}>
                             <MDBox pl={1} my={2}>
                                 <h5 >Selecione a escala:</h5>
                             </MDBox>
@@ -188,7 +188,7 @@ function Escalas({ data, h }) {
                                             style={{ flex: 1, marginRight: "8px" }}
                                         />
                                     </Grid>
-                                    <Grid item xs={12} xl={4}>
+                                    <Grid item xs={12} xl={5}>
                                         <h5 style={{ color: "#344767" }}>Tipo da escala</h5>
                                         <TextField
                                             fullWidth
@@ -203,10 +203,10 @@ function Escalas({ data, h }) {
                             )}
                             {escalaSelecionada && (
                                 <Grid container mt={2} spacing={2}>
-                                    <Grid item xs={6} xl={3}>
+                                    <Grid item xs={6} xl={4}>
                                         <h5 style={{ color: "#344767" }}>Data de início</h5>
                                         <TextField
-
+                                            fullWidth
                                             id="outlined-inicio-input"
                                             value={escalaSelecionada ? escalaSelecionada.inicio : ""}
                                             InputProps={{readOnly: true,}}
@@ -214,9 +214,10 @@ function Escalas({ data, h }) {
                                             style={{ flex: 1, marginRight: "8px" }}
                                         />
                                     </Grid>
-                                    <Grid item xs={6} xl={3}>
+                                    <Grid item xs={6} xl={4}>
                                         <h5 style={{ color: "#344767" }}>Data de término</h5>
                                         <TextField
+                                            fullWidth
                                             id="outlined-fim-input"
                                             value={escalaSelecionada ? escalaSelecionada.fim : ""}
                                             InputProps={{readOnly: true,}}
@@ -241,7 +242,7 @@ function Escalas({ data, h }) {
                                 </Grid>
                             )}
                         </Grid>
-                        <Grid item xs={12} xl={7} mt={2}>
+                        <Grid item xs={12} xl={6.5} >
                             {escalaSelecionada && (
                                 <Accordion style={{ boxShadow: "none" }}>
                                     <AccordionSummary
@@ -288,8 +289,8 @@ function Escalas({ data, h }) {
                                         />
 
                                             <MDBox mt={2} mr={1} display="flex" justifyContent="flex-end">
-                                                <MDButton color="dark" size="small" onClick={redirectToParticipantes}>
-                                                    Gerenciar
+                                                <MDButton color="dark" type='text' size="small" onClick={redirectToParticipantes}>
+                                                    Editar Participantes
                                                 </MDButton>
 
                                             </MDBox>
@@ -298,7 +299,39 @@ function Escalas({ data, h }) {
                             )}
 
                         </Grid>
-                        <Grid item xs={12} xl={12}>
+                        <Grid item xs={12} xl={5}>
+                            {escalaSelecionada && (
+                                <Accordion style={{ boxShadow: "none" }}>
+                                    <AccordionSummary
+                                        aria-controls="panel1a-content"
+                                        id="panel1a-header"
+                                        expandIcon={<ExpandMoreIcon />}
+                                    >
+                                        <h5 style={{ color: "#344767" }}>Calendário</h5>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                        {plantoes.length <= 0 &&(
+                                            <MDBox pb={1.5}>
+                                                <MDTypography variant="h6" sx={{fontWeight: 'regular'}} >Não há plantões vinculados a esta escala.</MDTypography>
+                                            </MDBox>
+                                        )}
+
+                                        <Grid  xs={12} xl={12}>
+                                            <Calendario plantoes={plantoes} inicio={escalaSelecionada.inicio}/>
+                                            <MDBox mt={2} mr={1} display="flex" justifyContent="flex-end">
+                                                <MDButton color="dark" size="small" onClick={redirectToParticipantes}>
+                                                    Editar Plantonistas
+                                                </MDButton>
+
+                                            </MDBox>
+                                        </Grid>
+
+
+                                    </AccordionDetails>
+                                </Accordion>
+                            )}
+                        </Grid>
+                        <Grid item xs={12} xl={11}>
                             {escalaSelecionada && (
                                 <Accordion style={{ boxShadow: "none" }}>
                                     <AccordionSummary
@@ -314,10 +347,8 @@ function Escalas({ data, h }) {
                                                 <MDTypography variant="h6" sx={{fontWeight: 'regular'}} >Não há plantões vinculados a esta escala.</MDTypography>
                                             </MDBox>
                                         )}
+
                                         <Minuta plantoes={plantoes} />
-                                        <Grid  xs={12} xl={4}>
-                                            <Calendario plantoes={plantoes} escalaSelecionada={escalaSelecionada}/>
-                                        </Grid>
                                     </AccordionDetails>
                                 </Accordion>
                             )}

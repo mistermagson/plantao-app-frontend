@@ -2,12 +2,18 @@ import React, { useState } from 'react';
 import Calendar from "/examples/Calendar";
 import MDTypography from "../../../components/MDTypography";
 import MDBox from "../../../components/MDBox";
+import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
+import interactionPlugin from "@fullcalendar/interaction"
+import MDAlert from "../../../components/MDAlert";
+import MDBadge from "../../../components/MDBadge";
+import MDBadgeDot from "../../../components/MDBadgeDot"; // needed for dayClick
 
 function Calendario({ plantoes }) {
     if (plantoes.length <= 0) {
         return <div></div>;
     } else {
         const [tooltipContent, setTooltipContent] = useState(null);
+        const [dotColor, setDotColor] = useState(null);
 
         const eventos = plantoes.map((plantao) => {
             const plantonista = plantao.plantonista;
@@ -30,18 +36,20 @@ function Calendario({ plantoes }) {
 
         const handleEventMouseEnter = (event) => {
             setTooltipContent(event.event.title);
+            setDotColor(event.event.className)
+
         };
 
         const handleEventMouseLeave = () => {
             setTooltipContent(null);
+            setDotColor(null)
         };
 
         return (
             <div>
-                <MDBox pb={1.5}>
-                    <MDTypography variant="h6">Calendário de Plantões:</MDTypography>
-                </MDBox>
+
                 <Calendar
+                    fullHeight
                     initialView="dayGridMonth"
                     initialDate={plantoes[0].data}
                     events={eventos}
@@ -50,12 +58,13 @@ function Calendario({ plantoes }) {
                     eventMouseEnter={handleEventMouseEnter}
                     eventMouseLeave={handleEventMouseLeave}
                 />
+                <div style={{height: '20px'}}>
                 {tooltipContent && (
-                    <div style={{ position: 'absolute', top: '10px', left: '10px', background: 'white', padding: '5px', border: '1px solid #ccc' }}>
-                        {tooltipContent}
-                    </div>
+                    <MDBadgeDot badgeContent={tooltipContent} color={dotColor} size='lg' container />
+
                 )}
-            </div>
+                </div>
+                </div>
         );
     }
 }

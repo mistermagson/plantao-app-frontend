@@ -64,7 +64,7 @@ function Calendar({ header, ...rest }) {
       <MDBox pt={header.title || header.date ? 2 : 0} px={2} lineHeight={1}>
         {header.title ? (
           <MDTypography
-            variant="h6"
+            variant="h4"
             fontWeight="medium"
             textTransform="capitalize"
           >
