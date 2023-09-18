@@ -1,5 +1,6 @@
 // retorna uma lista de datas a partir de um intervalo
 import {useState} from "react";
+import {removePlantao} from "./plantaoUtils";
 
 export const geraDatas = (start, end) => {
     const dateArray = [];
@@ -159,7 +160,7 @@ export const removeParticipantesEscala = (idJuiz, idEscala,headers ) => {
     };
 
     setEscalaData();
-};
+};//TODO botao de redirecionar
 
 export const setPreferencia = (idEscala, idJuiz,headers) => {
 
@@ -241,4 +242,29 @@ export const fetchEscalas = async (headers) => {
     } catch (error) {
         return(error.message);
     }
+};
+
+export const removeEscala = (idEscala,plantaoArray, headers ) => {
+
+    const urlEscala =`http://localhost:1337/api/escalas/${idEscala}`
+
+    const removeEscala = async () => {
+        try {
+
+            plantaoArray.forEach(item => removePlantao(item,headers));
+            const response = await fetch(urlEscala, {
+                method: 'DELETE',
+                headers,
+            })
+            if (response.ok) {
+                console.log('Plantao removido com sucesso:', response);
+            } else {
+                console.log('Erro ao remover plantao:', response);
+            }
+        } catch (error) {
+            console.error('Erro ao remover plantao:', error);
+        }
+    };
+
+    removeEscala();
 };

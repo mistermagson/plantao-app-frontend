@@ -46,7 +46,7 @@ function Participantes() {
 
     const fetchJuizes = async () => {
         try {
-            const response1 = await fetch('http://localhost:1337/api/juizs?populate[plantoes][populate][0]=escala', {
+            const response1 = await fetch('http://localhost:1337/api/juizs?populate[plantoes][populate][0]=escalahttp://localhost:1337/api/juizs?populate[plantoes][populate][0]=escala&populate[lotacao]=*', {
                 method: 'GET',
                 headers,
             });
@@ -70,7 +70,7 @@ function Participantes() {
     };
     const fetchEscalas = async () => {
         try {
-            const response2 = await fetch('http://localhost:1337/api/escalas?populate[participantes][populate][0]=plantoes&populate[preferencia][populate][0]=juizs', {
+            const response2 = await fetch('http://localhost:1337/api/escalas?populate[participantes][populate][]=plantoes&populate[preferencia][populate][]=juizs&populate[participantes][populate][]=lotacao', {
                 method: 'GET',
                 headers,
             });
@@ -237,7 +237,7 @@ function Participantes() {
 
         console.log('escala',opcaoSelecionada);
         console.log('juiz',juizes);
-        console.log('ARRAY PLANTOES',headers);
+        console.log('ARRAY PLANTOES',adicionados);
 
     };
 
@@ -247,9 +247,10 @@ function Participantes() {
             <DashboardNavbar/>
             <MDBox p={2}>
                 <h1>Lista de Participantes</h1>
+                <MDButton size="small" onClick={showJSON} lcolor="info">Exibir</MDButton>
             </MDBox>
             <Grid container>
-                <Grid item xs={12} md={6} xl={11}>
+                <Grid item xs={12} md={6} xl={12}>
                     <Card sx={{height: "100%"}}>
                         <MDBox pt={2} px={4}>
                             <MDTypography variant="h6">
@@ -283,15 +284,23 @@ function Participantes() {
                                             style={{height: '500px'}}
                                             pageSizeOptions={[5, 10, 20,50,100]}
                                             initialState={{
-                                                pagination: {paginationModel: {pageSize: 50}},
+                                                pagination: {paginationModel: {pageSize: 20}},
                                                 sorting: {
                                                     sortModel: [{field: 'antiguidade', sort: 'asc'}],
                                                 },
                                             }}
                                             rows={adicionados}
                                             columns={[
-                                                {field: 'nome', headerName: 'Nomes', flex: 1},
-                                                {field: 'antiguidade', headerName: 'Antiguidade', minWidth: 150},
+                                                {field: 'nome', headerName: 'Nomes', flex: 1,minWidth: 150},
+                                                {
+                                                    field: 'lotacaoDescricao', // Nome da nova coluna
+                                                    headerName: 'Descrição da Vara',
+                                                    flex: 1,minWidth: 150,
+                                                    valueGetter: (params) => {
+                                                        return params.row.lotacao.data.attributes.descricao;
+                                                    },
+                                                },
+                                                {field: 'antiguidade', headerName: 'Antiguidade', minWidth: 30},
                                                 {
                                                     field: 'id',
                                                     headerName: 'Opções',
@@ -344,7 +353,7 @@ function Participantes() {
                                             style={{height: '500px'}}
                                             pageSizeOptions={[5, 10, 20,50,100]}
                                             initialState={{
-                                                pagination: {paginationModel: {pageSize: 5}},
+                                                pagination: {paginationModel: {pageSize: 20}},
                                                 sorting: {sortModel: [{field: 'antiguidade', sort: 'asc'}],},
                                             }}
                                             rows={juizesRestantes}
@@ -372,10 +381,8 @@ function Participantes() {
                                     )}
                                 </Grid>
                             </Grid>
-                            <Grid item xs={12} xl={5} m={2}>
-                                <MDButton size="small" onClick={showJSON} color="info">Exibir</MDButton>
-                            </Grid>
-                            {opcaoSelecionada && (<Grid p={4} mt={2}></Grid>)}
+
+
                         </MDBox>
                     </Card>
                 </Grid>

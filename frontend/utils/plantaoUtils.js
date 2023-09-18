@@ -63,20 +63,16 @@ export const removePlantonista = (idJuiz, plantaoArray,headers ) => {
     setJuizData();
 };
 
-export const removePlantao = (idEscala, plantaoArray,headers ) => {
+export const removePlantao = (idPlantao, headers ) => {
 
-    const plantoes={
-        plantaos:{disconnect: plantaoArray}
-    }
 
-    const urlEscala =`http://localhost:1337/api/juizs/${idEscala}`
-    const setJuizData = async () => {
+    const urlPlantao =`http://localhost:1337/api/plantoes/${idPlantao}`
+    const removePlantao = async () => {
         try {
-            console.log(urlEscala);
-            const response = await fetch(urlEscala, {
-                method: 'PUT',
+            console.log(urlPlantao);
+            const response = await fetch(urlPlantao, {
+                method: 'DELETE',
                 headers,
-                body: JSON.stringify({ data: plantoes }),
             })
             if (response.ok) {
                 console.log('Plantao removido com sucesso:', response);
@@ -88,5 +84,5 @@ export const removePlantao = (idEscala, plantaoArray,headers ) => {
         }
     };
 
-    setJuizData();
+    removePlantao();
 };

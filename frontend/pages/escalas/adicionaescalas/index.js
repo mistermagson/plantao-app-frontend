@@ -19,6 +19,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PeopleAltSharpIcon from '@mui/icons-material/PeopleAltSharp';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import {removeEscala} from "../../../utils/escalaUtils";
+import {removePlantao} from "../../../utils/plantaoUtils";
 
 
 const parseJSON = resp => (resp.json ? resp.json() : resp);
@@ -46,7 +48,6 @@ const valorInicial = {
     inicio: '',
     fim: '',
     fechada: false,
-
 }
 
 function AdicionaEscala() {
@@ -57,11 +58,13 @@ function AdicionaEscala() {
 
     const opEscala = ["juiz-regional", "juiz-local", "juiz-distribuidor", "juiz-recesso", "vara-recesso", "vara-anual"];
     const [modifiedData, setModifiedData] = useState(valorInicial);
-    const [errorEscalas, setErrorEscalas] = useState(null);
     const [juizes, setJuizes] = useState([]);
     const [escalas, setEscalas] = useState([]);
     const [error, setError] = useState(null);
-    const [showSuccess, setShowSuccess] = useState(false);
+    const [errorEscalas, setErrorEscalas] = useState(null);
+    const [salvar, setSalvar] = useState(false);
+    const [deletar, setDeletar] = useState(false);
+    const [linhaSelecionada, setLinhaSelecionada] = useState([]);
 
     const fetchEscalas = async () => {
         try {
@@ -108,7 +111,7 @@ function AdicionaEscala() {
                 .then(escala => {
                     const datasEscala = geraDatas(escala.data.attributes.inicio, escala.data.attributes.fim);
                     setDatasEscala(escala.data.id, datasEscala, headers);
-                    setShowSuccess(true);
+                    setSalvar(true);
                     setModifiedData(valorInicial);
                     fetchEscalas();
 
@@ -133,17 +136,30 @@ function AdicionaEscala() {
         });
     }
     const showJSON = () => {
-        console.log('JSON:', modifiedData.descricao);
+        console.log('JSON:',escalas);
     };
     const handleClose = () => {
-        setShowSuccess(false);
+        setSalvar(false);
+        setDeletar(false);
     };
+    const deleteEscala = () =>{
+        try{
+            const idEscala = linhaSelecionada.id
+            const plantaoArray = linhaSelecionada.plantaos.data.map((plantao) => plantao.id);
+            removeEscala(idEscala,plantaoArray, headers)
+            setLinhaSelecionada([]);
+            fetchEscalas();
+        }
+        catch (error) {
+            setError(error.message);
+        }
+    }
 
     return (
         <DashboardLayout>
             <DashboardNavbar/>
             <div>
-                <Dialog open={showSuccess} onClose={handleClose}>
+                <Dialog open={salvar} onClose={handleClose}>
                     <DialogTitle>Adição Realizada</DialogTitle>
                     <DialogContent>
                         <DialogContentText>A Escala {modifiedData.descricao} foi criada com
@@ -151,6 +167,24 @@ function AdicionaEscala() {
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleClose}>Fechar</Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
+            <div>
+                <Dialog open={deletar} onClose={handleClose}>
+                    <DialogTitle>Excluir Escala</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            Deseja excluir a escala{' '}
+                            <MDTypography component="span" variant="H5" style={{ fontWeight: 'bold' }}>
+                                {linhaSelecionada.descricao}
+                            </MDTypography>{' '}
+                            e seus respectivos plantões?
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => { deleteEscala();handleClose();}}>Sim</Button>
+                        <Button onClick={handleClose}>Não</Button>
                     </DialogActions>
                 </Dialog>
             </div>
@@ -194,28 +228,15 @@ function AdicionaEscala() {
                                                         icon={<EditIcon />}
                                                         label="Abrir minuta"
                                                         className="textPrimary"
-                                                        onClick={console.log('teste')}
+
                                                         color="dark"
                                                     />
-                                                    {/*<GridActionsCellItem
-                                                        icon={<EditIcon />}
-                                                        label="Edit"
-                                                        className="textPrimary"
-                                                        onClick={console.log('teste')}
-                                                        color="dark"
-                                                    />
-                                                    <GridActionsCellItem
-                                                    icon={<PeopleAltSharpIcon color="filled" />}
-                                                    label="Delete"
-                                                    onClick={console.log('teste')}
-                                                    color="dark"
-                                                    />*/
                                                     <GridActionsCellItem
                                                         icon={<DeleteIcon color="filled" />}
                                                         label="Delete"
-                                                        onClick={console.log('teste')}
+                                                        onClick={()=> {setLinhaSelecionada(params.row);setDeletar(true)}}
                                                         color="error"
-                                                    />}
+                                                    />
                                                 </div>
                                             )
                                         },]}
