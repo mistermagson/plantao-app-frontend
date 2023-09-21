@@ -21,7 +21,7 @@ import PeopleAltSharpIcon from '@mui/icons-material/PeopleAltSharp';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import {removeEscala} from "../../../utils/escalaUtils";
 import {removePlantao} from "../../../utils/plantaoUtils";
-
+import Pagination from '@mui/material/Pagination';
 
 const parseJSON = resp => (resp.json ? resp.json() : resp);
 
@@ -66,6 +66,15 @@ function AdicionaEscala() {
     const [deletar, setDeletar] = useState(false);
     const [linhaSelecionada, setLinhaSelecionada] = useState([]);
 
+    const areCamposPreenchidos = () => {
+        return (
+            modifiedData.descricao !== '' &&
+            modifiedData.tipo !== '' &&
+            modifiedData.tipo !== null &&
+            modifiedData.inicio !== '' &&
+            modifiedData.fim !== ''
+        );
+    };
     const fetchEscalas = async () => {
         try {
             const response = await fetch('http://localhost:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes&populate[preferencia][populate][0]=juizs', {
@@ -93,7 +102,6 @@ function AdicionaEscala() {
             setError(error.message);
         }
     };
-
     useEffect(() => {
         fetchEscalas();
     }, []);
@@ -136,7 +144,7 @@ function AdicionaEscala() {
         });
     }
     const showJSON = () => {
-        console.log('JSON:',escalas);
+        console.log('JSON:',modifiedData.tipo);
     };
     const handleClose = () => {
         setSalvar(false);
@@ -158,6 +166,7 @@ function AdicionaEscala() {
     return (
         <DashboardLayout>
             <DashboardNavbar/>
+            {/*caixa dialogo escala adicionada*/}
             <div>
                 <Dialog open={salvar} onClose={handleClose}>
                     <DialogTitle>Adição Realizada</DialogTitle>
@@ -170,6 +179,7 @@ function AdicionaEscala() {
                     </DialogActions>
                 </Dialog>
             </div>
+            {/*caixa dialogo escala deletada*/}
             <div>
                 <Dialog open={deletar} onClose={handleClose}>
                     <DialogTitle>Excluir Escala</DialogTitle>
@@ -199,7 +209,7 @@ function AdicionaEscala() {
                                 <DataGrid
                                     editMode="row"
                                     disableColumnMenu
-                                    sx={{fontSize: '18px', fontWeight: 'regular',color:'dark'}}
+                                    sx={{  fontSize: '16px', fontWeight: 'regular',color:'dark'}}
                                     pageSizeOptions={[5, 10, 20]}
                                     style={{height: '500px'}}
                                     initialState={{pagination: {paginationModel: {pageSize: 20}},}}
@@ -246,8 +256,7 @@ function AdicionaEscala() {
                                     disableColumnSelector
                                     disableDensitySelector
                                     slots={{toolbar: GridToolbar}}
-                                    slotProps={{toolbar: {showQuickFilter: true,},}}
-                                />
+                                    slotProps={{toolbar: {showQuickFilter: true,},}}/>
                             </MDBox>
                         </MDBox>
                     </Card>
@@ -325,14 +334,13 @@ function AdicionaEscala() {
                                 </Grid>
                                 <Grid mt={4}>
                                     <MDButton size="small" onClick={showJSON} lcolor="info">Exibir</MDButton>
-                                    <MDButton onClick={handleSubmit} size="small" color="success">Salvar</MDButton>
+                                    <MDButton onClick={handleSubmit} size="small" color={`${areCamposPreenchidos() ? 'success' : 'inherit'}`} >Salvar</MDButton>
                                 </Grid>
                             </Grid>
                         </form>
 
                     </Card>
                 </Grid>
-
             </Grid>
 
         </DashboardLayout>

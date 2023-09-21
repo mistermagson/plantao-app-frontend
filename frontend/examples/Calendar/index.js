@@ -22,6 +22,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import dayGridPlugin from "@fullcalendar/daygrid";
 
+
 // @mui material components
 import Card from "@mui/material/Card";
 
@@ -64,7 +65,7 @@ function Calendar({ header, ...rest }) {
       <MDBox pt={header.title || header.date ? 2 : 0} px={2} lineHeight={1}>
         {header.title ? (
           <MDTypography
-            variant="h4"
+            variant="h6"
             fontWeight="medium"
             textTransform="capitalize"
           >

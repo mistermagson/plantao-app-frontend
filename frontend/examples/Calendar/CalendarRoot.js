@@ -114,7 +114,7 @@ export default styled(Box)(({ theme, ownerState }) => {
     "& .fc-button, .fc-today-button, .fc-button:disabled": {
       backgroundColor: `${dark.main} !important`,
       borderColor: `${dark.main} !important`,
-      fontSize: `${size.sm} !important`,
+      fontSize: `12px !important`,
       boxShadow: `${md} !important`,
       opacity: "1 !important",
       transition: `all 150ms ease-in`,
@@ -128,7 +128,7 @@ export default styled(Box)(({ theme, ownerState }) => {
     },
 
     "& .fc .fc-button .fc-icon": {
-      fontSize: size.sm,
+      fontSize: '15px',
     },
 
     "& .fc-toolbar-title": {

@@ -248,7 +248,7 @@ export const removeEscala = (idEscala,plantaoArray, headers ) => {
 
     const urlEscala =`http://localhost:1337/api/escalas/${idEscala}`
 
-    const removeEscala = async () => {
+    const deleteEscala = async () => {
         try {
 
             plantaoArray.forEach(item => removePlantao(item,headers));
@@ -266,5 +266,7 @@ export const removeEscala = (idEscala,plantaoArray, headers ) => {
         }
     };
 
-    removeEscala();
+    deleteEscala();
 };
+
+

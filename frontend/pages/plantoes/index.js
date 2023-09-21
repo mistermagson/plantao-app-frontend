@@ -29,6 +29,7 @@ function Plantoes({data, h}) {
     const [escalas, setEscalas] = useState(data);
     const [plantoes, setPlantoes] = useState([]);
     const [error, setError] = useState(null);
+    const [fixGet, setFixGet] = useState(0);
 
 
     useEffect(() => {
@@ -47,15 +48,13 @@ function Plantoes({data, h}) {
     const handleSubmit =  async (event) => {
         event.preventDefault();
         try {
-             setPlantonista(juizSelecionado.id, plantaoSelecionado, headers)
-
-        } catch (error) {
-            console.error(error);
-        }finally {
+            setPlantonista(juizSelecionado.id, plantaoSelecionado, headers)
             setPlantaoSelecionado([])
             const atualizaEscalas = await fetchEscalas(headers)
             setEscalas(atualizaEscalas)
 
+        } catch (error) {
+            console.error(error);
         }
     };
 
@@ -131,7 +130,7 @@ function Plantoes({data, h}) {
     return (
         <DashboardLayout>
             <DashboardNavbar />
-            <MDBox p={3}>
+            <MDBox p={2}>
                 <MDTypography variant="h2">Plantões</MDTypography>
             </MDBox>
             <Card>
@@ -199,7 +198,10 @@ function Plantoes({data, h}) {
                                             disableColumnMenu
                                             sx={{fontSize: '18px', fontWeight:'regular', height:'80%'}}
                                             pageSizeOptions={[5,10,20]}
-                                            initialState={{pagination: { paginationModel: { pageSize: 5 } },}}
+                                            initialState={{
+                                                pagination: { paginationModel: { pageSize: 5 } },
+                                                sorting: {sortModel: [{field: 'data', sort: 'asc'}],},
+                                            }}
                                             rows={plantoes}
                                             columns={[
                                                 {field:'data', headerName:'Datas',width: 120, sortable:false, renderCell: (params) => {
@@ -207,10 +209,10 @@ function Plantoes({data, h}) {
                                                         const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
                                                         return <span>{formattedDate}</span>;
                                                     },},
-                                                {field: 'plantonista', headerName: 'Status', flex:1, minWidth:220,
+                                                {field: 'plantonista', headerName: 'Plantonista', flex:2, minWidth:220,
                                                     renderCell: (params) => (
                                                         <span style={{color: params.value.data[0] ? 'red' : 'green',}}>
-                                                        {params.value.data[0] ?  `Ocupado - ${params.value.data[0].attributes.nome}`:'Disponível' }
+                                                        {params.value.data[0] ?  `${params.value.data[0].attributes.nome}`:'Disponível' }
                                                     </span>
                                                     ),
                                                 },
@@ -276,9 +278,7 @@ function Plantoes({data, h}) {
                                 </MDBox>)}
 
                         </Grid>
-                        <Grid item xs={12} xl={5} m={2}>
-                            <MDButton size="small" onClick={showJSON} color="info">Exibir</MDButton>
-                        </Grid>
+
 
                     </Grid>
                 </form>

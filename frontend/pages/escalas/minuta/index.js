@@ -10,11 +10,11 @@ function Minuta({ plantoes }) {
     else{
         const tableCellStyle = {
             border: '1px solid #ccc',
-            padding: '8px',
+            padding: '6px',
             textAlign: 'center',
             verticalAlign: 'middle',
             fontFamily: 'Times New Roman',
-            fontSize: '20px',
+            fontSize: '19px',
             color: 'black',
         };
 
@@ -27,7 +27,7 @@ function Minuta({ plantoes }) {
             <div >
                 <table
                     id="minuta-table"
-                    style={{ width: '99%', borderCollapse: 'collapse', border: '1px solid #ccc' }}
+                    style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #ccc' }}
                 >
                     <thead>
                     <tr>

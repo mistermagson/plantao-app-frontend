@@ -11,6 +11,7 @@ import Card from "@mui/material/Card";
 import MDButton from "../../../components/MDButton";
 import {DataGrid, GridToolbar} from "@mui/x-data-grid";
 import MDTypography from "../../../components/MDTypography";
+import CollapseTable from "../tabela";
 
 const headers= {
     'Content-Type': 'application/json',
@@ -58,91 +59,138 @@ function Meusplantoes() {
 
         fetchEscalas();
     }, []);
-
     const showJSON = () => {
         console.log('PLANTONISTA',plantoes);
+        console.log(escalas);
     };
-
-
     const rows = plantoes.map((plantao) => ({
         id: plantao.id,
         data: plantao.data,
         descricao: plantao.escala.data.attributes.descricao,
         tipo: plantao.escala.data.attributes.tipo,
     }));
-
     const setTabela= (dadosJuiz)=>{
         if(dadosJuiz) {
             setPlantoes(dadosJuiz.plantoes.data.map(item => ({ id: item.id, ...item.attributes })))
         }
     }
 
+
+    plantoes.forEach((item) => {
+        const escalaId = item.escala.data.id;
+        const escalaIndex = escalas.findIndex((escala) => escala.id === escalaId);
+
+        if (escalaIndex === -1) {
+            escalas.push({
+                id: escalaId,
+                ...item.escala.data.attributes,
+                plantoes: [item],
+            });
+        } else {
+            escalas[escalaIndex].plantoes.push(item);
+        }
+    });
+
+
+
     return (
         <DashboardLayout>
-            <div>olá</div>
             <DashboardNavbar />
-            <Grid item xs={12} xl={8}>
-                <MDBox p={2}>
-                    <MDTypography variant="h2">Meus plantões</MDTypography>
-                </MDBox>
-                <Card  sx={{ overflow: "visible" }}>
-                    <MDBox p={3}>
-                        <Grid container spacing={3}>
-                            <Grid item xs={12} md={8}  xl={6}>
-                                <MDBox my={1}>
-                                    <h5>Selecione um Juiz :</h5>
-                                </MDBox>
-                                <Autocomplete
-                                    options={juizes}
-                                    getOptionLabel={juiz => juiz.nome }
-                                    value={juizSelecionado}
-                                    onChange={(event, newValue) =>{setJuizSelecionado(newValue),setTabela(newValue)}}
-                                    renderInput={(params) => <TextField {...params} label="Nome do Juiz" required />}
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={12} xl={12} >
-                                {juizSelecionado && (
-                                    <DataGrid
-                                        style={{ minHeight: '300px' }}
-                                        disableColumnMenu
-                                        sx={{fontSize: '18px', fontWeight:'regular', padding:'10px'}}
-                                        pageSizeOptions={[5,10,20]}
-                                        initialState={{pagination:{paginationModel:{pageSize:5}},}}
-                                        rows={rows}
-                                        columns={[{ field: 'data', headerName: 'Data do Plantão', flex:1,
-                                            renderCell: (params) => {
-                                                const dateParts = params.value.split('-');
-                                                const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
-                                                return <span>{formattedDate}</span>;
-                                            }, },
-                                            { field: 'descricao', headerName: 'Descrição da Escala', flex:1 },
-                                            { field: 'tipo', headerName: 'Tipo da Escala', flex:1 },]}
-                                        onRowSelectionModelChange={(newRowSelectionModel) => {
-                                            setRowSelectionModel(newRowSelectionModel);
-                                        }}
-                                        rowSelectionModel={rowSelectionModel}
-                                        disableColumnFilter
-                                        disableColumnSelector
-                                        disableDensitySelector
-                                        slots={{ toolbar: GridToolbar }}
-                                        slotProps={{
-                                            toolbar: {
-                                                showQuickFilter: true,
-                                            },
-                                        }}
+            <Grid container spacing={2}>
+                <Grid item xs={12} xl={12}>
+                    <MDBox p={2}>
+                        <MDTypography variant="h2">Meus plantões</MDTypography>
+                    </MDBox>
+                    <Card  sx={{ overflow: "visible" }}>
+                        <MDBox p={3}>
+                            <Grid container spacing={3}>
+                                <Grid item xs={12} md={8}  xl={12}>
+                                    <MDBox my={1}>
+                                        <h5>Selecione um Juiz :</h5>
+                                    </MDBox>
+                                    <Grid item xs={12} md={8}  xl={6}>
+                                        <Autocomplete
+                                            options={juizes}
+                                            getOptionLabel={juiz => juiz.nome }
+                                            value={juizSelecionado}
+                                            onChange={(event, newValue) =>{setJuizSelecionado(newValue);setTabela(newValue);}}
+                                            renderInput={(params) => <TextField {...params} label="Nome do Juiz" required />}
+                                        />
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={12} md={12} xl={6} >
+                                    {juizSelecionado && (
+                                        /*<DataGrid
+                                            style={{ minHeight: '300px' }}
+                                            disableColumnMenu
+                                            sx={{fontSize: '18px', fontWeight:'regular', padding:'10px'}}
+                                            pageSizeOptions={[5,10,20]}
+                                            initialState={{pagination:{paginationModel:{pageSize:5}},}}
+                                            rows={rows}
+                                            columns={[{ field: 'data', headerName: 'Data do Plantão', flex:1,
+                                                renderCell: (params) => {
+                                                    const dateParts = params.value.split('-');
+                                                    const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+                                                    return <span>{formattedDate}</span>;
+                                                }, },
+                                                { field: 'descricao', headerName: 'Descrição da Escala', flex:1 },
+                                                { field: 'tipo', headerName: 'Tipo da Escala', flex:1 },]}
+                                            onRowSelectionModelChange={(newRowSelectionModel) => {
+                                                setRowSelectionModel(newRowSelectionModel);
+                                            }}
+                                            rowSelectionModel={rowSelectionModel}
+                                            disableColumnFilter
+                                            disableColumnSelector
+                                            disableDensitySelector
+                                            slots={{ toolbar: GridToolbar }}
+                                            slotProps={{
+                                                toolbar: {
+                                                    showQuickFilter: true,
+                                                },
+                                            }}
 
-                                    />
-                                )}
-                                <span style={{color:'red', fontSize:'13px'}}>
-                                    alterar tabela, permitir que ele acesse as escalas que participa, indicar se ele precisa escolher algum plantao
-                                </span>
+                                        />*/
+                                        /*<CollapseTable plantoes={plantoes} />*/
+                                        <DataGrid
+                                            checkboxSelection
+                                            style={{ minHeight: '300px' }}
+                                            disableColumnMenu
+                                            sx={{fontSize: '18px', fontWeight:'regular', padding:'10px'}}
+                                            pageSizeOptions={[5,10,20]}
+                                            initialState={{pagination:{paginationModel:{pageSize:5}},}}
+                                            rows={escalas}
+                                            columns={[
+                                                { field: 'descricao', headerName: 'Descrição da Escala', flex:1 },
+                                                { field: 'tipo', headerName: 'Tipo da Escala', flex:1 },]}
+                                            onRowSelectionModelChange={(newRowSelectionModel) => {
+                                                setRowSelectionModel(newRowSelectionModel);
+                                            }}
+                                            rowSelectionModel={rowSelectionModel}
+                                            disableColumnFilter
+                                            disableColumnSelector
+                                            disableDensitySelector
+                                            slots={{ toolbar: GridToolbar }}
+                                            slotProps={{
+                                                toolbar: {
+                                                    showQuickFilter: true,
+                                                },
+                                            }}/>
+                                        )}
+                                    <span style={{color:'red', fontSize:'13px'}}>
+                                        alterar tabela, permitir que ele acesse as escalas que participa, indicar se ele precisa escolher algum plantao
+                                    </span>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </MDBox>
-                    <MDBox p={3}>
-                        <MDButton size="small" onClick={showJSON} color="error">Exibir</MDButton>
-                    </MDBox>
-                </Card>
+                        </MDBox>
+                        <MDBox p={3}>
+                            <MDButton size="small" onClick={showJSON} color="error">Exibir</MDButton>
+                        </MDBox>
+                    </Card>
+                </Grid>
+                <Grid item xs={12} xl={12}>
+                    <Card id="escalas" sx={{overflow: "visible"}}></Card>
+
+                </Grid>
             </Grid>
             <Footer />
         </DashboardLayout>

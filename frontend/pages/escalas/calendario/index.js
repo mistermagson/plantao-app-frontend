@@ -52,7 +52,12 @@ function Calendario({ plantoes }) {
                     fullHeight
                     initialView="dayGridMonth"
                     initialDate={plantoes[0].data}
-                    events={eventos}
+                    events={eventos/*[{
+                        title: "Winter Hackaton",
+                        start: `${inicio}`,
+                        end: `${fim}`,
+                        className: "error",
+                    },]*/}
                     selectable
                     editable
                     eventMouseEnter={handleEventMouseEnter}

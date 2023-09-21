@@ -19,16 +19,6 @@ const headers = {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b'
 };
-const parseJSON = resp => (resp.json ? resp.json() : resp);
-const checkStatus = resp => {
-    if (resp.status >= 200 && resp.status < 300) {
-        return resp;
-    }
-    return parseJSON(resp).then(resp => {
-        throw resp;
-    });
-};
-
 function Participantes() {
 
     //------- CONSTANTES PARA O DATAGRID----------------------------------------
@@ -280,7 +270,7 @@ function Participantes() {
                                         <DataGrid
                                             disableRowSelectionOnClick
                                             disableColumnMenu
-                                            sx={{fontSize: '18px', fontWeight: 'regular', padding: '10px'}}
+                                            sx={{fontSize: '16px', fontWeight: 'regular', padding: '10px'}}
                                             style={{height: '500px'}}
                                             pageSizeOptions={[5, 10, 20,50,100]}
                                             initialState={{
@@ -347,9 +337,10 @@ function Participantes() {
                                     {opcaoSelecionada && (<h5>Juizes Restantes:</h5>)}
                                     {opcaoSelecionada && (
                                         <DataGrid
-                                            editMode="row"                                            checkboxSelection
+                                            editMode="row"
+                                            checkboxSelection
                                             disableColumnMenu
-                                            sx={{fontSize: '18px', fontWeight: 'regular', padding: '10px'}}
+                                            sx={{fontSize: '16px', fontWeight: 'regular', padding: '10px'}}
                                             style={{height: '500px'}}
                                             pageSizeOptions={[5, 10, 20,50,100]}
                                             initialState={{
