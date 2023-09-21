@@ -18,6 +18,7 @@ import {GridActionsCellItem,} from '@mui/x-data-grid';
 import {fetchEscalas} from "../../utils/escalaUtils";
 import Switch from "@mui/material/Switch";
 import Calendario from "../escalas/calendario";
+import {passaPreferencia} from "../../utils/escalaUtils";
 
 function Plantoes({data, h}) {
 
@@ -124,6 +125,17 @@ function Plantoes({data, h}) {
             console.error(error);
         }
     };
+
+    const passaEscolha = async()=>{
+        try{
+            passaPreferencia(escalaSelecionada,headers);
+            const escalasAtaulizadas = await fetchEscalas(headers)
+            setEscalas(escalasAtaulizadas);
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     const theme = createTheme({});
 
@@ -257,7 +269,7 @@ function Plantoes({data, h}) {
                                                     Adicionar
                                                 </MDButton>
                                             )}
-                                            <h5 style={{ color: escalaSelecionada ? (escalaSelecionada.fechada ? "red" : "green") : "inherit" }}>
+                                           {/* <h5 style={{ color: escalaSelecionada ? (escalaSelecionada.fechada ? "red" : "green") : "inherit" }}>
                                                 {escalaSelecionada ? (escalaSelecionada.fechada ? "Fechada" : "Aberta") : ""}
                                             </h5>
                                             <Switch
@@ -265,7 +277,8 @@ function Plantoes({data, h}) {
                                                 color="primary"
                                                 inputProps={{ "aria-label": "toggle escala" }}
                                                 onChange={() => statusEscala()}
-                                            />
+                                            />*/}
+                                            <MDButton size="small" onClick={()=>passaEscolha()} color="info">Passar a vez</MDButton>
                                         </MDBox>
                                     )}
                                 </MDBox>

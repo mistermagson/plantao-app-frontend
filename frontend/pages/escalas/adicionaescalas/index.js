@@ -144,7 +144,7 @@ function AdicionaEscala() {
         });
     }
     const showJSON = () => {
-        console.log('JSON:',modifiedData.tipo);
+        console.log('JSON:',escalas);
     };
     const handleClose = () => {
         setSalvar(false);

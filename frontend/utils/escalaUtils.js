@@ -269,4 +269,41 @@ export const removeEscala = (idEscala,plantaoArray, headers ) => {
     deleteEscala();
 };
 
+export const passaPreferencia = (escala,headers) => {
+    if (!escala) {
+        console.error('Escala não fornecida.');
+        return;
+    }
 
+
+    if (!escala.participantes.data || escala.participantes.data.length === 0) {
+        console.error('A escala não tem participantes.');
+        return;
+    }
+
+    // Ordenar participantes por antiguidade
+    const participantesOrdenados = escala.participantes.data.sort((a, b) => {
+        return b.attributes.antiguidade - a.attributes.antiguidade;
+    });
+
+    if (!escala.preferencia) {
+        console.error('Não há preferência definida.');
+        return;
+    }
+
+    // Encontrar o índice do participante atualmente na preferência
+    const indiceAtualPreferencia = participantesOrdenados.findIndex(
+        (participante) => participante.id === escala.preferencia.data.id
+    );
+
+    if (indiceAtualPreferencia === -1 || indiceAtualPreferencia === participantesOrdenados.length - 1) {
+        console.error('Não foi possível encontrar o participante atualmente na preferência ou ele é o último da lista.');
+        return;
+    }
+
+    // Obter o ID do próximo participante na lista (o novo preferido)
+    const idNovoPreferido = participantesOrdenados[indiceAtualPreferencia + 1];
+
+    // Atualizar a preferência
+    setPreferencia(escala.id, idNovoPreferido, headers);
+};

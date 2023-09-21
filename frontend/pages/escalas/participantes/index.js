@@ -36,7 +36,7 @@ function Participantes() {
 
     const fetchJuizes = async () => {
         try {
-            const response1 = await fetch('http://localhost:1337/api/juizs?populate[plantoes][populate][0]=escalahttp://localhost:1337/api/juizs?populate[plantoes][populate][0]=escala&populate[lotacao]=*', {
+            const response1 = await fetch('http://localhost:1337/api/juizs?populate[plantoes][populate][0]=escala&populate[lotacao]=*', {
                 method: 'GET',
                 headers,
             });
