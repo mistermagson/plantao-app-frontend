@@ -284,7 +284,7 @@ function Plantoes({data, h}) {
                                 </MDBox>
                             </MDBox>
                         </Grid>
-                        <Grid item xs={12} xl={5} pt={4}>
+                        <Grid item xs={12} xl={5} pt={4} pb={4}>
                             {escalaSelecionada && (
                                 <MDBox px={4}>
                                     <Calendario plantoes={plantoes} escalaSelecionada={escalaSelecionada}/>

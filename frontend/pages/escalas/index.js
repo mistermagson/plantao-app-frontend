@@ -25,6 +25,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 import Participantes from "./participantes";
+import { useRouter } from "next/router";
 
 function Escalas({ data, h }) {
     const [escalaSelecionada, setEscalaSelecionada] = useState(null);
@@ -36,7 +37,10 @@ function Escalas({ data, h }) {
     const [error, setError] = useState(null);
     const [salvar, setSalvar] = useState(false);
 
-
+    const redirectToParticipantes = () => {
+        const url = `/escalas/participantes?escala=${encodeURIComponent(escalaSelecionada.descricao)}`;
+        window.location.href = url;
+    };
 
     useEffect(() => {
         if (escalaSelecionada) {
@@ -132,10 +136,7 @@ function Escalas({ data, h }) {
 
         setStatus();
     };
-    const redirectToParticipantes = () => {
-        // Redirecionar para a página de participantes
-        window.location.href = `http://localhost:3000/escalas/participantes?valor=${escalaSelecionada.descricao}`;
-    };
+
 
     const handleClose = () => {
         setSalvar(false);

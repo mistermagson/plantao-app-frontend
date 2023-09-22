@@ -14,6 +14,8 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import Tooltip from '@mui/material/Tooltip';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 import {removePlantonista} from "../../../utils/plantaoUtils";
+import { useLocation } from 'react-router-dom';
+import {useRouter} from "next/router";
 
 const headers = {
     'Content-Type': 'application/json',
@@ -33,7 +35,7 @@ function Participantes() {
     const [adicionados, setAdicionados] = useState([]);
     const [juizPreferencialId, setJuizPreferencialId] = useState(null);
 
-
+    const router = useRouter();
     const fetchJuizes = async () => {
         try {
             const response1 = await fetch('http://localhost:1337/api/juizs?populate[plantoes][populate][0]=escala&populate[lotacao]=*', {
@@ -88,6 +90,18 @@ function Participantes() {
     useEffect(() => {
         fetchEscalas();
         fetchJuizes();
+
+        const params = new URLSearchParams(window.location.search);
+        const escalaUrl = params.get('escala');
+        console.log(escalaUrl);
+
+        //TODO opcaoSelecionada É UM OBJETO, escalaUrl É UMA STRING
+        //TODO procurar em escalas[] uma escala com a mesma descricao de escalaUrl, depois settar ela como opcaoSelecionada
+        if(escalaUrl!==null){
+            setOpcaoSelecionada(escalaUrl)
+            onChangeEscala(escalaUrl);
+        }
+
     }, []);
 
     useEffect(() => {
@@ -97,28 +111,18 @@ function Participantes() {
         }
     }, [opcaoSelecionada]);
 
+
     useEffect(() => {
         if (opcaoSelecionada) {
             const opcaoSelecionadaAtt = escalas.find(escala => escala.id === opcaoSelecionada.id);
 
             if (opcaoSelecionadaAtt) {
                 setOpcaoSelecionada(opcaoSelecionadaAtt)
-                try {
-                    const juizesParticipantes = escalas.participantes.data.map((item) => ({id: item.id, ...item.attributes,}));
-                    setAdicionados(juizesParticipantes)
-
-                    if (juizesParticipantes) {
-                        const juizesFiltrados = juizes.filter(item1 => {
-                            return !juizesParticipantes.some(item2 => item2.id === item1.id);
-                        });
-                        setJuizesRestantes(juizesFiltrados);
-                    }
-                } catch (error) {
-                    setError(error.message);
-                }
             }
         }
-    }, [escalas, opcaoSelecionada]);
+    }, [escalas]);
+
+
     const onChangeEscala = (selecionada) => {
         try {
             const participantes = selecionada.participantes.data.map((item) => ({id: item.id, ...item.attributes,}));
@@ -225,9 +229,8 @@ function Participantes() {
     };
     const showJSON = () => {
 
-        console.log('escala',opcaoSelecionada);
-        console.log('juiz',juizes);
-        console.log('ARRAY PLANTOES',adicionados);
+
+        console.log('ARRAY PLANTOES',escalaUrl);
 
     };
 
@@ -262,7 +265,6 @@ function Participantes() {
                                     />
                                 </Grid>
                             </Grid>
-
                             <Grid container spacing={6} p={2}>
                                 <Grid item xs={12} md={12} xl={6}>
                                     {opcaoSelecionada && (<h5>Juizes Adicionados:</h5>)}
@@ -372,8 +374,6 @@ function Participantes() {
                                     )}
                                 </Grid>
                             </Grid>
-
-
                         </MDBox>
                     </Card>
                 </Grid>
