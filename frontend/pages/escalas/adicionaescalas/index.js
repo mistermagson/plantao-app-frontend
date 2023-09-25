@@ -102,10 +102,11 @@ function AdicionaEscala() {
             setError(error.message);
         }
     };
+
     useEffect(() => {
         fetchEscalas();
     }, []);
-    const handleSubmit = async e => {
+    const handleSubmit = async e =>  {
         e.preventDefault();
 
         try {
@@ -144,12 +145,13 @@ function AdicionaEscala() {
         });
     }
     const showJSON = () => {
-        console.log('JSON:',escalas);
+        console.log('JSON:',linhaSelecionada);
     };
     const handleClose = () => {
         setSalvar(false);
         setDeletar(false);
     };
+
     const deleteEscala = () =>{
         try{
             const idEscala = linhaSelecionada.id
@@ -162,6 +164,11 @@ function AdicionaEscala() {
             setError(error.message);
         }
     }
+
+    const redirectToEscala = (linha) => {
+        const url = `http://localhost:3000/escalas?escala=${encodeURIComponent(linha.descricao)}`;
+        window.location.href = url;
+    };
 
     return (
         <DashboardLayout>
@@ -238,7 +245,9 @@ function AdicionaEscala() {
                                                         icon={<EditIcon />}
                                                         label="Abrir minuta"
                                                         className="textPrimary"
-
+                                                        onClick={async () => {
+                                                            redirectToEscala(params.row); // Isso será executado após a conclusão de setLinhaSelecionada
+                                                        }}
                                                         color="dark"
                                                     />
                                                     <GridActionsCellItem
@@ -338,7 +347,6 @@ function AdicionaEscala() {
                                 </Grid>
                             </Grid>
                         </form>
-
                     </Card>
                 </Grid>
             </Grid>

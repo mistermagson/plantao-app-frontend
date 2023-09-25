@@ -31,8 +31,10 @@ function Plantoes({data, h}) {
     const [plantoes, setPlantoes] = useState([]);
     const [error, setError] = useState(null);
     const [fixGet, setFixGet] = useState(0);
+    const [block, setBlock] = useState(null);
 
 
+    //TODO RESOLVER PRIMEIRO GET ERRO
     useEffect(() => {
         if(escalaSelecionada) {
 
@@ -41,6 +43,22 @@ function Plantoes({data, h}) {
             if (escalaEncontrada) {
                 setEscalaSelecionada(escalaEncontrada);
                 setPlantoes(escalaEncontrada.plantaos.data.map(item => ({ id: item.id, ...item.attributes })));
+            }
+        }
+
+        if(block === null){
+
+            const params = new URLSearchParams(window.location.search);
+            const escalaUrl = params.get('escala');
+            if(escalaUrl!==null) {
+                const escalaObj = escalas.find((escala) => escala.descricao === escalaUrl);
+                console.log('OBJETO', escalaObj);
+
+                if (escalaObj) {
+                    setEscalaSelecionada(escalaObj);
+                    onChangeEscala(escalaObj);
+                    setBlock('bloqueado');
+                }
             }
         }
     }, [escalas, escalaSelecionada]);

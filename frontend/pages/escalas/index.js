@@ -36,9 +36,16 @@ function Escalas({ data, h }) {
     const [plantoes, setPlantoes] = useState([]);
     const [error, setError] = useState(null);
     const [salvar, setSalvar] = useState(false);
+    const [block, setBlock] = useState(null);
+
 
     const redirectToParticipantes = () => {
         const url = `/escalas/participantes?escala=${encodeURIComponent(escalaSelecionada.descricao)}`;
+        window.location.href = url;
+    };
+
+    const redirectToPlantoes = () => {
+        const url = `/plantoes?escala=${encodeURIComponent(escalaSelecionada.descricao)}`;
         window.location.href = url;
     };
 
@@ -53,8 +60,23 @@ function Escalas({ data, h }) {
                 setPlantoes(escalaEncontrada.plantaos.data.map((item) => ({
                         id: item.id,
                         ...item.attributes,
-                    })));
+                })));
 
+            }
+        }
+        if(block === null){
+
+            const params = new URLSearchParams(window.location.search);
+            const escalaUrl = params.get('escala');
+            if(escalaUrl!==null) {
+                const escalaObj = escalas.find((escala) => escala.descricao === escalaUrl);
+                console.log('OBJETO', escalaObj);
+
+                if (escalaObj) {
+                    setEscalaSelecionada(escalaObj);
+                    onChangeEscala(escalaObj);
+                    setBlock('bloqueado');
+                }
             }
         }
     }, [escalas, escalaSelecionada]);
@@ -364,7 +386,7 @@ function Escalas({ data, h }) {
                                         <Grid  xs={12} xl={12}>
                                             <Calendario plantoes={plantoes} inicio={escalaSelecionada.inicio}/>
                                             <MDBox mt={2} mr={1} display="flex" justifyContent="flex-end">
-                                                <MDButton color="dark" size="small" onClick={()=>setSalvar(true)}>
+                                                <MDButton color="dark" size="small" onClick={redirectToPlantoes}>
                                                     Editar Plantonistas
                                                 </MDButton>
 
