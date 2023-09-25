@@ -16,6 +16,23 @@ import HowToRegIcon from '@mui/icons-material/HowToReg';
 import {removePlantonista} from "../../../utils/plantaoUtils";
 import { useLocation } from 'react-router-dom';
 import {useRouter} from "next/router";
+//------------------------------------------
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    IconButton,
+    Collapse,
+    Box,
+    Typography,
+} from '@mui/material';
+import { KeyboardArrowDown as ExpandMoreIcon, KeyboardArrowUp as ExpandLessIcon } from '@mui/icons-material';
+import CollapsibleTable from "../participantesTable";
+//------------------------------------
 
 const headers = {
     'Content-Type': 'application/json',
@@ -228,7 +245,7 @@ function Participantes() {
         return juizId === juizPreferencialId;
     };
     const showJSON = () => {
-        console.log('ARRAY PLANTOES',escalas);
+        console.log('ARRAY PLANTOES',juizes);
     };
 
 
@@ -362,6 +379,11 @@ function Participantes() {
                                         <MDBox mt={2} mr={1} display="flex" justifyContent="flex-end">
                                             <MDButton color="success" size="small" onClick={() => handleSubmit()}>Adicionar</MDButton>
                                         </MDBox>)}
+                                </Grid>
+                                <Grid item xs={12} md={12} xl={6}>
+                                    {opcaoSelecionada && (<h5>Juizes Restantes:</h5>)//TODO MONTAR TABELA CORRETAMENTE}
+                                    }{/* {{opcaoSelecionada && (
+                                        <CollapsibleTable data={juizes} /> )}}*/}
                                 </Grid>
                                 <Grid>
                                     {!opcaoSelecionada && (
