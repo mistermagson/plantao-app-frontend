@@ -34,6 +34,7 @@ function Participantes() {
     const [jsonData, setJsonData] = useState([]);
     const [adicionados, setAdicionados] = useState([]);
     const [juizPreferencialId, setJuizPreferencialId] = useState(null);
+    const [block, setBlock] = useState(null);
 
     const router = useRouter();
     const fetchJuizes = async () => {
@@ -87,41 +88,40 @@ function Participantes() {
         }
     };
 
-    useEffect(() => {
-        fetchEscalas();
-        fetchJuizes();
-
-        const params = new URLSearchParams(window.location.search);
-        const escalaUrl = params.get('escala');
-        console.log(escalaUrl);
-
-        //TODO opcaoSelecionada É UM OBJETO, escalaUrl É UMA STRING
-        //TODO procurar em escalas[] uma escala com a mesma descricao de escalaUrl, depois settar ela como opcaoSelecionada
-        if(escalaUrl!==null){
-            setOpcaoSelecionada(escalaUrl)
-            onChangeEscala(escalaUrl);
-        }
-
+    useEffect( () => {
+        fetchEscalas()
+        fetchJuizes()
     }, []);
 
     useEffect(() => {
-        if (opcaoSelecionada) {
-            const juizPreferencial = opcaoSelecionada.preferencia?.data?.id;
-            setJuizPreferencialId(juizPreferencial);
-        }
-    }, [opcaoSelecionada]);
 
-
-    useEffect(() => {
         if (opcaoSelecionada) {
             const opcaoSelecionadaAtt = escalas.find(escala => escala.id === opcaoSelecionada.id);
+            const juizPreferencial = opcaoSelecionada.preferencia?.data?.id;
+            setJuizPreferencialId(juizPreferencial);
 
             if (opcaoSelecionadaAtt) {
                 setOpcaoSelecionada(opcaoSelecionadaAtt)
             }
         }
-    }, [escalas]);
 
+        if(block === null){
+
+            const params = new URLSearchParams(window.location.search);
+            const escalaUrl = params.get('escala');
+            if(escalaUrl!==null) {
+                const escalaObj = escalas.find((escala) => escala.descricao === escalaUrl);
+                console.log('OBJETO', escalaObj);
+
+                if (escalaObj) {
+                    setOpcaoSelecionada(escalaObj);
+                    onChangeEscala(escalaObj);
+                    setBlock('bloqueado');
+                }
+            }
+        }
+
+    }, [escalas, opcaoSelecionada]);
 
     const onChangeEscala = (selecionada) => {
         try {
@@ -228,10 +228,7 @@ function Participantes() {
         return juizId === juizPreferencialId;
     };
     const showJSON = () => {
-
-
-        console.log('ARRAY PLANTOES',escalaUrl);
-
+        console.log('ARRAY PLANTOES',escalas);
     };
 
 
