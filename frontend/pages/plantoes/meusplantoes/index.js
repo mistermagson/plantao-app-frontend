@@ -19,7 +19,7 @@ const headers= {
 };
 
 function Meusplantoes() {
-
+//TODO separação por escalas ok, basta configurar a tabela colapsavel
     const [juizes, setJuizes] = useState([]);
     const [escalas, setEscalas] = useState([]);
     const [plantoes, setPlantoes] = useState([]);
@@ -28,7 +28,7 @@ function Meusplantoes() {
     const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
 
     useEffect(() => {
-        const fetchEscalas = async () => {
+        const fetchJuizes = async () => {
             try {
 
                 const response = await fetch('http://localhost:1337/api/juizs?populate[plantoes][populate][0]=escala', {
@@ -56,40 +56,52 @@ function Meusplantoes() {
                 setError(error.message);
             }
         };
-
-        fetchEscalas();
+        fetchJuizes();
     }, []);
+
     const showJSON = () => {
-        console.log('PLANTONISTA',plantoes);
-        console.log(escalas);
+        //console.log('PLANTONISTA',JSON.stringify({data: rows}));
+        agruparPlantoesPorEscala(rows)
+        console.log('teste',JSON.stringify({data: escalas}));
+        console.log('teste',escalas);
     };
+
     const rows = plantoes.map((plantao) => ({
         id: plantao.id,
         data: plantao.data,
-        descricao: plantao.escala.data.attributes.descricao,
+        escala: plantao.escala.data.attributes.descricao,
+        escalaId: plantao.escala.data.id,
         tipo: plantao.escala.data.attributes.tipo,
     }));
+
     const setTabela= (dadosJuiz)=>{
         if(dadosJuiz) {
             setPlantoes(dadosJuiz.plantoes.data.map(item => ({ id: item.id, ...item.attributes })))
         }
     }
 
+    function agruparPlantoesPorEscala(plantoes) {
+        const escalasAgrupadas = {};
 
-    plantoes.forEach((item) => {
-        const escalaId = item.escala.data.id;
-        const escalaIndex = escalas.findIndex((escala) => escala.id === escalaId);
+        plantoes.forEach((plantao) => {
+            const { escalaId, escala, tipo, data } = plantao;
 
-        if (escalaIndex === -1) {
-            escalas.push({
-                id: escalaId,
-                ...item.escala.data.attributes,
-                plantoes: [item],
-            });
-        } else {
-            escalas[escalaIndex].plantoes.push(item);
-        }
-    });
+            if (!escalasAgrupadas[escalaId]) {
+                escalasAgrupadas[escalaId] = {
+                    escalaId,
+                    escala,
+                    tipo,
+                    plantaos: { data: [] },
+                };
+            }
+
+            escalasAgrupadas[escalaId].plantaos.data.push({ id: escalaId, data });
+        });
+
+        const escalasAgrupadasArray = Object.values(escalasAgrupadas);
+
+        setEscalas(escalasAgrupadasArray); // Armazena as escalas agrupadas em escalas
+    }
 
 
 
@@ -120,7 +132,7 @@ function Meusplantoes() {
                                 </Grid>
                                 <Grid item xs={12} md={12} xl={6} >
                                     {juizSelecionado && (
-                                        /*<DataGrid
+                                        <DataGrid
                                             style={{ minHeight: '300px' }}
                                             disableColumnMenu
                                             sx={{fontSize: '18px', fontWeight:'regular', padding:'10px'}}
@@ -149,9 +161,9 @@ function Meusplantoes() {
                                                 },
                                             }}
 
-                                        />*/
+                                        />
                                         /*<CollapseTable plantoes={plantoes} />*/
-                                        <DataGrid
+                                        /*<DataGrid
                                             checkboxSelection
                                             style={{ minHeight: '300px' }}
                                             disableColumnMenu
@@ -174,7 +186,7 @@ function Meusplantoes() {
                                                 toolbar: {
                                                     showQuickFilter: true,
                                                 },
-                                            }}/>
+                                            }}/>*/
                                         )}
                                     <span style={{color:'red', fontSize:'13px'}}>
                                         alterar tabela, permitir que ele acesse as escalas que participa, indicar se ele precisa escolher algum plantao
