@@ -53,7 +53,6 @@ function Participantes() {
     const [juizPreferencialId, setJuizPreferencialId] = useState(null);
     const [block, setBlock] = useState(null);
 
-    const router = useRouter();
     const fetchJuizes = async () => {
         try {
             const response1 = await fetch('http://localhost:1337/api/juizs?populate[plantoes][populate][0]=escala&populate[lotacao]=*', {

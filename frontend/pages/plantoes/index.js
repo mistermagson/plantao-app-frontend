@@ -34,7 +34,6 @@ function Plantoes({data, h}) {
     const [block, setBlock] = useState(null);
 
 
-    //TODO RESOLVER PRIMEIRO GET ERRO
     useEffect(() => {
         if(escalaSelecionada) {
 
@@ -61,7 +60,7 @@ function Plantoes({data, h}) {
                 }
             }
         }
-    }, [escalas, escalaSelecionada]);
+    }, [escalas, escalaSelecionada, juizes]);
 
 
     const handleSubmit =  async (event) => {
@@ -154,8 +153,6 @@ function Plantoes({data, h}) {
             console.error(error);
         }
     }
-
-    const theme = createTheme({});
 
     return (
         <DashboardLayout>

@@ -160,7 +160,7 @@ export const removeParticipantesEscala = (idJuiz, idEscala,headers ) => {
     };
 
     setEscalaData();
-};//TODO botao de redirecionar
+};
 
 export const setPreferencia = (idEscala, idJuiz,headers) => {
 
