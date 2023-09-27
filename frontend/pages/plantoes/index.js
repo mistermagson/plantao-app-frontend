@@ -60,7 +60,7 @@ function Plantoes({data, h}) {
                 }
             }
         }
-    }, [escalas, escalaSelecionada, juizes]);
+    }, [escalas, escalaSelecionada, plantoes]);
 
 
     const handleSubmit =  async (event) => {
@@ -246,7 +246,7 @@ function Plantoes({data, h}) {
                                                 {
                                                     field: 'id',
                                                     headerName: 'Opções',
-                                                    width: 120,
+                                                    width: 120, align:"center",
                                                     renderCell: (params) => (
                                                         <Tooltip title="Limpar o plantonista">
                                                             {params.row.plantonista.data[0] && !escalaSelecionada.fechada && /*juizSelecionado && juizSelecionado.id === params.row.plantonista.data[0].id ?*/ (
@@ -266,10 +266,10 @@ function Plantoes({data, h}) {
                                             isRowSelectable={(params) => {
                                                 if (juizSelecionado && escalaSelecionada && !escalaSelecionada.fechada) {
                                                     const preferenciaJuizId = escalaSelecionada.preferencia?.data?.id;
-                                                    /*if (preferenciaJuizId === juizSelecionado.id) {
+                                                    //if (preferenciaJuizId === juizSelecionado.id) {
                                                         const plantonistaAtribuido = params.row.plantonista.data[0];
                                                         return !plantonistaAtribuido;
-                                                    }*/ return true;
+                                                    //}
                                                 }
                                                 return false;
                                             }}

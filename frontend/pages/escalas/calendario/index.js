@@ -8,6 +8,7 @@ import MDAlert from "../../../components/MDAlert";
 import MDBadge from "../../../components/MDBadge";
 import MDBadgeDot from "../../../components/MDBadgeDot"; // needed for dayClick
 
+
 function Calendario({ plantoes }) {
     if (plantoes.length <= 0) {
         return <div></div>;
@@ -31,8 +32,6 @@ function Calendario({ plantoes }) {
             };
         });
 
-        const inicio = plantoes.length > 0 ? plantoes[0].data : "";
-        const fim = plantoes.length > 0 ? plantoes[plantoes.length - 1].data : "";
 
         const handleEventMouseEnter = (event) => {
             setTooltipContent(event.event.title);

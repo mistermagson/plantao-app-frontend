@@ -15,7 +15,7 @@ import MDButton from "../../../components/MDButton";
 import {geraDatas, setDatasEscala} from "../../../utils/escalaUtils";
 import {DataGrid, GridActionsCellItem, GridToolbar} from '@mui/x-data-grid';
 import Button from "@mui/material/Button";
-import EditIcon from '@mui/icons-material/Edit';
+import FileOpenIcon from '@mui/icons-material/FileOpen';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PeopleAltSharpIcon from '@mui/icons-material/PeopleAltSharp';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
@@ -242,7 +242,7 @@ function AdicionaEscala() {
                                             renderCell: (params) => (
                                                 <div >
                                                     <GridActionsCellItem
-                                                        icon={<EditIcon />}
+                                                        icon={<FileOpenIcon />}
                                                         label="Abrir minuta"
                                                         className="textPrimary"
                                                         onClick={async () => {
