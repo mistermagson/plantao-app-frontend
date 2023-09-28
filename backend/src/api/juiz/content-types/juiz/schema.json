@@ -12,7 +12,7 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "nome": {
+   "nome": {
       "type": "string",
       "required": true
     },
@@ -32,7 +32,7 @@
       "target": "api::plantao.plantao",
       "mappedBy": "plantonista"
     },
-    "antiguidade": {
+   "antiguidade": {
       "type": "integer"
     },
     "lotacao": {

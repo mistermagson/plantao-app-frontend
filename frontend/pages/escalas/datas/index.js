@@ -68,7 +68,7 @@ function Datas() {
                <DataTable
                    table={{
                        columns: [
-                           {Header: "name", accessor: "nome", width: "25%"},
+                           {Header: "name", accessor:nome, width: "25%"},
                            {Header: "position", accessor: "position", width: "30%"},
                            {Header: "office", accessor: "office"},
                            {Header: "age", accessor: "age", width: "12%"},
