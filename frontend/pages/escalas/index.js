@@ -49,6 +49,11 @@ function Escalas({ data, h }) {
         window.location.href = url;
     };
 
+    const redirectToAddEscalas = () => {
+        const url = `http://localhost:3000/escalas/adicionaescalas`;
+        window.location.href = url;
+    };
+
     useEffect(() => {
         if (escalaSelecionada) {
             const escalaEncontrada = escalas.find(
@@ -198,7 +203,7 @@ function Escalas({ data, h }) {
                 <form onSubmit={handleSubmit}>
                     <Grid container spacing={3} pb={3} px={3}>
 
-                        <Grid item xs={12} sm={5}  sx={{ height: "max-content" }}>
+                        <Grid item xs={10} sm={5}  sx={{ height: "max-content" }}>
                             <MDBox pl={1} my={2}>
                                 <h5 >Selecione a escala:</h5>
                             </MDBox>
@@ -218,6 +223,11 @@ function Escalas({ data, h }) {
                                     </Grid>
                                 </Grid>
                             </MDBox>
+                        </Grid>
+                        <Grid item xs={2} sm={7}  sx={{ height: "max-content" }}>
+                        <MDBox mt={2} mr={1} display="flex" justifyContent="flex-end">
+                            <MDButton color="dark" size="small"  onClick={() => redirectToAddEscalas()}>voltar</MDButton>
+                        </MDBox>
                         </Grid>
                         <Grid item ml={2} xs={12} xl={10}>
                             {escalaSelecionada && (

@@ -56,6 +56,8 @@ function Calendario({ plantoes }) {
                     editable
                     eventMouseEnter={handleEventMouseEnter}
                     eventMouseLeave={handleEventMouseLeave}
+                    locale="pt-br"
+
                 />
                 <div style={{height: '100px'}}>
                 {tooltipContent && (

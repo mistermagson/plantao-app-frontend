@@ -19,6 +19,7 @@ import {setPlantonista, removePlantonista} from "../../../utils/plantaoUtils";
 import MDTypography from "../../../components/MDTypography";
 import DashboardLayout from "../../../examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "../../../examples/Navbars/DashboardNavbar";
+import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 
 function Plantoes({data, h}) {
 
@@ -32,23 +33,19 @@ function Plantoes({data, h}) {
     const [error, setError] = useState(null);
     const [fixGet, setFixGet] = useState(0);
     const [block, setBlock] = useState(null);
+    const [preferenciaJuizId, setPreferenciaJuizId] = useState(null);
+    const [juizUrlId, setJuizUrlId] = useState(59);
+    const [passar, setPassar] = useState(false);
+
 
 
     useEffect(() => {
-        if(escalaSelecionada) {
-
-            const escalaEncontrada = escalas.find(escala => escala.id === escalaSelecionada.id);
-
-            if (escalaEncontrada) {
-                setEscalaSelecionada(escalaEncontrada);
-                setPlantoes(escalaEncontrada.plantaos.data.map(item => ({ id: item.id, ...item.attributes })));
-            }
-        }
-
+        //IRA RODAR UMA UNICA VEZ BUSCANDO NOME DA ESCALA NA URL
         if(block === null){
 
             const params = new URLSearchParams(window.location.search);
             const escalaUrl = params.get('escala');
+
             if(escalaUrl!==null) {
                 const escalaObj = escalas.find((escala) => escala.descricao === escalaUrl);
                 console.log('OBJETO', escalaObj);
@@ -59,36 +56,57 @@ function Plantoes({data, h}) {
                     setBlock('bloqueado');
                 }
             }
+
+            const juizId = 59; // Substitua pelo ID do juiz que você deseja filtrar
+            const escalasDoJuiz = filtrarEscalasPorJuiz(juizId, escalas);
+            setEscalas(escalasDoJuiz);
+            setBlock('bloqueado');
         }
-    }, [escalas, escalaSelecionada, plantoes]);
+
+        if(escalaSelecionada) {
+
+            const escalaEncontrada = escalas.find(escala => escala.id === escalaSelecionada.id);
+
+            if (escalaEncontrada) {
+                setEscalaSelecionada(escalaEncontrada);
+                setPlantoes(escalaEncontrada.plantaos.data.map(item => ({ id: item.id, ...item.attributes })));
+                setPreferenciaJuizId(escalaSelecionada.preferencia.data.id);
+                setJuizSelecionado(juizes.find((juiz) => juiz.id === juizUrlId));
+            }
+        }
+
+    }, [escalas, plantoes]);
 
 
     const handleSubmit =  async (event) => {
         event.preventDefault();
         try {
             setPlantonista(juizSelecionado.id, plantaoSelecionado, headers)
+            console.log('1- ',plantaoSelecionado)
             setPlantaoSelecionado([])
-            const atualizaEscalas = await fetchEscalas(headers)
-            setEscalas(atualizaEscalas)
-
+            console.log('2- ',plantaoSelecionado)
         } catch (error) {
             console.error(error);
+        }
+        finally {
+            const atualizaEscalas = await fetchEscalas(headers)
+            setEscalas(atualizaEscalas)
+            console.log('TUDO CERTO')
+
         }
     };
 
     const onChangeEscala = (selected)=>{
+        setEscalaSelecionada(selected);
         try{
             if(!selected){
-                setJuizSelecionado(null);
+                setJuizSelecionado('AAAAAAAAAAAAAA');
             }else{
                 const participantesArray = selected.participantes.data.map((item) => ({id: item.id, ...item.attributes,}));
                 setJuizes(participantesArray);
 
-
                 const plantaosArray = selected.plantaos.data.map((item) => ({id: item.id, ...item.attributes,}));
                 setPlantoes(plantaosArray);
-
-                setJuizSelecionado(juizes[0])
             }
 
         }catch (error) {
@@ -97,13 +115,12 @@ function Plantoes({data, h}) {
 
     }
     const showJSON = () => {
-        const juizId = 61; // Substitua pelo ID do juiz que você deseja filtrar
-        const escalasDoJuiz = filtrarEscalasPorJuiz(juizId, escalas);
-        setEscalas(escalasDoJuiz);
 
+        console.log("ESCALAS",escalaSelecionada);
+        //console.log('juizes',juizes);
+        //console.log("J SELECIONADOs",juizSelecionado);
+        //console.log("prefrencial",preferenciaJuizId);
 
-        console.log("ESCALAS",escalas);
-        console.log("JUIZES",juizes);
 
     };
     const handleLimparPlantonista = async(row) => {
@@ -112,50 +129,60 @@ function Plantoes({data, h}) {
             console.log(idJuiz, row.id, headers)
             await removePlantonista(idJuiz, row.id, headers);
             setPlantaoSelecionado([]);
-            const escalasAtaulizadas = await fetchEscalas(headers)
-            setEscalas(escalasAtaulizadas);
-            // await setEscalas(fetchEscalas(headers));
 
         } catch (error) {
             console.error(error);
+        }finally {
+            const atualizaEscalas = await fetchEscalas(headers)
+            setEscalas(atualizaEscalas)
+            console.log('TUDO CERTO')
+
         }
     };
 
     const passaEscolha = async()=>{
         try{
             passaPreferencia(escalaSelecionada,headers);
-            const escalasAtaulizadas = await fetchEscalas(headers)
-            setEscalas(escalasAtaulizadas);
 
         } catch (error) {
             console.error(error);
+        }finally {
+            const escalasAtaulizadas = await fetchEscalas(headers)
+            setEscalas(escalasAtaulizadas);
         }
     }
 
     function filtrarEscalasPorJuiz(juizId, escalas) {
+        //---- EXIBE APENAS AS ESCALAS QUE O JUIZ FAZ PARTE
         const escalasFiltradas = escalas.filter((escala) =>
             escala.participantes.data.some((participante) => participante.id === juizId)
         );
-
-        const juizFiltrado = escalasFiltradas.map((escala) => {
-            const juizParticipante = escala.participantes.data.find(
-                (participante) => participante.id === juizId
-            );
-            return {
-                ...escala,
-                participantes: {
-                    data: [juizParticipante],
-                },
-            };
-        });
-
-        return juizFiltrado;
+        console.log("ESCALAS", escalas);
+        return escalasFiltradas;
     }
+
+    const handleClose = () => {
+        setPassar(false);
+    };
 
     return (
         <DashboardLayout>
             <DashboardNavbar />
-            <MDButton size="small" onClick={()=>showJSON()} scolor="info">console.log</MDButton>
+            <div>
+                <Dialog open={passar} onClose={handleClose}>
+                    <DialogTitle>Passar a Vez</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            Você tem certeza que deseja encerrar sua escolha?
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => { passaEscolha();handleClose();}}>Sim</Button>
+                        <Button onClick={handleClose}>Não</Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
+            <MDButton size="small" onClick={()=>showJSON()} color="info">console.log</MDButton>
             <MDBox p={2}>
                 <MDTypography variant="h2">Meus Plantões</MDTypography>
             </MDBox>
@@ -163,8 +190,8 @@ function Plantoes({data, h}) {
                 <form onSubmit={handleSubmit}>
                     <Grid container >
                         <Grid item xs={12} xl={12} >
-                            <Grid container spacing={2}  pl={3} >
-                                <Grid item xs={9} xl={4}>
+                            <Grid container spacing={7}  pl={3} >
+                                <Grid item xs={9} xl={5}>
                                     <MDBox  my={2}>
                                         <h5>Selecione a escala:</h5>
                                     </MDBox>
@@ -173,11 +200,15 @@ function Plantoes({data, h}) {
                                         getOptionLabel={escala => escala.descricao}
                                         value={escalaSelecionada}
                                         onChange={(event, newValue) =>{
-                                            setEscalaSelecionada(newValue);
                                             onChangeEscala(newValue);}}
                                         renderInput={(params) => <TextField {...params} label="Escala" />}
                                     />
                                 </Grid>{/* AUTOCOMPLETE ESCALA*/}
+                                <Grid item xs={9} xl={3} style={{ display: 'flex', alignItems: 'flex-end' }}>
+                                    {juizSelecionado?.id !== preferenciaJuizId && escalaSelecionada &&(
+                                        <h5 style={{ color: '#f44335' }}>Ainda não é sua vez de escolher os plantões.</h5>
+                                    )}
+                                </Grid>
                             </Grid>
                         </Grid>
                         <Grid item xs={12} xl={6.5} pt={2} >
@@ -223,15 +254,15 @@ function Plantoes({data, h}) {
                                                     width: 120, align:"center",
                                                     renderCell: (params) => (
                                                         <Tooltip title="Limpar o plantonista">
-                                                            {params.row.plantonista.data[0] && !escalaSelecionada.fechada && /*juizSelecionado && juizSelecionado.id === params.row.plantonista.data[0].id ?*/ (
+                                                            {params.row.plantonista.data[0] && !escalaSelecionada.fechada && juizSelecionado && juizSelecionado.id === params.row.plantonista.data[0].id ?(
                                                                 <GridActionsCellItem
                                                                     icon={<RemoveCircleOutlineIcon/>}
                                                                     label="Limpar Plantonista"
                                                                     onClick={() => handleLimparPlantonista(params.row)}
                                                                     color="inherit"
                                                                 />
-                                                                /*) : (
-                                                                    <div></div>*/
+                                                                ) : (
+                                                                    <div></div>
                                                             )}
                                                         </Tooltip>
                                                     ),
@@ -239,11 +270,10 @@ function Plantoes({data, h}) {
                                             disableSelectionOnClick={true}
                                             isRowSelectable={(params) => {
                                                 if (juizSelecionado && escalaSelecionada && !escalaSelecionada.fechada) {
-                                                    const preferenciaJuizId = escalaSelecionada.preferencia?.data?.id;
-                                                    //if (preferenciaJuizId === juizSelecionado.id) {
+                                                    if (preferenciaJuizId === juizSelecionado.id) {
                                                     const plantonistaAtribuido = params.row.plantonista.data[0];
                                                     return !plantonistaAtribuido;
-                                                    //}
+                                                    }
                                                 }
                                                 return false;
                                             }}
@@ -258,7 +288,8 @@ function Plantoes({data, h}) {
                                                     Adicionar
                                                 </MDButton>
                                             )}
-                                            <MDButton size="small" onClick={()=>passaEscolha()} color="info">Passar a vez</MDButton>
+                                            {juizSelecionado?.id === preferenciaJuizId &&(
+                                            <MDButton size="small" onClick={()=>setPassar(true)} color="info">Passar a vez</MDButton>)}
                                         </MDBox>
                                     )}
                                 </MDBox>

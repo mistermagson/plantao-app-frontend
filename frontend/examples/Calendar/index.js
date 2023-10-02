@@ -21,6 +21,7 @@ import FullCalendar from "@fullcalendar/react";
 import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import dayGridPlugin from "@fullcalendar/daygrid";
+import esLocale from '@fullcalendar/core/locales/es'
 
 
 // @mui material components

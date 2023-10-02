@@ -67,12 +67,17 @@ function Plantoes({data, h}) {
         event.preventDefault();
         try {
             setPlantonista(juizSelecionado.id, plantaoSelecionado, headers)
+            console.log('1- ',plantaoSelecionado)
             setPlantaoSelecionado([])
-            const atualizaEscalas = await fetchEscalas(headers)
-            setEscalas(atualizaEscalas)
-
+            console.log('2- ',plantaoSelecionado)
         } catch (error) {
             console.error(error);
+        }
+        finally {
+            const atualizaEscalas = await fetchEscalas(headers)
+            setEscalas(atualizaEscalas)
+            console.log('TUDO CERTO')
+
         }
     };
 
@@ -304,7 +309,6 @@ function Plantoes({data, h}) {
                                 <MDBox px={4}>
                                     <Calendario plantoes={plantoes} escalaSelecionada={escalaSelecionada}/>
                                 </MDBox>)}
-
                         </Grid>
 
 

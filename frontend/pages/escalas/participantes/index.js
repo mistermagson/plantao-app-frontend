@@ -379,11 +379,11 @@ function Participantes() {
                                             <MDButton color="success" size="small" onClick={() => handleSubmit()}>Adicionar</MDButton>
                                         </MDBox>)}
                                 </Grid>
-                                <Grid item xs={12} md={12} xl={10}>
+                                {/*<Grid item xs={12} md={12} xl={10}>
                                     {opcaoSelecionada && (<h5>Juizes Restantes:</h5>)//TODO MONTAR TABELA CORRETAMENTE}
                                     }{ opcaoSelecionada && (
                                         <CollapsibleTable data={juizes} /> )}
-                                </Grid>
+                                </Grid>*/}
                                 <Grid>
                                     {!opcaoSelecionada && (
                                         <MDTypography variant="h6" mx={5} ml={7} mt={-1} mb={-2} fontWeight="light">

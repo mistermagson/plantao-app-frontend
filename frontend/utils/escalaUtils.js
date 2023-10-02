@@ -231,11 +231,12 @@ export const fetchEscalas = async (headers) => {
 
         if (Array.isArray(responseEscala.data)) {
             const escalasData = responseEscala.data.map((item) => ({id: item.id, ...item.attributes,}));
-
-           return (escalasData);
+            console.log('Fetch Escalas realizado');
+            return (escalasData);
 
 
         } else {
+            console.log('Fetch Escalas NAO realizado');
             return ([]);
         }
 
@@ -270,6 +271,8 @@ export const removeEscala = (idEscala,plantaoArray, headers ) => {
 };
 
 export const passaPreferencia = (escala,headers) => {
+    console.log("PARAMETRO ENTRADA",escala);
+
     if (!escala) {
         console.error('Escala não fornecida.');
         return;
@@ -297,6 +300,9 @@ export const passaPreferencia = (escala,headers) => {
     );
 
     if (indiceAtualPreferencia === -1 || indiceAtualPreferencia === participantesOrdenados.length - 1) {
+        console.log("antes sort",escala);
+        console.log("pos sort",participantesOrdenados);
+
         console.error('Não foi possível encontrar o participante atualmente na preferência ou ele é o último da lista.');
         return;
     }
