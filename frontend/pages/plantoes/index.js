@@ -80,33 +80,6 @@ function Plantoes({data, h}) {
 
         }
     };
-
-    const statusEscala =() =>{
-
-        const fechada={
-            fechada:`${!escalaSelecionada.fechada}`
-        }
-        console.log('REAL',escalaSelecionada.fechada)
-        console.log(fechada)
-
-        const setStatus = async () => {
-            try {
-                const response = await fetch(`http://localhost:1337/api/escalas/${escalaSelecionada.id}`, {
-                    method: 'PUT',
-                    headers,
-                    body: JSON.stringify({ data: fechada }),
-                })
-            } catch (error) {
-                return error;
-            }finally {
-                const atualizaEscalas = await fetchEscalas(headers)
-                setEscalas(atualizaEscalas)
-                setPlantaoSelecionado([]);
-            }
-        };
-
-        setStatus();
-    }
     const onChangeEscala = (selected)=>{
         try{
             if(!selected){
@@ -147,7 +120,6 @@ function Plantoes({data, h}) {
             console.error(error);
         }
     };
-
     const passaEscolha = async()=>{
         try{
             passaPreferencia(escalaSelecionada,headers);
@@ -333,6 +305,4 @@ export async function getServerSideProps() {
 
     return { props: {data, h} };
 }
-
-
 export default Plantoes;

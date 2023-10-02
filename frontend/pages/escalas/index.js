@@ -38,22 +38,6 @@ function Escalas({ data, h }) {
     const [salvar, setSalvar] = useState(false);
     const [block, setBlock] = useState(null);
 
-
-    const redirectToParticipantes = () => {
-        const url = `/escalas/participantes?escala=${encodeURIComponent(escalaSelecionada.descricao)}`;
-        window.location.href = url;
-    };
-
-    const redirectToPlantoes = () => {
-        const url = `/plantoes?escala=${encodeURIComponent(escalaSelecionada.descricao)}`;
-        window.location.href = url;
-    };
-
-    const redirectToAddEscalas = () => {
-        const url = `http://localhost:3000/escalas/adicionaescalas`;
-        window.location.href = url;
-    };
-
     useEffect(() => {
         if (escalaSelecionada) {
             const escalaEncontrada = escalas.find(
@@ -63,8 +47,8 @@ function Escalas({ data, h }) {
             if (escalaEncontrada) {
                 setEscalaSelecionada(escalaEncontrada);
                 setPlantoes(escalaEncontrada.plantaos.data.map((item) => ({
-                        id: item.id,
-                        ...item.attributes,
+                    id: item.id,
+                    ...item.attributes,
                 })));
 
             }
@@ -85,6 +69,20 @@ function Escalas({ data, h }) {
             }
         }
     }, [escalas, escalaSelecionada]);
+
+    const redirectToParticipantes = () => {
+        const url = `/escalas/participantes?escala=${encodeURIComponent(escalaSelecionada.descricao)}`;
+        window.location.href = url;
+    };
+    const redirectToPlantoes = () => {
+        const url = `/plantoes?escala=${encodeURIComponent(escalaSelecionada.descricao)}`;
+        window.location.href = url;
+    };
+    const redirectToAddEscalas = () => {
+        const url = `http://localhost:3000/escalas/adicionaescalas`;
+        window.location.href = url;
+    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
@@ -129,13 +127,11 @@ function Escalas({ data, h }) {
         });
         return juizesComPlantoesCalculados;
     };
-    const juizesComPlantoesCalculados = calcularNumeroPlantoesPorJuiz(juizes,plantoes);
     const showJSON = () => {
         console.log("plantao", plantoes);
         console.log("juiz", juizes);
         console.log("escalas", escalaSelecionada);
     };
-    const theme = createTheme();
     const statusEscala = () => {
         const fechada = {
             fechada: `${!escalaSelecionada.fechada}`,
@@ -163,12 +159,9 @@ function Escalas({ data, h }) {
 
         setStatus();
     };
-
-
     const handleClose = () => {
         setSalvar(false);
     };
-
     function formatarData(data) {
         if (!data) return '';
 
@@ -179,6 +172,8 @@ function Escalas({ data, h }) {
         }
         return data;
     }
+
+    const juizesComPlantoesCalculados = calcularNumeroPlantoesPorJuiz(juizes,plantoes);
 
     return (
         <DashboardLayout>
@@ -200,7 +195,6 @@ function Escalas({ data, h }) {
             <Card>
                 <form onSubmit={handleSubmit}>
                     <Grid container spacing={3} pb={3} px={3}>
-
                         <Grid item xs={10} sm={5}  sx={{ height: "max-content" }}>
                             <MDBox pl={1} my={2}>
                                 <h5 >Selecione a escala:</h5>
@@ -406,7 +400,6 @@ function Escalas({ data, h }) {
                                 </Accordion>
                             )}
                         </Grid>
-
                     </Grid>
                 </form>
             </Card>
