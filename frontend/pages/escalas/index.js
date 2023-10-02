@@ -186,9 +186,7 @@ function Escalas({ data, h }) {
             <div>
                 <Dialog open={salvar} onClose={handleClose} maxWidth="md" // Define a largura máxima do diálogo
                         fullWidth >
-
                     <DialogContent>
-
                         <Participantes></Participantes>
                     </DialogContent>
                     <DialogActions>
@@ -315,7 +313,7 @@ function Escalas({ data, h }) {
                                             disableColumnMenu
                                             sx={{ fontSize: "16px", fontWeight: "regular", color: "dark" }}
                                             pageSizeOptions={[5, 10, 20]}
-                                            initialState={{pagination: { paginationModel: { pageSize: 20 } },}}
+                                            initialState={{pagination: { paginationModel: { pageSize: 10 } },}}
                                             rows={juizesComPlantoesCalculados}
                                             columns={[
 
@@ -372,8 +370,13 @@ function Escalas({ data, h }) {
 
                                             <Grid item xs={12} xl={12} pt={2}>
                                                 <Minuta plantoes={plantoes}/>
-                                            </Grid>
+                                                <MDBox mt={2} mr={1} display="flex" justifyContent="flex-end">
+                                                    <MDButton color="dark" size="small" onClick={redirectToPlantoes}>
+                                                        Editar Plantonistas
+                                                    </MDButton>
 
+                                                </MDBox>
+                                            </Grid>
                                         </AccordionDetails>
                                     </Accordion>
                                 )}
@@ -397,12 +400,7 @@ function Escalas({ data, h }) {
                                         )}
                                         <Grid  xs={12} xl={12}>
                                             <Calendario plantoes={plantoes} inicio={escalaSelecionada.inicio}/>
-                                            <MDBox mt={2} mr={1} display="flex" justifyContent="flex-end">
-                                                <MDButton color="dark" size="small" onClick={redirectToPlantoes}>
-                                                    Editar Plantonistas
-                                                </MDButton>
 
-                                            </MDBox>
                                         </Grid>
                                     </AccordionDetails>
                                 </Accordion>

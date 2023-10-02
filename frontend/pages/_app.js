@@ -38,6 +38,7 @@ import {
 
 // Images
 import favicon from "/assets/images/favicon.png";
+import trf from "/assets/images/trf.png";
 import appleIcon from "/assets/images/apple-icon.png";
 import brandWhite from "/assets/images/logo-ct.png";
 import brandDark from "/assets/images/logo-ct-dark.png";
@@ -185,7 +186,7 @@ function MyApp({
       <CacheProvider value={emotionCache}>
         <Head>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <link rel="shortcut icon" href={favicon.src} />
+          <link rel="shortcut icon" href={trf.src} />
           <link rel="apple-touch-icon" sizes="76x76" href={appleIcon.src} />
           <title>Plantão App</title>
         </Head>
