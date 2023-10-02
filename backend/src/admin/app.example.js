@@ -29,6 +29,7 @@ const config = {
   ],
 };
 
+<<<<<<< Updated upstream
 const bootstrap = async({strapi}) => {
   /*await strapi.db.query("api::juizs.juizs").createMany({
     data: [
@@ -196,6 +197,36 @@ const bootstrap = async({strapi}) => {
     }
   ]
   })*/
+=======
+const  bootstrap = async (app) => {
+  console.log(app);
+   await  strapi.db.query("api::juiz.juiz").createMany({
+    data: [
+      {
+        "antiguidade": 30,
+        "nome": "JANETE LIMA MIGUEL",
+        "rf": 139,
+        "cargo": "Juiz Federal",
+        "email": "jlmiguel@trf3.jus.br"
+      },
+      {
+        "antiguidade": 42,
+        "nome": "PEDRO PEREIRA DOS SANTOS",
+        "rf": 156,
+        "cargo": "Juiz Federal",
+        "email": "ppsantos@trf3.jus.br"
+      },
+      {
+        "antiguidade": 102,
+        "nome": "DALTON IGOR KITA CONRADO",
+        "rf": 234,
+        "cargo": "Juiz Federal",
+        "email": "dconrad@trf3.jus.br"
+      },
+      ]
+  });
+
+>>>>>>> Stashed changes
 };
 
 export default {

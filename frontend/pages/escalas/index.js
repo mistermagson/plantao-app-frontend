@@ -318,9 +318,11 @@ function Escalas({ data, h }) {
                                             initialState={{pagination: { paginationModel: { pageSize: 20 } },}}
                                             rows={juizesComPlantoesCalculados}
                                             columns={[
+
                                                 { field: "rf", headerName: "RF", width: 70, editable: true },
                                                 { field: "nome", headerName: "Nome", flex: 2, minWidth: 150 },
                                                 { field: "email", headerName: "Email", flex: 1 },
+
 
                                                 {
                                                     field: "plantoesEscolhidos",
