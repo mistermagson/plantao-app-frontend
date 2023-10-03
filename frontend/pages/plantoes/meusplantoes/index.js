@@ -118,7 +118,7 @@ function Plantoes({data, h}) {
 
         console.log("ESCALAS",escalaSelecionada);
         //console.log('juizes',juizes);
-        //console.log("J SELECIONADOs",juizSelecionado);
+        console.log("J SELECIONADOs",juizSelecionado);
         //console.log("prefrencial",preferenciaJuizId);
 
 
@@ -289,7 +289,7 @@ function Plantoes({data, h}) {
                                                 </MDButton>
                                             )}
                                             {juizSelecionado?.id === preferenciaJuizId &&(
-                                            <MDButton size="small" onClick={()=>setPassar(true)} color="info">Passar a vez</MDButton>)}
+                                            <MDButton size="small" onClick={()=>setPassar(true)} variant='outlined' color="dark">Passar a vez</MDButton>)}
                                         </MDBox>
                                     )}
                                 </MDBox>
