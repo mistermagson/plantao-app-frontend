@@ -168,7 +168,6 @@ export const setPreferencia = (idEscala, idJuiz,headers) => {
         preferencia:{connect: [idJuiz]}
     }
     const urlEscala =`http://localhost:1337/api/escalas/${idEscala}`
-    console.log(idEscala, idJuiz,urlEscala)
     const setEscolha = async () => {
         try {
             const response = await fetch(urlEscala, {
@@ -271,45 +270,47 @@ export const removeEscala = (idEscala,plantaoArray, headers ) => {
 };
 
 export const passaPreferencia = (escala,headers) => {
-    console.log("PARAMETRO ENTRADA",escala);
+
 
     if (!escala) {
         console.error('Escala não fornecida.');
         return;
     }
 
+    if (!escala.preferencia) {
+        console.error('Não há preferência definida.');
+        return;
+    }
 
     if (!escala.participantes.data || escala.participantes.data.length === 0) {
         console.error('A escala não tem participantes.');
         return;
     }
 
-    // Ordenar participantes por antiguidade
-    const participantesOrdenados = escala.participantes.data.sort((a, b) => {
-        return b.attributes.antiguidade - a.attributes.antiguidade;
+    const juizesOrdenados = escala.participantes.data.sort((a, b) => {
+        return a.attributes.antiguidade - b.attributes.antiguidade;
     });
+    //console.log('ordem', juizesOrdenados);  ORDEM ESTA CORRETA
 
-    if (!escala.preferencia) {
-        console.error('Não há preferência definida.');
+    const indexPreferencia = juizesOrdenados.findIndex((juiz) => juiz.id === escala.preferencia.data.id);
+
+    //console.log('posicao do preferencial', indexPreferencia); POSICAO ESTA CORRETA
+
+    if (indexPreferencia === -1) {
+        console.log('Juiz com ID de preferência não encontrado na escala.');
         return;
     }
 
-    // Encontrar o índice do participante atualmente na preferência
-    const indiceAtualPreferencia = participantesOrdenados.findIndex(
-        (participante) => participante.id === escala.preferencia.data.id
-    );
+    let proximoJuiz;
 
-    if (indiceAtualPreferencia === -1 || indiceAtualPreferencia === participantesOrdenados.length - 1) {
-        console.log("antes sort",escala);
-        console.log("pos sort",participantesOrdenados);
-
-        console.error('Não foi possível encontrar o participante atualmente na preferência ou ele é o último da lista.');
-        return;
+    if (indexPreferencia === juizesOrdenados.length - 1) {
+        proximoJuiz = juizesOrdenados[0];
+    } else {
+        proximoJuiz = juizesOrdenados[indexPreferencia + 1];
     }
 
-    // Obter o ID do próximo participante na lista (o novo preferido)
-    const idNovoPreferido = participantesOrdenados[indiceAtualPreferencia + 1];
+    console.log(`A preferência foi alterada do juiz  ${escala.preferencia.data.attributes.nome} para o juiz com ID ${proximoJuiz.attributes.nome}`);
 
-    // Atualizar a preferência
-    setPreferencia(escala.id, idNovoPreferido, headers);
+
+    setPreferencia(escala.id, proximoJuiz.id, headers);
 };

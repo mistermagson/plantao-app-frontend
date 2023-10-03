@@ -8,7 +8,14 @@ import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
 import {DataGrid, GridActionsCellItem, GridToolbar} from '@mui/x-data-grid';
 import React, {useEffect, useState} from "react";
 import TextField from "@mui/material/TextField";
-import {removeParticipantesEscala, removePreferencial, setParticipantesEscala, setPreferencia} from "../../../utils/escalaUtils";
+import {
+    fetchEscalas,
+    passaPreferencia,
+    removeParticipantesEscala,
+    removePreferencial,
+    setParticipantesEscala,
+    setPreferencia
+} from "../../../utils/escalaUtils";
 import MDButton from "../../../components/MDButton";
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import Tooltip from '@mui/material/Tooltip';
@@ -52,7 +59,7 @@ function Participantes() {
     const [adicionados, setAdicionados] = useState([]);
     const [juizPreferencialId, setJuizPreferencialId] = useState(null);
     const [block, setBlock] = useState(null);
-
+    let contador = 0;
     const fetchJuizes = async () => {
         try {
             const response1 = await fetch('http://localhost:1337/api/juizs?populate[plantoes][populate][0]=escala&populate[lotacao]=*&pagination[pageSize]=30&sort=antiguidade:asc', {
@@ -94,6 +101,7 @@ function Participantes() {
             if (Array.isArray(responseEscala.data)) {
                 const escalasData = responseEscala.data.map((item) => ({id: item.id, ...item.attributes,}));
                 setEscalas(escalasData);
+                console.log('fetch escalas realizado')
 
             } else {
                 setError('Formato de dados inválido.');
@@ -222,6 +230,18 @@ function Participantes() {
         }
     }
 
+    const passaEscolha = async()=>{
+        try{
+            passaPreferencia(opcaoSelecionada,headers,contador);
+            setJuizPreferencialId(null);
+
+            await fetchEscalas();
+
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
     const handleSubmit = () => {
         try {
             setParticipantesEscala(opcaoSelecionada.id, rowSelectionModel, headers)
@@ -246,6 +266,7 @@ function Participantes() {
     const showJSON = () => {
         console.log('ARRAY PLANTOES',juizes);
     };
+
 
 
     return (
@@ -277,7 +298,6 @@ function Participantes() {
                                         renderInput={(params) => <TextField {...params} label="Escala"/>}
                                     />
                                 </Grid>
-
                             </Grid>
                             <Grid container spacing={6} p={2}>
                                 <Grid item xs={12} md={12} xl={6}>
@@ -291,9 +311,7 @@ function Participantes() {
                                             pageSizeOptions={[5, 10, 20,50,100]}
                                             initialState={{
                                                 pagination: {paginationModel: {pageSize: 20}},
-                                                sorting: {
-                                                    sortModel: [{field: 'antiguidade', sort: 'asc'}],
-                                                },
+
                                             }}
                                             rows={adicionados}
                                             columns={[
@@ -347,7 +365,11 @@ function Participantes() {
                                                 },
                                             }}
                                         />)}
-
+                                    {opcaoSelecionada && (
+                                        <MDBox mt={2} display="flex" justifyContent="flex-end">
+                                            <MDButton size="small" onClick={()=>passaEscolha()} lcolor="info">Passar a vez</MDButton>
+                                        </MDBox>
+                                    )}
                                 </Grid>
                                 <Grid item xs={12} md={12} xl={6}>
                                     {opcaoSelecionada && (<h5>Juizes Restantes:</h5>)}
