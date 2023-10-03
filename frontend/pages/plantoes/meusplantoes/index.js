@@ -70,7 +70,9 @@ function Plantoes({data, h}) {
             if (escalaEncontrada) {
                 setEscalaSelecionada(escalaEncontrada);
                 setPlantoes(escalaEncontrada.plantaos.data.map(item => ({ id: item.id, ...item.attributes })));
-                setPreferenciaJuizId(escalaSelecionada.preferencia.data.id);//TODO ERRO AO TENTAR LER ID, ESCALA PROVAVELMENTE N TEM JUIZ PREFERENCIAL
+                if(escalaSelecionada.preferencia.data){
+                    setPreferenciaJuizId(escalaSelecionada.preferencia.data.id);
+                }
                 setJuizSelecionado(juizes.find((juiz) => juiz.id === juizUrlId));
             }
         }
