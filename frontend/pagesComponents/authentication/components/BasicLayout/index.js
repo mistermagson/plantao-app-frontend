@@ -1,17 +1,3 @@
-/**
-=========================================================
-* NextJS Material Dashboard 2 PRO - v2.0.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/nextjs-material-dashboard-pro
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
 
 // prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
@@ -23,29 +9,15 @@ import Grid from "@mui/material/Grid";
 import MDBox from "/components/MDBox";
 
 // NextJS Material Dashboard 2 PRO examples
-import DefaultNavbar from "/examples/Navbars/DefaultNavbar";
+
 import PageLayout from "/examples/LayoutContainers/PageLayout";
 
-// NextJS Material Dashboard 2 PRO page layout routes
-import pageRoutes from "/routes/page.routes";
-
-// Authentication pages components
-import Footer from "/pagesComponents/authentication/components/Footer";
-
 function BasicLayout({ image, children }) {
+
+
   return (
     <PageLayout>
-      <DefaultNavbar
-        routes={pageRoutes}
-        action={{
-          type: "external",
-          route:
-            "https://creative-tim.com/product/nextjs-material-dashboard-pro",
-          label: "buy now",
-        }}
-        transparent
-        light
-      />
+
       <MDBox
         position="absolute"
         width="100%"
@@ -78,7 +50,7 @@ function BasicLayout({ image, children }) {
           </Grid>
         </Grid>
       </MDBox>
-      <Footer light />
+
     </PageLayout>
   );
 }

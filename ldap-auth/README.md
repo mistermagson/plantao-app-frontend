@@ -25,7 +25,7 @@ $ node index.js
 ### Obter um Token
 Enviar requisição POST
 ```
-POST http://localhost:3000/authenticate
+POST http://localhost:3001/auth
 ```
 
 ```

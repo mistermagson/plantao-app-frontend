@@ -1,27 +1,30 @@
-let ActiveDirectory = require('activedirectory2');
+import jwt from "jsonwebtoken";
 
-function auth(username, password){
-    let config = {
-        url: process.env.LDAP_SERVER, // Endereço do Servidor LDAP / AD
-        baseDN: process.env.LDAP_BASEDN,
-        attributes: {
-            user: ['cn','sAMAccountName','sn', 'givenName', 'mail','trfCPF','displayName']
+const url = `http://localhost:3001/auth`;
+const headers = {
+    'Content-Type': 'application/json'
+};
+
+export async function autenticaAD (username, password) {
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({username, password}),
+        }).then( response =>{
+            console.log(response)
+
         }
+
+        )
     }
+    catch (error) {
 
-    let ad = new ActiveDirectory(config);
-    let auth=false;
-
-    ad.authenticate(username, password, function (err, auth) {
-        if (err) {
-            console.log(auth)
-            return auth;
-        }
-        if (auth) {
-            console.log(auth)
-            return auth;
-        }
-    })
+        return response.json(error)
+    }
 }
 
-auth("mmmagal","xxx")
+
+function generateAccessToken(username) {
+    return jwt.sign({username} , process.env.TOKEN, { expiresIn: 1800 });
+}

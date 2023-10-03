@@ -28,43 +28,26 @@ app.get('/', function (req,res){
 });
 
 app.post('/auth', function (req, res) {
-    if(req.body.username && req.body.password) {
+    const {username, password} = req.body;
 
-        config.username = req.body.username;
-        config.password = req.body.password
+    if(username && password) {
+
+        config.username = username;
+        config.password = password
         let ad = new ActiveDirectory(config);
 
-        ad.authenticate(req.body.username, req.body.password, function (err, auth) {
+        ad.authenticate(username, password, function (err, auth) {
             if (err) {
-                console.log('ERROR: ' + JSON.stringify(err));
-                return;
+                res.json({ message: 'credenciais invalidas', auth: false });
+
             }
             if (auth) {
+                const token = generateAccessToken({username})
+                console.log("autenticou e gerou token: ", auth, token)
+                res.json({ auth , token });
 
-                const token = generateAccessToken({username: req.body.username});
-
-
-                //busca demais dados do usuario autenticado
-               /* ad.findUser(config.username, function(err, user) {
-                    if (err) {
-                        console.log('ERROR: ' +JSON.stringify(err));
-                        return;
-                    }
-
-                    if (! user) console.log('User: ' + sAMAccountName + ' not found.');
-                    else {
-                        user.token = token;
-                        res.json(user);
-                    }
-
-                });*/
-
-                res.json({ auth, token });
-
-            } else {
-                res.status(500).json({message: 'Login inválido!'});
-            }
-        });
+        };
+        })
     } else {
         res.status(400).send({error: 'No username or password supplied'});
     }
