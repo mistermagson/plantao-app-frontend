@@ -44,7 +44,23 @@ app.post('/auth', function (req, res) {
             if (auth) {
                 const token = generateAccessToken({username})
                 console.log("autenticou e gerou token: ", auth, token)
-                res.json({ auth , token });
+
+                //busca demais dados do usuario autenticado
+                 ad.findUser(username, function(err, user) {
+                     if (err) {
+                         console.log('ERROR: ' +JSON.stringify(err));
+                         return;
+                     }
+
+                     if (! user) console.log('User: ' + sAMAccountName + ' not found.');
+                     else {
+                         user.token = token;
+                         res.json({ auth , user});
+                     }
+
+                 });
+
+               // res.json({ auth , token });
 
         };
         })
