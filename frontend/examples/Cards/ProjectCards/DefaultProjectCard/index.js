@@ -63,9 +63,10 @@ function DefaultProjectCard({
       sx={{
         display: "flex",
         flexDirection: "column",
-        backgroundColor: "transparent",
+        backgroundColor: "secondary",
         boxShadow: "none",
         overflow: "visible",
+        padding: "10px",
       }}
     >
       <MDBox
@@ -75,25 +76,7 @@ function DefaultProjectCard({
         borderRadius="xl"
         overflow="hidden"
       >
-        <MDBox maxWidth="100%" height="10rem" shadow="md">
-          {image && image.src ? (
-            <Image
-              src={image}
-              alt={title}
-              quality={100}
-              sizes="100%"
-              width={800}
-              height={800}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-              }}
-            />
-          ) : (
-            image
-          )}
-        </MDBox>
+
       </MDBox>
       <MDBox mt={1} mx={0.5}>
         <MDTypography

@@ -1,85 +1,95 @@
 import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
-import Autocomplete from "@mui/material/Autocomplete";
 import MDBox from "/components/MDBox";
 import MDTypography from "/components/MDTypography";
 import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import React, { useState, useEffect, get } from "react";
-import TextField from "@mui/material/TextField";
+import {DataGrid, GridActionsCellItem, GridToolbar} from "@mui/x-data-grid";
+import React, {useEffect, useState} from "react";
 import Button from "@mui/material/Button";
 import MDButton from "../../components/MDButton";
-import { setPlantonista, removePlantonista } from "../../utils/plantaoUtils";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
-import Tooltip from "@mui/material/Tooltip";
-import { GridActionsCellItem } from "@mui/x-data-grid";
-import { fetchEscalas } from "../../utils/escalaUtils";
-import Calendario from "../escalas//calendario";
-import Switch from "@mui/material/Switch";
+import {fetchEscalas} from "../../utils/escalaUtils";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
+import {Dialog, DialogActions, DialogContent} from "@mui/material";
 import Participantes from "../escalas/participantes";
-import Minuta from "../escalas/minuta";
+import CalendarioJuiz from "./calendarioJuiz";
+import Tooltip from "@mui/material/Tooltip";
+import HowToRegIcon from "@mui/icons-material/HowToReg";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import EventIcon from '@mui/icons-material/Event';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import DefaultProjectCard from "../../examples/Cards/ProjectCards/DefaultProjectCard";
 
-function Escalas({ data, h }) {
+function Escalas({ h }) {
     const [escalaSelecionada, setEscalaSelecionada] = useState(null);
     const [plantaoSelecionado, setPlantaoSelecionado] = useState([]);
     const [headers, setHeaders] = useState(h);
-    const [juizes, setJuizes] = useState([]);
-    const [escalas, setEscalas] = useState(data);
+    const [juiz, setJuiz] = useState([]);
+    const [escalas, setEscalas] = useState([]);
     const [plantoes, setPlantoes] = useState([]);
+    const [idJuiz, setIdJuiz] = useState(64);
+    const [idJuizPreferencia, setIdJuizPreferencia] = useState(34);
     const [error, setError] = useState(null);
     const [salvar, setSalvar] = useState(false);
-    const [block, setBlock] = useState(null);
+    const [block, setBlock] = useState([]);
+    const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
+    const [rowSelectionModel1, setRowSelectionModel1] = React.useState([]);
+
 
     useEffect(() => {
-        if (escalaSelecionada) {
-            const escalaEncontrada = escalas.find(
-                (escala) => escala.id === escalaSelecionada.id
-            );
 
-            if (escalaEncontrada) {
-                setEscalaSelecionada(escalaEncontrada);
-                setPlantoes(escalaEncontrada.plantaos.data.map((item) => ({
-                    id: item.id,
-                    ...item.attributes,
-                })));
+    }, [plantoes,escalas]);
 
+    useEffect(() => {
+        fetchJuizes(idJuiz).then(r => console.log('fetch juizes ok'));
+        fetchEscalas(idJuiz).then(r => console.log('fetch escalas ok'));
+
+    }, []);
+
+    const fetchJuizes = async (idJuiz) => {
+        try {
+            const response = await fetch(`http://localhost:1337/api/juizs/${idJuiz}?populate=plantoes.escala`, {
+                method: 'GET',
+                headers,
+            });
+            if (!response.ok) {
+                throw new Error('Falha ao obter os dados do juiz.');
             }
+
+            const juizData = await response.json();
+            const plantaosArray = juizData.data.attributes.plantoes.data.map((item) => ({id: item.id, ...item.attributes,}));
+            setPlantoes(plantaosArray);
+            setJuiz({id: juizData.data.id, ...juizData.data.attributes,});
+        } catch (error) {
+            setError(error.message);
         }
-        if(block === null){
+    };
 
-            const params = new URLSearchParams(window.location.search);
-            const escalaUrl = params.get('escala');
-            if(escalaUrl!==null) {
-                const escalaObj = escalas.find((escala) => escala.descricao === escalaUrl);
-                console.log('OBJETO', escalaObj);
+    const fetchEscalas = async (idJuiz) => {
+        try {
+            const response = await fetch(`http://localhost:1337/api/escalas?populate[preferencia][populate][]=juizs&populate[participantes][filters][id][$eq]=${idJuiz}`, {
+                method: 'GET',
+                headers,
+            });
 
-                if (escalaObj) {
-                    setEscalaSelecionada(escalaObj);
-                    onChangeEscala(escalaObj);
-                    setBlock('bloqueado');
-                }
+            if (!response.ok) {
+                throw new Error('Falha ao obter os dados do juiz.');
             }
-        }
-    }, [escalas, escalaSelecionada]);
 
-    const redirectToParticipantes = () => {
-        const url = `/escalas/participantes?escala=${encodeURIComponent(escalaSelecionada.descricao)}`;
-        window.location.href = url;
+            const escalasData = await response.json();
+            const editEscala1 = escalasData.data.filter((escala) => escala.attributes.participantes.data.length > 0);
+            const editEscala2 = editEscala1.map((escala) => ({id: escala.id, ...escala.attributes, }));
+            setEscalas(editEscala2)
+
+        } catch (error) {
+            setError(error.message);
+        }
     };
-    const redirectToPlantoes = () => {
-        const url = `/plantoes?escala=${encodeURIComponent(escalaSelecionada.descricao)}`;
-        window.location.href = url;
-    };
-    const redirectToAddEscalas = () => {
-        const url = `http://localhost:3000/escalas/adicionaescalas`;
-        window.location.href = url;
+    const redirectToMeusPlantoes = (escala) => {
+        window.location.href = `/plantoes/?escala=${encodeURIComponent(escala.descricao)}`;
     };
 
     const handleSubmit = async (event) => {
@@ -93,29 +103,12 @@ function Escalas({ data, h }) {
             setEscalas(atualizaEscalas);
         }
     };
-    const onChangeEscala = (selected) => {
-        try {
-            if (selected) {
-                const participantesArray = selected.participantes.data.map((item) => ({
-                    id: item.id,
-                    ...item.attributes,
-                }));
-                setJuizes(participantesArray);
 
-                const plantaosArray = selected.plantaos.data.map((item) => ({
-                    id: item.id,
-                    ...item.attributes,
-                }));
-                setPlantoes(plantaosArray);
 
-            }
-        } catch (error) {
-            setError(error.message);
-        }
-    };
+/*
     const calcularNumeroPlantoesPorJuiz = (juizes, plantoes) => {
         // Mapear os juízes e calcular o número de plantões para cada um
-        return juizes.map((juiz) => {
+        return juiz.map((juiz) => {
             const juizPlantoes = plantoes.filter((plantao) =>
                 plantao.plantonista.data.some((item) => item.id === juiz.id)
             );
@@ -126,7 +119,16 @@ function Escalas({ data, h }) {
         });
         return juizesComPlantoesCalculados;
     };
+*/
 
+    const isJuizPreferencial = (juizId) => {
+
+        if(juizId.preferencia.data){
+            return juizId.preferencia.data.id === idJuiz;
+        }
+        return false
+
+    };
 
     const handleClose = () => {
         setSalvar(false);
@@ -142,12 +144,28 @@ function Escalas({ data, h }) {
         return data;
     }
 
+    const findEscala = (idSelected) => {
+        // Acessar o valor dentro do array idSelected
+        const idDesejado = idSelected[0];
+
+        const escalaEncontrada = escalas.find((escala) => escala.id === idDesejado);
+
+        if (escalaEncontrada) {
+            console.log('Escala encontrada:', escalaEncontrada);
+            setEscalaSelecionada(escalaEncontrada);
+        } else {
+            console.log('Escala não encontrada');
+        }
+    }
+
     const showJSON = () => {
-        console.log("plantao", plantoes);
-        console.log("juiz", juizes);
-        console.log("escalas", escalaSelecionada);
+        //console.log("--------| escalas |--------", escalas);
+        /*console.log("--------| juiz |----------", juiz);
+        console.log("--------| plantoes |-------", plantoes);*/
+        console.log("--------| SELECAO |-------", escalaSelecionada);
+
+
     };
-    const juizesComPlantoesCalculados = calcularNumeroPlantoesPorJuiz(juizes,plantoes);
 
     return (
         <DashboardLayout>
@@ -163,216 +181,130 @@ function Escalas({ data, h }) {
                     </DialogActions>
                 </Dialog>
             </div>
+            <MDButton size="small" onClick={()=>showJSON()} color="info">console.log</MDButton>
             <MDBox p={2}>
-                <MDTypography variant="h2">Juiz Home</MDTypography>
+                <MDTypography variant="h2">Página Inicial</MDTypography>
             </MDBox>
             <Card>
                 <form onSubmit={handleSubmit}>
-                    <Grid container spacing={3} pb={3} px={3}>
-                        <Grid item xs={10} sm={5}  sx={{ height: "max-content" }}>
+                    <Grid container spacing={3}  px={3} py={1} mb={-6}>
+                        <Grid item xs={12} sm={12} xl={12}  sx={{ height: "max-content" }}>
                             <MDBox pl={1} my={2}>
-                                <h5 >Selecione a escala:</h5>
+                                <h5 >Minhas escalas:</h5>
                             </MDBox>
                             <MDBox>
-                                <Grid container spacing={2} xl={12}>
-                                    <Grid item xs={12} xl={12}>
-                                        <Autocomplete
-                                            options={escalas}
-                                            getOptionLabel={(escala) => escala.descricao}
-                                            value={escalaSelecionada}
-                                            onChange={(event, newValue) => {
-                                                setEscalaSelecionada(newValue);
-                                                onChangeEscala(newValue);
-                                            }}
-                                            renderInput={(params) => (<TextField {...params} label="Escala" />)}
-                                        />
-                                    </Grid>
-                                </Grid>
-                            </MDBox>
-                        </Grid>
-                        <Grid item xs={2} sm={7}  sx={{ height: "max-content" }}>
-                            <MDBox mt={2} mr={1} display="flex" justifyContent="flex-end">
-                                <MDButton color="dark" size="small"  onClick={() => redirectToAddEscalas()}>voltar</MDButton>
-                            </MDBox>
-                        </Grid>
-                        <Grid item ml={2} xs={12} xl={10}>
-                            {escalaSelecionada && (
-                                <Grid container spacing={2} mb={-2}>
-                                    <Grid item xs={12} xl={5}>
-                                        <h5 style={{ color: "#344767" }}>Descrição da escala:</h5>
-                                        <TextField
-                                            fullWidth
-                                            id="outlined-descricao-input"
-                                            value={escalaSelecionada ? escalaSelecionada.descricao : ""}
-                                            InputProps={{readOnly: true,}}
-                                            variant="standard"
-                                            style={{ flex: 1, marginRight: "8px" }}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} xl={5}>
-                                        <h5 style={{ color: "#344767" }}>Tipo da escala</h5>
-                                        <TextField
-                                            fullWidth
-                                            id="outlined-tipo-input"
-                                            value={escalaSelecionada ? escalaSelecionada.tipo : ""}
-                                            InputProps={{readOnly: true,}}
-                                            variant="standard"
-                                            style={{ flex: 1, marginRight: "8px" }}
-                                        />
-                                    </Grid>
-                                </Grid>
-                            )}
-                            {escalaSelecionada && (
-                                <Grid container mt={2} spacing={2}>
-                                    <Grid item xs={6} xl={4}>
-                                        <h5 style={{ color: "#344767" }}>Data de início</h5>
-                                        <TextField
-                                            fullWidth
-                                            id="outlined-inicio-input"
-                                            value={escalaSelecionada ? formatarData(escalaSelecionada.inicio) : ""}
-                                            InputProps={{readOnly: true,}}
-                                            variant="standard"
-                                            style={{ flex: 1, marginRight: "8px" }}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={6} xl={4}>
-                                        <h5 style={{ color: "#344767" }}>Data de término</h5>
-                                        <TextField
-                                            fullWidth
-                                            id="outlined-fim-input"
-                                            value={escalaSelecionada ? formatarData(escalaSelecionada.fim) : ""}
-                                            InputProps={{readOnly: true,}}
-                                            variant="standard"
-                                            style={{ flex: 1, marginRight: "8px" }}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={6} xl={4}>
-                                        <h5 style={{ color: "#344767" }}>Status</h5>
-                                        <div style={{ display: "flex", alignItems: "center", marginTop: "5px" }}>
-                                            <h5 style={{color: escalaSelecionada ? escalaSelecionada.fechada ? "#f44335" : "#4caf50" : "inherit", marginLeft: "8px"}}>
-                                                {escalaSelecionada ? escalaSelecionada.fechada ? "Fechada" : "Aberta" : ""}
-                                            </h5>
-                                            <Switch
-                                                checked={escalaSelecionada ? escalaSelecionada.fechada : false}
-                                                inputProps={{ "aria-label": "toggle escala" }}
-                                                onChange={() => statusEscala()}
-                                            />
-                                        </div>
-                                    </Grid>
-                                </Grid>
-                            )}
-                        </Grid>
-                        <Grid item xs={12} xl={8} >
-                            <MDBox>
-                                {escalaSelecionada && (
-                                    <Accordion style={{ boxShadow: "none" }}>
-                                        <AccordionSummary
-                                            aria-controls="panel1a-content"
-                                            id="panel1a-header"
-                                            expandIcon={<ExpandMoreIcon />}
-                                        >
-                                            <h5 style={{ color: "#344767" }}>Participantes</h5>
-                                        </AccordionSummary>
-                                        <AccordionDetails>
+                                <Grid container spacing={3} xl={12}>
+                                    <Grid item xs={12} xl={8}>
+                                        {escalas && (
                                             <DataGrid
-                                                density="compact"
-                                                style={{ minHeight: "300px" }}
                                                 editMode="row"
                                                 disableColumnMenu
-                                                sx={{ fontSize: "16px", fontWeight: "regular", color: "dark" }}
-                                                pageSizeOptions={[5, 10, 20]}
-                                                initialState={{pagination: { paginationModel: { pageSize: 10 } },}}
-                                                rows={juizesComPlantoesCalculados}
-                                                columns={[
-
-                                                    { field: "rf", headerName: "RF", width: 70, editable: true },
-                                                    { field: "nome", headerName: "Nome", flex: 2, minWidth: 150 },
-                                                    { field: "email", headerName: "Email", flex: 1 },
-
-
+                                                sx={{fontSize: '16px', fontWeight: 'regular', padding: '10px',}}
+                                                style={{height: 'flex'}}
+                                                rows={escalas}
+                                                columns={[{field: 'descricao', headerName: 'Nome', flex: 1},
                                                     {
-                                                        field: "plantoesEscolhidos",
-                                                        headerName: "N°",
-                                                        width: 50,
-                                                        renderCell: (params) => {
-                                                            return (
-                                                                <div style={{ fontWeight: "bold",}}>
-                                                                    {params.value}
-                                                                </div>
-                                                            );
-                                                        },
+                                                        field: 'inicio',
+                                                        headerName: 'Escolha',
+                                                        minWidth: 200,
+
+                                                        renderCell: (params) => (
+                                                                <span style={{color: isJuizPreferencial(params.row) ? 'green' : 'red',}}>
+                                                                    {isJuizPreferencial(params.row) ?  `Escolha seus Plantões `:'Aguarde sua vez ' }
+                                                                </span>)
                                                     },
-                                                ]}
-                                                onRowSelectionModelChange={(newRowSelectionModel) => {setRowSelectionModel(newRowSelectionModel);}}
+                                                    {
+                                                        field: 'id',
+                                                        headerName: ' ',
+                                                        minWidth: 50,
+
+                                                        renderCell: (params) => (
+
+
+                                                            <div>
+                                                                <Tooltip
+                                                                    title={isJuizPreferencial(params.row) ?'Escolher Plantões' : 'Ver Plantões'}>
+                                                                    <GridActionsCellItem
+                                                                        icon={isJuizPreferencial(params.row) ? <EventIcon style={{fontSize: 'large'}}/> : <VisibilityIcon style={{fontSize: 'large'}}/>}
+                                                                        label={'Definir como Preferencial'}
+                                                                        onClick={() => { console.log("--------| params |-------", params.row.descricao,params.row.id, params.row.preferencia.data.id);
+
+                                                                        }}
+                                                                        color={isJuizPreferencial(params.row) ? 'success' : 'default'}
+                                                                    />
+                                                                </Tooltip>
+                                                            </div>
+                                                        ),
+                                                    },]}
+                                                onRowSelectionModelChange={(newRowSelectionModel) => {setRowSelectionModel(newRowSelectionModel); findEscala(newRowSelectionModel)}}
+                                                rowSelectionModel={rowSelectionModel}
                                                 disableColumnFilter
-                                                disableRowSelectionOnClick
-                                                slots={{ toolbar: GridToolbar }}
-                                                slotProps={{ toolbar: { showQuickFilter: true } }}
-                                            />
-                                            <MDBox mt={2} mr={1} display="flex" justifyContent="flex-end">
-                                                <MDButton color="dark" type='text' size="small" onClick={redirectToParticipantes}>
-                                                    Editar Participantes
-                                                </MDButton>
+                                                disableColumnSelector
+                                                disableDensitySelector
+                                                slots={{toolbar: GridToolbar}}
+                                                slotProps={{toolbar: {showQuickFilter: true, disableExport: true},}}
+                                                hideFooterPagination={true}
+                                                disableExport
 
-                                            </MDBox>
-                                        </AccordionDetails>
-                                    </Accordion>
-                                )}
-                            </MDBox>
-                            <MDBox>
-                                {escalaSelecionada && (
-                                    <Accordion style={{ boxShadow: "none" }}>
-                                        <AccordionSummary
-                                            aria-controls="panel1a-content"
-                                            id="panel1a-header"
-                                            expandIcon={<ExpandMoreIcon />}
-                                        >
-                                            <h5 style={{ color: "#344767" }}>Minuta</h5>
-                                        </AccordionSummary>
-                                        <AccordionDetails>
-                                            {plantoes.length <= 0 &&(
-                                                <MDBox pb={1.5}>
-                                                    <MDTypography variant="h6" sx={{fontWeight: 'regular'}} >Não há plantões vinculados a esta escala.</MDTypography>
-                                                </MDBox>
-                                            )}
+                                            />)}
+                                    </Grid>
+                                    <Grid item xs={12} xl={4}>
+                                    {rowSelectionModel.length > 0 &&(
+                                        <DefaultProjectCard
+                                            label={"tipo: "+escalaSelecionada.tipo}
+                                            title= {"Escala: "+escalaSelecionada.descricao}
+                                            description={"As Uber works through a huge amount of"+ escalaSelecionada.descricao + "internal management turmoil."}
+                                            action={{
+                                                type: "internal",
+                                                route: "/plantoes/meusplantoes",
+                                                color: "dark",
+                                                label: "escolher plantoes",
+                                            }}
+                                        />
+                                    )}
+                                    {rowSelectionModel.length === 0 &&(
+                                        <div>
+                                            <h5>Selecione uma</h5>
+                                            <h5>Escala</h5>
+                                        </div>
 
-                                            <Grid item xs={12} xl={12} pt={2}>
-                                                <Minuta plantoes={plantoes}/>
-                                                <MDBox mt={2} mr={1} display="flex" justifyContent="flex-end">
-                                                    <MDButton color="dark" size="small" onClick={redirectToPlantoes}>
-                                                        Editar Plantonistas
-                                                    </MDButton>
-
-                                                </MDBox>
-                                            </Grid>
-                                        </AccordionDetails>
-                                    </Accordion>
-                                )}
+                                    )}
+                                    </Grid>
+                                </Grid>
                             </MDBox>
                         </Grid>
-                        <Grid item xs={12} xl={4}>
-                            {escalaSelecionada && (
-                                <Accordion style={{ boxShadow: "none" }}>
-                                    <AccordionSummary
-                                        aria-controls="panel1a-content"
-                                        id="panel1a-header"
-                                        expandIcon={<ExpandMoreIcon />}
-                                    >
-                                        <h5 style={{ color: "#344767" }}>Calendário</h5>
-                                    </AccordionSummary>
-                                    <AccordionDetails>
-                                        {plantoes.length <= 0 &&(
-                                            <MDBox pb={1.5}>
-                                                <MDTypography variant="h6" sx={{fontWeight: 'regular'}} >Não há plantões vinculados a esta escala.</MDTypography>
-                                            </MDBox>
-                                        )}
-                                        <Grid  xs={12} xl={12}>
-                                            <Calendario plantoes={plantoes} inicio={escalaSelecionada.inicio}/>
+                        <Grid item xs={12} xl={12}>
+                            <MDBox pl={1} my={2}>
+                                <h5 >Meus plantões:</h5>
+                            </MDBox>
+                            <MDBox>
+                                <Grid container spacing={3} xl={12}>
+                                    <Grid item xs={12} xl={5}>
+                                <CalendarioJuiz  plantoes={plantoes}/>
+                                    </Grid>
+                                    <Grid item xs={12} xl={7}>
+                                        {escalas && (
+                                            <DataGrid
+                                                editMode="row"
+                                                disableColumnMenu
+                                                sx={{fontSize: '16px', fontWeight: 'regular', padding: '10px',border:0}}
+                                                rows={plantoes}
+                                                columns={[{field: 'data', headerName: 'Nome', flex: 1},]}
+                                                onRowSelectionModelChange={(newRowSelectionModel) => {setRowSelectionModel1(newRowSelectionModel); findEscala(newRowSelectionModel)}}
+                                                rowSelectionModel={rowSelectionModel1}
+                                                disableColumnFilter
+                                                disableColumnSelector
+                                                disableDensitySelector
+                                                hideFooterPagination={true}
+                                                hideExport={true}
+                                                hideFooterRowCount={true}
+                                                hideFooterSelectedRowCount={true}
+                                                style={{height: '400px'}}
 
-                                        </Grid>
-                                    </AccordionDetails>
-                                </Accordion>
-                            )}
+                                            />)}
+                                    </Grid>
+                                </Grid>
+                            </MDBox>
                         </Grid>
                     </Grid>
                 </form>
@@ -395,10 +327,11 @@ export async function getServerSideProps() {
         }
     );
     //const data = await res.json();
+    console.log("1")
     const responseEscala = await res.json();
     const data = responseEscala.data.map((item) => ({ id: item.id, ...item.attributes }));
 
-    return { props: { data, h } };
+    return { props: {  h } };
 }
 
 export default Escalas;

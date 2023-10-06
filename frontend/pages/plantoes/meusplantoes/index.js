@@ -34,7 +34,7 @@ function Plantoes({data, h}) {
     const [fixGet, setFixGet] = useState(0);
     const [block, setBlock] = useState(null);
     const [preferenciaJuizId, setPreferenciaJuizId] = useState(null);
-    const [juizUrlId, setJuizUrlId] = useState(59);
+    const [juizUrlId, setJuizUrlId] = useState(64);
     const [passar, setPassar] = useState(false);
 
 
@@ -57,7 +57,7 @@ function Plantoes({data, h}) {
                 }
             }
 
-            const juizId = 59; // Substitua pelo ID do juiz que você deseja filtrar
+            const juizId = 64; // Substitua pelo ID do juiz que você deseja filtrar
             const escalasDoJuiz = filtrarEscalasPorJuiz(juizId, escalas);
             setEscalas(escalasDoJuiz);
             setBlock('bloqueado');
@@ -118,9 +118,9 @@ function Plantoes({data, h}) {
     }
     const showJSON = () => {
 
-        console.log("ESCALAS",escalaSelecionada);
+        console.log("plantoes",plantoes);
         //console.log('juizes',juizes);
-        console.log("J SELECIONADOs",juizSelecionado);
+        //onsole.log("J SELECIONADOs",juizSelecionado);
         //console.log("prefrencial",preferenciaJuizId);
 
 

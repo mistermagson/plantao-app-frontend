@@ -59,7 +59,8 @@ function Participantes() {
     const [adicionados, setAdicionados] = useState([]);
     const [juizPreferencialId, setJuizPreferencialId] = useState(null);
     const [block, setBlock] = useState(null);
-    let contador = 0;
+
+
     const fetchJuizes = async () => {
         try {
             const response1 = await fetch('http://localhost:1337/api/juizs?populate[plantoes][populate][0]=escala&populate[lotacao]=*&pagination[pageSize]=30&sort=antiguidade:asc', {
@@ -264,7 +265,7 @@ function Participantes() {
         return juizId === juizPreferencialId;
     };
     const showJSON = () => {
-        console.log('ARRAY PLANTOES',juizes);
+        console.log('ARRAY PLANTOES',juizesRestantes);
     };
 
 

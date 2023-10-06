@@ -200,8 +200,8 @@ function AdicionaEscala() {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={() => { deleteEscala();handleClose();}}>Sim</Button>
-                        <Button onClick={handleClose}>Não</Button>
+                        <MDButton onClick={() => { deleteEscala();handleClose();}}>Sim</MDButton>
+                        <MDButton onClick={handleClose} >Não</MDButton>
                     </DialogActions>
                 </Dialog>
             </div>
@@ -217,7 +217,7 @@ function AdicionaEscala() {
                                     editMode="row"
                                     disableColumnMenu
                                     sx={{  fontSize: '16px', fontWeight: 'regular',color:'dark'}}
-                                    pageSizeOptions={[5, 10, 20]}
+                                    pageSizeOptions={[20, 50, 100]}
                                     style={{height: '500px'}}
                                     initialState={{pagination: {paginationModel: {pageSize: 20}},}}
                                     rows={escalas}
