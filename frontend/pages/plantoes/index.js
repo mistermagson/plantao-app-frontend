@@ -150,7 +150,7 @@ function Plantoes({data, h}) {
 
                                     <Grid item xs={9}  xl={4}>
                                         <MDBox my={2}>
-                                            <h5>Selecione o nome do juiz :</h5>
+                                            <h5>Digite e selecione seu nome:</h5>
                                         </MDBox>
                                         <Autocomplete
                                             options={!juizes ?  [{label:"Carregando...", id:0}] : juizes }
@@ -217,15 +217,15 @@ function Plantoes({data, h}) {
                                                     width: 120, align:"center",
                                                     renderCell: (params) => (
                                                         <Tooltip title="Limpar o plantonista">
-                                                            {params.row.plantonista.data[0] && !escalaSelecionada.fechada && /*juizSelecionado && juizSelecionado.id === params.row.plantonista.data[0].id ?*/ (
+                                                            {params.row.plantonista.data[0] && !escalaSelecionada.fechada && juizSelecionado && juizSelecionado.id === params.row.plantonista.data[0].id ? (
                                                                 <GridActionsCellItem
                                                                     icon={<RemoveCircleOutlineIcon/>}
                                                                     label="Limpar Plantonista"
                                                                     onClick={() => handleLimparPlantonista(params.row)}
                                                                     color="inherit"
                                                                 />
-                                                                /*) : (
-                                                                    <div></div>*/
+                                                                ) : (
+                                                                    <div></div>
                                                             )}
                                                         </Tooltip>
                                                     ),
