@@ -1,20 +1,13 @@
 import React, { useState } from 'react';
 import Calendar from "/examples/Calendar";
-import MDTypography from "../../../components/MDTypography";
-import MDBox from "../../../components/MDBox";
-import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
-import interactionPlugin from "@fullcalendar/interaction"
-import MDAlert from "../../../components/MDAlert";
-import MDBadge from "../../../components/MDBadge";
 import MDBadgeDot from "../../../components/MDBadgeDot"; // needed for dayClick
 
 
 function Calendario({ plantoes }) {
-    if (plantoes.length <= 0) {
-        return <div></div>;
-    } else {
-        const [tooltipContent, setTooltipContent] = useState(null);
-        const [dotColor, setDotColor] = useState(null);
+    const [tooltipContent, setTooltipContent] = useState(null);
+    const [dotColor, setDotColor] = useState(null);
+
+    if (plantoes.length > 0){
 
         const eventos = plantoes.map((plantao) => {
             const plantonista = plantao.plantonista;
@@ -32,7 +25,6 @@ function Calendario({ plantoes }) {
             };
         });
 
-
         const handleEventMouseEnter = (event) => {
             setTooltipContent(event.event.title);
             setDotColor(event.event.className)
@@ -46,7 +38,6 @@ function Calendario({ plantoes }) {
 
         return (
             <div>
-
                 <Calendar
                     fullHeight
                     initialView="dayGridMonth"
@@ -57,16 +48,19 @@ function Calendario({ plantoes }) {
                     eventMouseEnter={handleEventMouseEnter}
                     eventMouseLeave={handleEventMouseLeave}
                     locale="pt-br"
-
                 />
                 <div style={{height: '100px'}}>
-                {tooltipContent && (
-                    <MDBadgeDot badgeContent={tooltipContent} color={dotColor} size='lg' container />
+                    {tooltipContent && (
+                        <MDBadgeDot badgeContent={tooltipContent} color={dotColor} size='lg' container />
 
-                )}
+                    )}
                 </div>
-                </div>
+            </div>
         );
+    }
+     else {
+        return <div></div>;
+
     }
 }
 
