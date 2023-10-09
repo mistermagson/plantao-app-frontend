@@ -162,10 +162,15 @@ function Escalas({ h }) {
         //console.log("--------| escalas |--------", escalas);
         /*console.log("--------| juiz |----------", juiz);
         console.log("--------| plantoes |-------", plantoes);*/
-        console.log("--------| SELECAO |-------", escalaSelecionada);
+        console.log("--------| SELECAO |-------", escalas);
 
 
     };
+
+    function formatDate(dateString) {
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        return new Date(dateString).toLocaleDateString('pt-BR', options);
+    }
 
     return (
         <DashboardLayout>
@@ -245,15 +250,17 @@ function Escalas({ h }) {
                                                 slotProps={{toolbar: {showQuickFilter: true, disableExport: true},}}
                                                 hideFooterPagination={true}
                                                 disableExport
-
+                                                sortModel={[{field: 'data', sort: 'asc',}]}
                                             />)}
                                     </Grid>
                                     <Grid item xs={12} xl={4}>
                                     {rowSelectionModel.length > 0 &&(
                                         <DefaultProjectCard
-                                            label={"tipo: "+escalaSelecionada.tipo}
                                             title= {"Escala: "+escalaSelecionada.descricao}
-                                            description={"As Uber works through a huge amount of"+ escalaSelecionada.descricao + "internal management turmoil."}
+                                            description={`Tipo: ${escalaSelecionada.tipo}, 
+                Data de Início: ${formatDate(escalaSelecionada.inicio)}, 
+                Data de Fim: ${formatDate(escalaSelecionada.fim)}, 
+                Preferência: ${escalaSelecionada.preferencia ? escalaSelecionada.preferencia.attributes.nome : 'Nenhum juiz na preferência'}`}
                                             action={{
                                                 type: "internal",
                                                 route: "/plantoes/meusplantoes",
@@ -289,7 +296,19 @@ function Escalas({ h }) {
                                                 disableColumnMenu
                                                 sx={{fontSize: '16px', fontWeight: 'regular', padding: '10px',border:0}}
                                                 rows={plantoes}
-                                                columns={[{field: 'data', headerName: 'Nome', flex: 1},]}
+                                                columns={[{field: 'data', headerName: 'Data', flex: 1, renderCell: (params) => {
+                                                        const dateParts = params.value.split('-');
+                                                        const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+                                                        return <span>{formattedDate}</span>;
+                                                    },},{
+                                                    field: 'escala.data.attributes.descricao',
+                                                    headerName: 'Escala',
+                                                    flex: 2,
+                                                    valueGetter: (params) => {
+                                                        return params.row.escala.data.attributes.descricao;
+                                                    },
+                                                },
+                                                    ]}
                                                 onRowSelectionModelChange={(newRowSelectionModel) => {setRowSelectionModel1(newRowSelectionModel); findEscala(newRowSelectionModel)}}
                                                 rowSelectionModel={rowSelectionModel1}
                                                 disableColumnFilter
@@ -299,7 +318,7 @@ function Escalas({ h }) {
                                                 hideExport={true}
                                                 hideFooterRowCount={true}
                                                 hideFooterSelectedRowCount={true}
-                                                style={{height: '400px'}}
+                                                style={{height: '460px'}}
 
                                             />)}
                                     </Grid>

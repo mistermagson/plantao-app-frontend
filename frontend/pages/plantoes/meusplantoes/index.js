@@ -20,6 +20,7 @@ import MDTypography from "../../../components/MDTypography";
 import DashboardLayout from "../../../examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "../../../examples/Navbars/DashboardNavbar";
 import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
+import {es} from "date-fns/locale";
 
 function Plantoes({data, h}) {
 
@@ -36,6 +37,9 @@ function Plantoes({data, h}) {
     const [preferenciaJuizId, setPreferenciaJuizId] = useState(null);
     const [juizUrlId, setJuizUrlId] = useState(64);
     const [passar, setPassar] = useState(false);
+    const [sair, setSair] = useState(false);
+    const [rowData, setRowData] = useState(null);
+
 
 
 
@@ -91,8 +95,9 @@ function Plantoes({data, h}) {
             console.error(error);
         }
         finally {
-            const atualizaEscalas = await fetchEscalas(headers)
-            setEscalas(atualizaEscalas)
+            const escalasAtualizadas = await fetchEscalas(headers)
+            const escalasDoJuiz = filtrarEscalasPorJuiz(juizUrlId, escalasAtualizadas);
+            setEscalas(escalasDoJuiz);
             console.log('TUDO CERTO')
 
         }
@@ -135,8 +140,9 @@ function Plantoes({data, h}) {
         } catch (error) {
             console.error(error);
         }finally {
-            const atualizaEscalas = await fetchEscalas(headers)
-            setEscalas(atualizaEscalas)
+            const escalasAtualizadas = await fetchEscalas(headers)
+            const escalasDoJuiz = filtrarEscalasPorJuiz(juizUrlId, escalasAtualizadas);
+            setEscalas(escalasDoJuiz);
             console.log('TUDO CERTO')
 
         }
@@ -149,8 +155,9 @@ function Plantoes({data, h}) {
         } catch (error) {
             console.error(error);
         }finally {
-            const escalasAtaulizadas = await fetchEscalas(headers)
-            setEscalas(escalasAtaulizadas);
+            const escalasAtualizadas = await fetchEscalas(headers)
+            const escalasDoJuiz = filtrarEscalasPorJuiz(juizUrlId, escalasAtualizadas);
+            setEscalas(escalasDoJuiz);
         }
     }
 
@@ -165,6 +172,7 @@ function Plantoes({data, h}) {
 
     const handleClose = () => {
         setPassar(false);
+        setSair(false);
     };
 
     return (
@@ -179,12 +187,25 @@ function Plantoes({data, h}) {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={() => { passaEscolha();handleClose();}}>Sim</Button>
+                        <Button onClick={() => {passaEscolha();handleClose();}}>Sim</Button>
                         <Button onClick={handleClose}>Não</Button>
                     </DialogActions>
                 </Dialog>
             </div>
-            <MDButton size="small" onClick={()=>showJSON()} color="info">console.log</MDButton>
+            <div>
+                <Dialog open={sair} onClose={handleClose}>
+                <DialogTitle>Sair do Plantão</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Você tem certeza que deseja sair do plantão? Só poderá escolhê-lo novamente quando chegar a sua vez.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => { handleLimparPlantonista(rowData); handleClose(); }}>Sim</Button>
+                    <Button onClick={handleClose}>Não</Button>
+                </DialogActions>
+            </Dialog>
+            </div>
             <MDBox p={2}>
                 <MDTypography variant="h2">Meus Plantões</MDTypography>
             </MDBox>
@@ -208,7 +229,7 @@ function Plantoes({data, h}) {
                                 </Grid>{/* AUTOCOMPLETE ESCALA*/}
                                 <Grid item xs={9} xl={3} style={{ display: 'flex', alignItems: 'flex-end' }}>
                                     {juizSelecionado?.id !== preferenciaJuizId && escalaSelecionada &&(
-                                        <h5 style={{ color: '#f44335' }}>Ainda não é sua vez de escolher os plantões.</h5>
+                                        <h6 style={{ color: '#f44335' }}>Ainda não é sua vez de escolher os plantões.</h6>
                                     )}
                                 </Grid>
                             </Grid>
@@ -260,7 +281,10 @@ function Plantoes({data, h}) {
                                                                 <GridActionsCellItem
                                                                     icon={<RemoveCircleOutlineIcon/>}
                                                                     label="Limpar Plantonista"
-                                                                    onClick={() => handleLimparPlantonista(params.row)}
+                                                                    onClick={() => {
+                                                                        setRowData(params.row); // Armazena os detalhes do params.row no estado rowData
+                                                                        setSair(true); // Abre o Dialog
+                                                                    }}
                                                                     color="inherit"
                                                                 />
                                                                 ) : (
@@ -303,6 +327,11 @@ function Plantoes({data, h}) {
                                     <Calendario plantoes={plantoes} escalaSelecionada={escalaSelecionada}/>
                                 </MDBox>)}
                         </Grid>
+                        {!escalaSelecionada && (
+                            <MDTypography variant="h6" mx={5} ml={7} mt={-4} mb={4} fontWeight="light">
+                                Escala não selecionada
+                            </MDTypography>
+                        )}
                     </Grid>
                 </form>
             </Card>
