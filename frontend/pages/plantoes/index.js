@@ -154,7 +154,7 @@ function Plantoes({data, h}) {
 
     return (
         <DashboardLayout>
-            <DashboardNavbar />
+           
             <div>
                 <Dialog open={passar} onClose={handleClose}>
                     <DialogTitle>Passar a Vez</DialogTitle>
@@ -230,10 +230,10 @@ function Plantoes({data, h}) {
                                     </>)}
                                 </MDBox>
                                 <MDBox p>
-                                    {juizSelecionado?.id === preferenciaJuizId ?(
-                                        <h5 style={{ color: 'green', paddingLeft:'20px', marginTop:'-10px'}}>
-                                        Escolha seus plantões
-                                        </h5>):(<h5 style={{ color: 'red',  paddingLeft:'20px', marginTop:'-10px'}}>Aguarde sua vez para escolher os plantões</h5>)}
+                                    { juizSelecionado?.id === preferenciaJuizId
+                                        ? (<h5 style={{ color: 'green', paddingLeft:'20px', marginTop:'-10px'}}> Escolha seus plantões</h5>)
+                                        : (<h5 style={{ color: 'red', paddingLeft: '20px', marginTop: '-10px' }}>Aguarde sua vez para escolher os plantões</h5>)
+                                    }
 
                                     {escalaSelecionada &&(
                                         <DataGrid
@@ -329,7 +329,7 @@ export async function getServerSideProps() {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b'
     };
-    const res = await fetch('http://127.0.0.1:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes&populate[preferencia][populate][0]=juizs', {
+    const res = await fetch('http://10.28.80.30:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes&populate[preferencia][populate][0]=juizs', {
         method: 'GET',
         headers: h,
     });
