@@ -15,11 +15,10 @@ function CalendarioJuiz({ plantoes }) {
         const [tooltipContent, setTooltipContent] = useState(null);
         const [dotColor, setDotColor] = useState(null);
 
+    if (plantoes?.length > 0){
 
-
-        const eventos = plantoes.map((plantao) => {
+        const eventos = plantoes?.map((plantao) => {
             const escala = plantao.escala;
-
             const title = escala
                 ? escala.data.attributes.descricao
                 : "Vazio";
@@ -68,7 +67,11 @@ function CalendarioJuiz({ plantoes }) {
                 </div>
                 </div>
         );
+    }
+    else {
+        return <></>;
 
+    }
 }
 
 export default CalendarioJuiz;

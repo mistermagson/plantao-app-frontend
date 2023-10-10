@@ -59,7 +59,7 @@ function Calendario({ plantoes }) {
         );
     }
      else {
-        return <div></div>;
+        return <></>;
 
     }
 }

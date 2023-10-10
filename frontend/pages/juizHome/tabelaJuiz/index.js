@@ -35,7 +35,7 @@ const CollapsibleTable = ({ data }) => {
                         <TableCell>Antiguidade</TableCell>
                         <TableCell>Cargo</TableCell>
                     </TableRow>
-                    {data.map((item) => (
+                    {data?.map((item) => (
                         <React.Fragment key={item.id}>
                             <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
                                 <TableCell>
