@@ -11,9 +11,7 @@ import {es} from "date-fns/locale"; // needed for dayClick
 
 
 function CalendarioJuiz({ plantoes }) {
-    if (plantoes.length <= 0) {
-        return <div></div>;
-    } else {
+
         const [tooltipContent, setTooltipContent] = useState(null);
         const [dotColor, setDotColor] = useState(null);
 
@@ -70,7 +68,7 @@ function CalendarioJuiz({ plantoes }) {
                 </div>
                 </div>
         );
-    }
+
 }
 
 export default CalendarioJuiz;

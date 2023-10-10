@@ -16,7 +16,7 @@ import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
 import Tooltip from "@mui/material/Tooltip";
 import { GridActionsCellItem } from "@mui/x-data-grid";
 import { fetchEscalas } from "../../utils/escalaUtils";
-import Minuta from "./Minuta";
+import MinutaPage from "./minuta";
 import Calendario from "./calendario";
 import Switch from "@mui/material/Switch";
 import Accordion from "@mui/material/Accordion";
@@ -27,7 +27,7 @@ import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} fr
 import Participantes from "./participantes";
 import { useRouter } from "next/router";
 
-function Escalas({ data, h }) {
+function EscalasPage({ data, h }) {
     const [escalaSelecionada, setEscalaSelecionada] = useState(null);
     const [plantaoSelecionado, setPlantaoSelecionado] = useState([]);
     const [headers, setHeaders] = useState(h);
@@ -68,7 +68,7 @@ function Escalas({ data, h }) {
                 }
             }
         }
-    }, [escalas, escalaSelecionada]);
+    }, [escalas, escalaSelecionada, block]);
 
     const redirectToParticipantes = () => {
         const url = `/escalas/participantes?escala=${encodeURIComponent(escalaSelecionada.descricao)}`;
@@ -356,14 +356,15 @@ function Escalas({ data, h }) {
                                             <h5 style={{ color: "#344767" }}>Minuta</h5>
                                         </AccordionSummary>
                                         <AccordionDetails>
-                                            {plantoes.length <= 0 &&(
+                                            {plantoes?.length <= 0 &&(
                                                 <MDBox pb={1.5}>
                                                     <MDTypography variant="h6" sx={{fontWeight: 'regular'}} >Não há plantões vinculados a esta escala.</MDTypography>
                                                 </MDBox>
                                             )}
-
+                                            {plantoes.length > 0 &&(
                                             <Grid item xs={12} xl={12} pt={2}>
-                                                <Minuta plantoes={plantoes}/>
+
+                                                <MinutaPage plantoes={plantoes}/>
                                                 <MDBox mt={2} mr={1} display="flex" justifyContent="flex-end">
                                                     <MDButton color="dark" size="small" onClick={redirectToPlantoes}>
                                                         Editar Plantonistas
@@ -371,6 +372,7 @@ function Escalas({ data, h }) {
 
                                                 </MDBox>
                                             </Grid>
+                                            )}
                                         </AccordionDetails>
                                     </Accordion>
                                 )}
@@ -394,7 +396,6 @@ function Escalas({ data, h }) {
                                         )}
                                         <Grid  xs={12} xl={12}>
                                             <Calendario plantoes={plantoes} inicio={escalaSelecionada.inicio}/>
-
                                         </Grid>
                                     </AccordionDetails>
                                 </Accordion>
@@ -427,4 +428,4 @@ export async function getServerSideProps() {
     return { props: { data, h } };
 }
 
-export default Escalas;
+export default EscalasPage;

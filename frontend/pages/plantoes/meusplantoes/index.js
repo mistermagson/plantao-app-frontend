@@ -80,7 +80,7 @@ function Plantoes({data, h}) {
                 setJuizSelecionado(juizes.find((juiz) => juiz.id === juizUrlId));
             }
         }
-
+// eslint-disable-next-line react-hooks/exhaustive-deps
     }, [escalas, plantoes]);
 
 

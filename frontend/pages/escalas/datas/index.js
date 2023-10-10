@@ -60,7 +60,7 @@ function Datas() {
         };
         console.log('juizes',juizes);
         fetchEscalas();
-    }, []);
+    }, [juizes]);
 
     return (
        <DashboardLayout>

@@ -7,7 +7,7 @@ function Calendario({ plantoes }) {
     const [tooltipContent, setTooltipContent] = useState(null);
     const [dotColor, setDotColor] = useState(null);
 
-    if (plantoes.length > 0){
+    if (plantoes?.length > 0){
 
         const eventos = plantoes.map((plantao) => {
             const plantonista = plantao.plantonista;

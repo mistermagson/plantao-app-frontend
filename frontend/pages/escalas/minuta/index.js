@@ -2,12 +2,8 @@ import React, { useState } from 'react';
 import MDButton from "../../../components/MDButton";
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-function Minuta({ plantoes }) {
+function MinutaPage({ plantoes }) {
 
-    if(plantoes.length <= 0) {
-        return <div></div>
-    }
-    else{
         const tableCellStyle = {
             border: '1px solid #ccc',
             padding: '6px',
@@ -36,7 +32,7 @@ function Minuta({ plantoes }) {
                     </tr>
                     </thead>
                     <tbody>
-                    {plantoes.map((plantao) => (
+                    {plantoes?.map((plantao) => (
                         <tr key={plantao.id}>
                             <td style={tableCellStyle}>{dataAjustada(plantao.data)}</td>
                             <td style={tableCellStyle}>
@@ -61,8 +57,7 @@ function Minuta({ plantoes }) {
             {copied && <h5>Tabela copiada com sucesso!</h5>}*/}
             </div>
         );
-    }
 
 }
 
-export default Minuta;
+export default MinutaPage;

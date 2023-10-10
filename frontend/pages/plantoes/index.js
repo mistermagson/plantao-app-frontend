@@ -60,6 +60,7 @@ function Plantoes({data, h}) {
                 }
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [escalas, escalaSelecionada, plantoes]);
 
 

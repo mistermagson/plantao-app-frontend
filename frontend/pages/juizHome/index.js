@@ -46,7 +46,7 @@ function Escalas({ h }) {
     useEffect(() => {
         fetchJuizes(idJuiz).then(r => console.log('fetch juizes ok'));
         fetchEscalas(idJuiz).then(r => console.log('fetch escalas ok'));
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const fetchJuizes = async (idJuiz) => {
@@ -286,9 +286,11 @@ function Escalas({ h }) {
                             </MDBox>
                             <MDBox>
                                 <Grid container spacing={3} xl={12}>
-                                    <Grid item xs={12} xl={5}>
-                                <CalendarioJuiz  plantoes={plantoes}/>
-                                    </Grid>
+                                    {plantoes.length <= 0 && (
+                                        <Grid item xs={12} xl={5}>
+                                            <CalendarioJuiz  plantoes={plantoes}/>
+                                        </Grid>
+                                    )}
                                     <Grid item xs={12} xl={7}>
                                         {escalas && (
                                             <DataGrid

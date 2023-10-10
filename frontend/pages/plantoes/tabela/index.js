@@ -54,7 +54,7 @@ function Row(props) {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {row.history.map((historyRow) => (
+                                    {row?.history.map((historyRow) => (
                                         <TableRow key={historyRow.date}>
                                             <TableCell component="th" scope="row">
                                                 {historyRow.date}
@@ -114,7 +114,7 @@ const CollapseTable = ({ plantoes }) => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {plantoes.map((row) => (
+                    {plantoes?.map((row) => (
                         <Row key={row.id} row={row} />
                     ))}
                 </TableBody>

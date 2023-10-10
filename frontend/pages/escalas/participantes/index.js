@@ -52,6 +52,7 @@ function Participantes() {
     const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
     //--------------------------------------------------------------------------
     const [escalas, setEscalas] = useState([]);
+    const [escalaObj, setEscalaObj] = useState([]);
     const [juizes, setJuizes] = useState([]);
     const [juizesRestantes, setJuizesRestantes] = useState([]);
     const [error, setError] = useState(null);
@@ -100,7 +101,7 @@ function Participantes() {
             setJsonData(responseEscala);
 
             if (Array.isArray(responseEscala.data)) {
-                const escalasData = responseEscala.data.map((item) => ({id: item.id, ...item.attributes,}));
+                setEscalaObj(responseEscala.data.map((item) => ({id: item.id, ...item.attributes,})));
                 setEscalas(escalasData);
                 console.log('fetch escalas realizado')
 
@@ -134,6 +135,7 @@ function Participantes() {
 
             const params = new URLSearchParams(window.location.search);
             const escalaUrl = params.get('escala');
+
             if(escalaUrl!==null) {
                 const escalaObj = escalas.find((escala) => escala.descricao === escalaUrl);
                 console.log('OBJETO', escalaObj);
@@ -145,8 +147,13 @@ function Participantes() {
                 }
             }
         }
+// eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [block, escalas, opcaoSelecionada]);
 
-    }, [escalas, opcaoSelecionada]);
+    useEffect(() => {
+        onChangeEscala(escalaObj);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [escalaObj]);
 
     const onChangeEscala = (selecionada) => {
         try {
@@ -179,11 +186,10 @@ function Participantes() {
             // Filtre os plantões que pertencem à mesma escala selecionada
             const plantoesEscala = plantoesJuiz.filter((plantao) => plantao.attributes.escala.data.id === escalaId);
 
-            // Extrair os IDs dos plantões em um array
-            const idPlantoes = plantoesEscala.map((plantao) => plantao.id);
+            // Extrair os IDs dos plantões em um array e  Retornar o array de IDs dos plantões
+            return plantoesEscala.map((plantao) => plantao.id);
 
-            // Retornar o array de IDs dos plantões
-            return idPlantoes;
+
         } else {
             console.log('Juiz selecionado não encontrado no array de juízes.');
             return []; // Retorna um array vazio em caso de juiz não encontrado
