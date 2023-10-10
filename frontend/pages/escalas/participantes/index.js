@@ -23,23 +23,6 @@ import HowToRegIcon from '@mui/icons-material/HowToReg';
 import {removePlantonista} from "../../../utils/plantaoUtils";
 import { useLocation } from 'react-router-dom';
 import {useRouter} from "next/router";
-//------------------------------------------
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
-    IconButton,
-    Collapse,
-    Box,
-    Typography,
-} from '@mui/material';
-import { KeyboardArrowDown as ExpandMoreIcon, KeyboardArrowUp as ExpandLessIcon } from '@mui/icons-material';
-import CollapsibleTable from "../participantesTable";
-//------------------------------------
 
 const headers = {
     'Content-Type': 'application/json',
