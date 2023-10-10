@@ -50,7 +50,7 @@ function Plantoes({data, h}) {
             if (escalaEncontrada) {
                 setEscalaSelecionada(escalaEncontrada);
                 setPlantoes(escalaEncontrada.plantaos.data.map(item => ({ id: item.id, ...item.attributes })));
-                setPreferenciaJuizId(escalaSelecionada.preferencia?.data.id);
+                setPreferenciaJuizId(escalaSelecionada.preferencia?.data?.id);
             }
         }
 
