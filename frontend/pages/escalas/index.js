@@ -79,7 +79,7 @@ function EscalasPage({ data, h }) {
         window.location.href = url;
     };
     const redirectToAddEscalas = () => {
-        const url = `http://localhost:3000/escalas/adicionaescalas`;
+        const url = `http://10.28.80.30:3000/escalas/adicionaescalas`;
         window.location.href = url;
     };
 
@@ -142,7 +142,7 @@ function EscalasPage({ data, h }) {
         const setStatus = async () => {
             try {
                 const response = await fetch(
-                    `http://localhost:1337/api/escalas/${escalaSelecionada.id}`,
+                    `http://10.28.80.30:1337/api/escalas/${escalaSelecionada.id}`,
                     {
                         method: "PUT",
                         headers,

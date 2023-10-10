@@ -46,7 +46,7 @@ export const setDatasEscalaId = (idEscala, dateArray, ...params) => {
     }
     const setEscala = async () => {
         try {
-            const response = await fetch('http://localhost:1337/api/escalas/${idEscala}', {
+            const response = await fetch('http://10.28.80.30:1337/api/escalas/${idEscala}', {
                 method: 'PUT',
                 headers,
                 body: JSON.stringify({ data: plantaos }),
@@ -70,7 +70,7 @@ export const setDatasEscala = (idEscala, dateArray, headers) => {
                 escala: idEscala
             }
             console.log(plantaos)
-            const response = await fetch('http://localhost:1337/api/plantoes', {
+            const response = await fetch('http://10.28.80.30:1337/api/plantoes', {
                 method: 'POST',
                 headers,
                 body: JSON.stringify({ data: plantaos }),
@@ -93,7 +93,7 @@ export const setParticipantesEscala = (idEscala, juizesArray,headers) => {
     console.log(idEscala, participantes,headers)
     const setEscala = async () => {
         try {
-            const response = await fetch(`http://localhost:1337/api/escalas/${idEscala}`, {
+            const response = await fetch(`http://10.28.80.30:1337/api/escalas/${idEscala}`, {
                 method: 'PUT',
                 headers,
                 body: JSON.stringify({ data: participantes }),
@@ -118,7 +118,7 @@ export const setVarasEscala = (idEscala, varasArray,headers) => {
     console.log(idEscala, varas,headers)
     const setEscala = async () => {
         try {
-            const response = await fetch(`http://localhost:1337/api/escalas/${idEscala}`, {
+            const response = await fetch(`http://10.28.80.30:1337/api/escalas/${idEscala}`, {
                 method: 'PUT',
                 headers,
                 body: JSON.stringify({ data: varas }),
@@ -140,7 +140,7 @@ export const removeParticipantesEscala = (idJuiz, idEscala,headers ) => {
         participantes:{disconnect: idJuiz}
     }
 
-    const urlEscala =`http://localhost:1337/api/escalas/${idEscala}`
+    const urlEscala =`http://10.28.80.30:1337/api/escalas/${idEscala}`
     const setEscalaData = async () => {
         try {
 
@@ -167,7 +167,7 @@ export const setPreferencia = (idEscala, idJuiz,headers) => {
     const preferencia={
         preferencia:{connect: [idJuiz]}
     }
-    const urlEscala =`http://localhost:1337/api/escalas/${idEscala}`
+    const urlEscala =`http://10.28.80.30:1337/api/escalas/${idEscala}`
     const setEscolha = async () => {
         try {
             const response = await fetch(urlEscala, {
@@ -192,7 +192,7 @@ export const removePreferencial = (idJuiz, idEscala,headers ) => {
         preferencia:{disconnect: idJuiz}
     }
 
-    const urlEscala =`http://localhost:1337/api/escalas/${idEscala}`
+    const urlEscala =`http://10.28.80.30:1337/api/escalas/${idEscala}`
     const setEscalaData = async () => {
         try {
 
@@ -217,7 +217,7 @@ export const removePreferencial = (idJuiz, idEscala,headers ) => {
 export const fetchEscalas = async (headers) => {
 
     try {
-        const response = await fetch('http://localhost:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes&populate[preferencia][populate][0]=juizs', {
+        const response = await fetch('http://10.28.80.30:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes&populate[preferencia][populate][0]=juizs', {
             method: 'GET',
             headers,
         });
@@ -246,7 +246,7 @@ export const fetchEscalas = async (headers) => {
 
 export const removeEscala = (idEscala,plantaoArray, headers ) => {
 
-    const urlEscala =`http://localhost:1337/api/escalas/${idEscala}`
+    const urlEscala =`http://10.28.80.30:1337/api/escalas/${idEscala}`
 
     const deleteEscala = async () => {
         try {
