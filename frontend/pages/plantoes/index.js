@@ -19,6 +19,10 @@ import {fetchEscalas} from "../../utils/escalaUtils";
 import Switch from "@mui/material/Switch";
 import Calendario from "../escalas/calendario";
 import {passaPreferencia} from "../../utils/escalaUtils";
+import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
+import {es} from "date-fns/locale";
+import MDAlert from "../../components/MDAlert";
+import Icon from "@mui/material/Icon";
 
 function Plantoes({data, h}) {
 
@@ -32,6 +36,10 @@ function Plantoes({data, h}) {
     const [error, setError] = useState(null);
     const [fixGet, setFixGet] = useState(0);
     const [block, setBlock] = useState(null);
+    const [passar, setPassar] = useState(false);
+    const [preferenciaJuizId, setPreferenciaJuizId] = useState(null);
+
+
 
 
     useEffect(() => {
@@ -42,6 +50,7 @@ function Plantoes({data, h}) {
             if (escalaEncontrada) {
                 setEscalaSelecionada(escalaEncontrada);
                 setPlantoes(escalaEncontrada.plantaos.data.map(item => ({ id: item.id, ...item.attributes })));
+                setPreferenciaJuizId(escalaSelecionada.preferencia?.data.id);
             }
         }
 
@@ -77,10 +86,12 @@ function Plantoes({data, h}) {
         finally {
             const atualizaEscalas = await fetchEscalas(headers)
             setEscalas(atualizaEscalas)
+            setPreferenciaJuizId(atualizaEscalas.preferencia?.data.id);
             console.log('TUDO CERTO')
 
         }
     };
+
     const onChangeEscala = (selected)=>{
         try{
             if(!selected){
@@ -91,6 +102,7 @@ function Plantoes({data, h}) {
 
                 const plantaosArray = selected.plantaos.data.map((item) => ({id: item.id, ...item.attributes,}));
                 setPlantoes(plantaosArray);
+                setPreferenciaJuizId(selected.preferencia?.data.id);
 
                 setJuizSelecionado(null);
             }
@@ -115,17 +127,48 @@ function Plantoes({data, h}) {
             setPlantaoSelecionado([]);
             const escalasAtaulizadas = await fetchEscalas(headers)
             setEscalas(escalasAtaulizadas);
-            // await setEscalas(fetchEscalas(headers));
+            setPreferenciaJuizId(escalasAtaulizadas.preferencia?.data.id);
+
 
         } catch (error) {
             console.error(error);
         }
     };
+    const handleClose = () => {
+        setPassar(false);
+    };
 
+    const passaEscolha = async()=>{
+        try{
+            passaPreferencia(escalaSelecionada,headers);
+
+        } catch (error) {
+            console.error(error);
+        }finally {
+            const escalasAtualizadas = await fetchEscalas(headers)
+            setEscalas(escalasAtualizadas);
+            setPreferenciaJuizId(escalasAtualizadas.preferencia?.data.id);
+
+        }
+    }
 
     return (
         <DashboardLayout>
             <DashboardNavbar />
+            <div>
+                <Dialog open={passar} onClose={handleClose}>
+                    <DialogTitle>Passar a Vez</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            Você tem certeza que deseja encerrar sua escolha?
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => {passaEscolha();handleClose();}}>Sim</Button>
+                        <Button onClick={handleClose}>Não</Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
             <MDBox p={2}>
                 <MDTypography variant="h2">Plantões</MDTypography>
             </MDBox>
@@ -187,6 +230,11 @@ function Plantoes({data, h}) {
                                     </>)}
                                 </MDBox>
                                 <MDBox p>
+                                    {juizSelecionado?.id === preferenciaJuizId ?(
+                                        <h5 style={{ color: 'green', paddingLeft:'20px', marginTop:'-10px'}}>
+                                        Escolha seus plantões
+                                        </h5>):(<h5 style={{ color: 'red',  paddingLeft:'20px', marginTop:'-10px'}}>Aguarde sua vez para escolher os plantões</h5>)}
+
                                     {escalaSelecionada &&(
                                         <DataGrid
 
@@ -217,7 +265,7 @@ function Plantoes({data, h}) {
                                                     headerName: 'Opções',
                                                     width: 120, align:"center",
                                                     renderCell: (params) => (
-                                                        <Tooltip title="Limpar o plantonista">
+                                                        <Tooltip title="Abandonar Plantão">
                                                             {params.row.plantonista.data[0] && !escalaSelecionada.fechada && juizSelecionado && juizSelecionado.id === params.row.plantonista.data[0].id ? (
                                                                 <GridActionsCellItem
                                                                     icon={<RemoveCircleOutlineIcon/>}
@@ -235,10 +283,10 @@ function Plantoes({data, h}) {
                                             isRowSelectable={(params) => {
                                                 if (juizSelecionado && escalaSelecionada && !escalaSelecionada.fechada) {
                                                     const preferenciaJuizId = escalaSelecionada.preferencia?.data?.id;
-                                                    //if (preferenciaJuizId === juizSelecionado.id) {
+                                                    if (preferenciaJuizId === juizSelecionado.id) {
                                                         const plantonistaAtribuido = params.row.plantonista.data[0];
                                                         return !plantonistaAtribuido;
-                                                    //}
+                                                    }
                                                 }
                                                 return false;
                                             }}
@@ -253,16 +301,9 @@ function Plantoes({data, h}) {
                                                     Adicionar
                                                 </MDButton>
                                             )}
-                                            {/* <h5 style={{ color: escalaSelecionada ? (escalaSelecionada.fechada ? "red" : "green") : "inherit" }}>
-                                                {escalaSelecionada ? (escalaSelecionada.fechada ? "Fechada" : "Aberta") : ""}
-                                            </h5>
-                                            <Switch
-                                                checked={escalaSelecionada ? escalaSelecionada.fechada : false}
-                                                color="primary"
-                                                inputProps={{ "aria-label": "toggle escala" }}
-                                                onChange={() => statusEscala()}
-                                            />*/}
-
+                                            {juizSelecionado?.id === preferenciaJuizId &&(
+                                                <MDButton size="small" onClick={()=>setPassar(true)} variant='outlined' color="dark">Passar a vez</MDButton>
+                                            )}
                                         </MDBox>
                                     )}
                                 </MDBox>

@@ -15,7 +15,7 @@ module.exports = {
     return [
       {
         source: "/",
-        destination: "/authentication/login",
+        destination: "/plantoes",
         permanent: true,
       },
     ];

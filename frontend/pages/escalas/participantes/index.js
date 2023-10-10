@@ -101,7 +101,7 @@ function Participantes() {
             setJsonData(responseEscala);
 
             if (Array.isArray(responseEscala.data)) {
-                setEscalaObj(responseEscala.data.map((item) => ({id: item.id, ...item.attributes,})));
+                const escalasData = responseEscala.data.map((item) => ({id: item.id, ...item.attributes,}));
                 setEscalas(escalasData);
                 console.log('fetch escalas realizado')
 
@@ -148,7 +148,7 @@ function Participantes() {
             }
         }
 // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [block, escalas, opcaoSelecionada]);
+    }, [ escalas, opcaoSelecionada]);
 
     useEffect(() => {
         onChangeEscala(escalaObj);
@@ -271,7 +271,8 @@ function Participantes() {
         return juizId === juizPreferencialId;
     };
     const showJSON = () => {
-        console.log('ARRAY PLANTOES',juizesRestantes);
+        console.log('ARRAY juizes',juizes);
+        console.log('ARRAY escalas',escalas);
     };
 
 
