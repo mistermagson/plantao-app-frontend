@@ -230,10 +230,10 @@ function Plantoes({data, h}) {
                                     </>)}
                                 </MDBox>
                                 <MDBox p>
-                                    {juizSelecionado?.id === preferenciaJuizId ?(
+                                    {escalaSelecionada !== null && (juizSelecionado?.id === preferenciaJuizId ?(
                                         <h5 style={{ color: 'green', paddingLeft:'20px', marginTop:'-10px'}}>
                                         Escolha seus plantões
-                                        </h5>):(<h5 style={{ color: 'red',  paddingLeft:'20px', marginTop:'-10px'}}>Aguarde sua vez para escolher os plantões</h5>)}
+                                        </h5>):(<h5 style={{ color: 'red',  paddingLeft:'20px', marginTop:'-10px'}}>Aguarde sua vez para escolher os plantões</h5>))}
 
                                     {escalaSelecionada &&(
                                         <DataGrid
