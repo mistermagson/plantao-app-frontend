@@ -23,23 +23,6 @@ import HowToRegIcon from '@mui/icons-material/HowToReg';
 import {removePlantonista} from "../../../utils/plantaoUtils";
 import { useLocation } from 'react-router-dom';
 import {useRouter} from "next/router";
-//------------------------------------------
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
-    IconButton,
-    Collapse,
-    Box,
-    Typography,
-} from '@mui/material';
-import { KeyboardArrowDown as ExpandMoreIcon, KeyboardArrowUp as ExpandLessIcon } from '@mui/icons-material';
-import CollapsibleTable from "../participantesTable";
-//------------------------------------
 
 const headers = {
     'Content-Type': 'application/json',
@@ -64,7 +47,7 @@ function Participantes() {
 
     const fetchJuizes = async () => {
         try {
-            const response1 = await fetch('http://localhost:1337/api/juizs?populate[plantoes][populate][0]=escala&populate[lotacao]=*&pagination[pageSize]=30&sort=antiguidade:asc', {
+            const response1 = await fetch('http://10.28.80.30:1337/api/juizs?populate[plantoes][populate][0]=escala&populate[lotacao]=*&pagination[pageSize]=30&sort=antiguidade:asc', {
                 method: 'GET',
                 headers,
             });
@@ -88,7 +71,7 @@ function Participantes() {
     };
     const fetchEscalas = async () => {
         try {
-            const response2 = await fetch('http://localhost:1337/api/escalas?populate[participantes][populate][]=plantoes&populate[preferencia][populate][]=juizs&populate[participantes][populate][]=lotacao', {
+            const response2 = await fetch('http://10.28.80.30:1337/api/escalas?populate[participantes][populate][]=plantoes&populate[preferencia][populate][]=juizs&populate[participantes][populate][]=lotacao', {
                 method: 'GET',
                 headers,
             });
