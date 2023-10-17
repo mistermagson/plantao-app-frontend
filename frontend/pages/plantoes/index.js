@@ -44,13 +44,12 @@ function Plantoes({data, h}) {
 
     useEffect(() => {
         if(escalaSelecionada) {
-
             const escalaEncontrada = escalas.find(escala => escala.id === escalaSelecionada.id);
 
             if (escalaEncontrada) {
                 setEscalaSelecionada(escalaEncontrada);
                 setPlantoes(escalaEncontrada.plantaos.data.map(item => ({ id: item.id, ...item.attributes })));
-                setPreferenciaJuizId(escalaSelecionada.preferencia?.data.id);
+                setPreferenciaJuizId(escalaSelecionada.preferencia.data?.id);
             }
         }
 
@@ -69,6 +68,7 @@ function Plantoes({data, h}) {
                 }
             }
         }
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [escalas, escalaSelecionada, plantoes]);
 
@@ -86,7 +86,7 @@ function Plantoes({data, h}) {
         finally {
             const atualizaEscalas = await fetchEscalas(headers)
             setEscalas(atualizaEscalas)
-            setPreferenciaJuizId(atualizaEscalas.preferencia?.data.id);
+            setPreferenciaJuizId(atualizaEscalas.preferencia.data?.id);
             console.log('TUDO CERTO')
 
         }
@@ -102,7 +102,7 @@ function Plantoes({data, h}) {
 
                 const plantaosArray = selected.plantaos.data.map((item) => ({id: item.id, ...item.attributes,}));
                 setPlantoes(plantaosArray);
-                setPreferenciaJuizId(selected.preferencia?.data.id);
+                setPreferenciaJuizId(selected.preferencia.data?.id);
 
                 setJuizSelecionado(null);
             }
@@ -127,7 +127,7 @@ function Plantoes({data, h}) {
             setPlantaoSelecionado([]);
             const escalasAtaulizadas = await fetchEscalas(headers)
             setEscalas(escalasAtaulizadas);
-            setPreferenciaJuizId(escalasAtaulizadas.preferencia?.data.id);
+            setPreferenciaJuizId(escalasAtaulizadas.preferencia.data?.id);
 
 
         } catch (error) {
@@ -147,7 +147,7 @@ function Plantoes({data, h}) {
         }finally {
             const escalasAtualizadas = await fetchEscalas(headers)
             setEscalas(escalasAtualizadas);
-            setPreferenciaJuizId(escalasAtualizadas.preferencia?.data.id);
+            setPreferenciaJuizId(escalasAtualizadas.preferencia.data?.id);
 
         }
     }
