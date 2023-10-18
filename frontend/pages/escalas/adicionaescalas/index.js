@@ -12,16 +12,11 @@ import TextField from "@mui/material/TextField";
 import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel} from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
 import MDButton from "../../../components/MDButton";
-import {geraDatas, setDatasEscala} from "../../../utils/escalaUtils";
+import {geraDatas, geraFeriados, geraWeekends, removeEscala, setDatasEscala} from "../../../utils/escalaUtils";
 import {DataGrid, GridActionsCellItem, GridToolbar} from '@mui/x-data-grid';
 import Button from "@mui/material/Button";
 import FileOpenIcon from '@mui/icons-material/FileOpen';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PeopleAltSharpIcon from '@mui/icons-material/PeopleAltSharp';
-import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
-import {removeEscala} from "../../../utils/escalaUtils";
-import {removePlantao} from "../../../utils/plantaoUtils";
-import Pagination from '@mui/material/Pagination';
 
 const parseJSON = resp => (resp.json ? resp.json() : resp);
 
@@ -58,7 +53,6 @@ function AdicionaEscala() {
 
     const opEscala = ["juiz-regional", "juiz-local", "juiz-distribuidor", "juiz-recesso", "vara-recesso", "vara-anual"];
     const [modifiedData, setModifiedData] = useState(valorInicial);
-    const [juizes, setJuizes] = useState([]);
     const [escalas, setEscalas] = useState([]);
     const [error, setError] = useState(null);
     const [errorEscalas, setErrorEscalas] = useState(null);
@@ -107,6 +101,30 @@ function AdicionaEscala() {
         fetchEscalas();
     }, []);
 
+    useEffect(() => {
+        fetchEscalas();
+    }, [linhaSelecionada]);
+
+    const geraPlantoes = (atributosEscala) =>{
+
+        const feriados = geraFeriados(atributosEscala.inicio,atributosEscala.fim);
+        const finaisDeSemanas = geraWeekends(atributosEscala.inicio,atributosEscala.fim);
+        const diasGerais = geraDatas(atributosEscala.inicio, atributosEscala.fim);
+
+        switch (atributosEscala.tipo) {
+            case "juiz-recesso":
+                return diasGerais;
+            case "juiz-local":
+                const filtraFeriados = diasGerais.filter((data) => !feriados.includes(data));
+                return filtraFeriados.filter((data) => !finaisDeSemanas.includes(data));
+            case "juiz-regional":
+                const uniao = new Set([...feriados, ...finaisDeSemanas]);
+                return Array.from(uniao).sort();
+            default:
+                throw new Error("Tipo de operação inválido. Use 'recesso', 'local' ou 'regional'.");
+        }
+    }
+
     const handleSubmit = async e =>  {
         e.preventDefault();
 
@@ -119,13 +137,10 @@ function AdicionaEscala() {
                 .then(checkStatus)
                 .then(parseJSON)
                 .then(escala => {
+                    const atributos = escala.data.attributes
+                    const datasEscala = geraPlantoes(atributos);
 
-
-                    const datasEscala = geraDatas(escala.data.attributes.inicio, escala.data.attributes.fim);
                     setDatasEscala(escala.data.id, datasEscala, headers);
-
-
-
                     setSalvar(true);
                     setModifiedData(valorInicial);
                     fetchEscalas();
@@ -136,6 +151,7 @@ function AdicionaEscala() {
             setErrorEscalas(error);
         }
     };
+
     const handleChange = e => {
         const {name, value} = e.target
         setModifiedData({
@@ -143,6 +159,7 @@ function AdicionaEscala() {
             [name]: value
         })
     }
+
     const handleChangeCheck = e => {
         const {name, value, checked} = e.target;
         setModifiedData({
@@ -150,8 +167,11 @@ function AdicionaEscala() {
             [name]: name === 'fechada' ? checked : value
         });
     }
+
     const showJSON = () => {
-        console.log('JSON:',linhaSelecionada);
+
+        console.log('datas:',geraPlantoes(modifiedData));
+
     };
     const handleClose = () => {
         setSalvar(false);
@@ -172,8 +192,7 @@ function AdicionaEscala() {
     }
 
     const redirectToEscala = (linha) => {
-        const url = `http://10.28.80.30:3000/escalas?escala=${encodeURIComponent(linha.descricao)}`;
-        window.location.href = url;
+        window.location.href = `http://10.28.80.30:3000/escalas?escala=${encodeURIComponent(linha.descricao)}`;
     };
 
     return (
@@ -214,7 +233,7 @@ function AdicionaEscala() {
             <Grid container spacing={2}>
                 <Grid item xs={12} md={8} xl={8}>
                     <MDBox p={2}>
-                        <MDTypography variant="h2">Escalasa Criadas</MDTypography>
+                        <MDTypography variant="h2">Escalas Criadas</MDTypography>
                     </MDBox>
                     <Card id="escalas" sx={{overflow: "visible"}}>
                         <MDBox mb={3}>
