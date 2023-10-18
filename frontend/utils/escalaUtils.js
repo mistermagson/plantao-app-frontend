@@ -4,7 +4,9 @@ import {removePlantao} from "./plantaoUtils";
 
 export const geraDatas = (start, end) => {
     const dateArray = [];
-    let currentDate = new Date(start);
+    let currentDate = new Date(start+ "T00:00:00.000-04:00");
+    console.log('GERA DATAS', currentDate)
+
 
     const formatDate = date => {
         const year = date.getFullYear();
@@ -13,7 +15,7 @@ export const geraDatas = (start, end) => {
         return `${year}-${month}-${day}`;
     };
 
-    while (currentDate <= new Date(end)) {
+    while (currentDate <= new Date(end + "T00:00:00.000-04:00")) {
         dateArray.push(formatDate(currentDate));
         currentDate.setDate(currentDate.getDate() + 1);
     }
@@ -24,12 +26,20 @@ export const geraDatas = (start, end) => {
 // retorna uma lista de datas que caem em final de semana(sábado ou domingo)
 export const geraWeekends = (start, end) => {
     const dateArray = [];
-    let currentDate = new Date(start);
+    let currentDate = new Date( start + "T00:00:00.000-04:00");
+    console.log('INICIO', currentDate)
 
-    while (currentDate <= new Date(end)) {
+    const formatDate = date => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
+    while (currentDate <= new Date(end + "T00:00:00.000-04:00")) {
         if (currentDate.getDay() === 0 || currentDate.getDay() === 6) {
             // Se a data for um sábado (6) ou domingo (0), adicionamos ao array
-            dateArray.push(new Date(currentDate));
+            dateArray.push(formatDate(currentDate));
         }
         currentDate.setDate(currentDate.getDate() + 1);
     }
