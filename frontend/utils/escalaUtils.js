@@ -1,6 +1,7 @@
 // retorna uma lista de datas a partir de um intervalo
 import {useState} from "react";
 import {removePlantao} from "./plantaoUtils";
+import getHolidays from "../services/holidays";
 
 export const geraDatas = (start, end) => {
     const dateArray = [];
@@ -45,6 +46,15 @@ export const geraWeekends = (start, end) => {
     }
 
     return dateArray;
+};
+
+export const geraFeriados = (start, end) => {
+    const partesData = start.split("-");
+    const ano = partesData[0];
+
+    const feriados = getHolidays(ano).map((feriado) => feriado.date);
+
+    return feriados.filter((data) => data >= start && data <= end);
 };
 
 // Vincula Datas a um escala
