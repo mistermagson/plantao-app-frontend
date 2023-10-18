@@ -106,6 +106,7 @@ function AdicionaEscala() {
     useEffect(() => {
         fetchEscalas();
     }, []);
+
     const handleSubmit = async e =>  {
         e.preventDefault();
 
@@ -118,8 +119,13 @@ function AdicionaEscala() {
                 .then(checkStatus)
                 .then(parseJSON)
                 .then(escala => {
+
+
                     const datasEscala = geraDatas(escala.data.attributes.inicio, escala.data.attributes.fim);
                     setDatasEscala(escala.data.id, datasEscala, headers);
+
+
+
                     setSalvar(true);
                     setModifiedData(valorInicial);
                     fetchEscalas();
@@ -206,9 +212,9 @@ function AdicionaEscala() {
                 </Dialog>
             </div>
             <Grid container spacing={2}>
-                <Grid item xs={12} xl={8}>
+                <Grid item xs={12} md={8} xl={8}>
                     <MDBox p={2}>
-                        <MDTypography variant="h2">Escalas Criadas</MDTypography>
+                        <MDTypography variant="h2">Escalasa Criadas</MDTypography>
                     </MDBox>
                     <Card id="escalas" sx={{overflow: "visible"}}>
                         <MDBox mb={3}>
@@ -270,7 +276,7 @@ function AdicionaEscala() {
                         </MDBox>
                     </Card>
                 </Grid>
-                <Grid item xs={12} xl={4} sx={{height: "max-content"}}>
+                <Grid item xs={12} md={4} xl={4} sx={{height: "max-content"}}>
                     <MDBox p={2}>
                         <MDTypography variant="h2">Adicionar Escala</MDTypography>
                     </MDBox>

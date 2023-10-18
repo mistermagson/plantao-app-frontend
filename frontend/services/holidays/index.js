@@ -195,12 +195,7 @@ export function getMunicipal(year) {
     ['06-13', 'Padroeiro de Campo Grande', 'MS', 'Campo Grande'],
     ['12-08', 'Imaculada Conceição', 'MS', 'Dourados'],
     ['12-20', 'Aniversário de Dourados', 'MS', 'Dourados'],
-    [
-      '02-02',
-      'Padroeira de Corumbá - Nossa Senhora da Candelária',
-      'MS',
-      'Corumbá',
-    ],
+    ['02-02', 'Padroeira de Corumbá - Nossa Senhora da Candelária', 'MS', 'Corumbá',],
     ['06-13', 'Retomada de Corumbá', 'MS', 'Corumbá'],
     ['09-21', 'Aniversário de Corumbá', 'MS', 'Corumbá'],
     ['04-11', 'Aniversário de Coxim', 'MS', 'Coxim'],
@@ -284,10 +279,11 @@ export function getMunicipal(year) {
     subsecao,
   }));
 }
+
 export function getEstadual(year) {
   const fixedHolidays = [
     ['10-11', 'Divisão do Estado', 'MS'],
-    ['07-09', 'Revolução Constitucionalista', 'SP'],
+    //['07-09', 'Revolução Constitucionalista', 'SP'],
   ];
   return fixedHolidays.map(([date, name, uf]) => ({
     date: `${year}-${date}`,
@@ -310,11 +306,10 @@ function sortByDate(holidays) {
 }
 
 export default function getHolidays(year) {
-  const municipal = getMunicipal(year);
   const estadual = getEstadual(year);
-  const recesso = getRecesso(year);
   const easterHolidays = getEasterHolidays(year);
   const semanaSanta = getFeriadosLegaisSemanaSanta(year);
   const nationalHolidays = getNationalHolidays(year);
-  return sortByDate([...municipal, ...estadual, ...recesso, ...easterHolidays, ...nationalHolidays, ...semanaSanta]);
+  return sortByDate([...estadual, ...easterHolidays, ...nationalHolidays, ...semanaSanta]);
 }
+

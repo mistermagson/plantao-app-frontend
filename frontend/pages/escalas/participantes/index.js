@@ -23,6 +23,7 @@ import HowToRegIcon from '@mui/icons-material/HowToReg';
 import {removePlantonista} from "../../../utils/plantaoUtils";
 import { useLocation } from 'react-router-dom';
 import {useRouter} from "next/router";
+import getHolidays from "../../../services/holidays";
 
 const headers = {
     'Content-Type': 'application/json',
@@ -257,8 +258,8 @@ function Participantes() {
         return juizId === juizPreferencialId;
     };
     const showJSON = () => {
-        console.log('ARRAY juizes',juizes);
-        console.log('ARRAY escalas',escalas);
+        console.log('FERIADOS 2023',opcaoSelecionada);
+
     };
 
 
