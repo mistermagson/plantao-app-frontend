@@ -29,6 +29,7 @@ import { useRouter } from "next/router";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from "@mui/icons-material/Delete";
+import {removePlantao} from "../../utils/plantaoUtils";
 
 
 function EscalasPage({ data, h }) {
@@ -75,11 +76,11 @@ function EscalasPage({ data, h }) {
                 }
             }
         }
-    }, [escalas, escalaSelecionada, block]);
+    }, [escalas, escalaSelecionada, block, linhaSelecionada]);
 
     useEffect(() => {
         fetchEscalas();
-    }, [linhaSelecionada]);
+    }, [linhaSelecionada, escalaSelecionada, plantoes]);
 
     const redirectToParticipantes = () => {
         const url = `/escalas/participantes?escala=${encodeURIComponent(escalaSelecionada.descricao)}`;
@@ -191,7 +192,7 @@ function EscalasPage({ data, h }) {
             const plantaoArray = escalaSelecionada.plantaos.data.map((plantao) => plantao.id);
             removeEscala(idEscala,plantaoArray, headers)
             setEscalaSelecionada([]);
-            fetchEscalas();
+            fetchEscalas()
         }
         catch (error) {
             setError(error.message);
@@ -202,9 +203,8 @@ function EscalasPage({ data, h }) {
 
     const deletePlantao = () =>{
         try{
-            const idEscala = linhaSelecionada.id
-            const plantaoArray = linhaSelecionada.plantaos.data.map((plantao) => plantao.id);
-            removeEscala(idEscala,plantaoArray, headers)
+            const idPlantao = linhaSelecionada.id
+            removePlantao(idPlantao,headers)
             setLinhaSelecionada([]);
             fetchEscalas();
         }
@@ -235,9 +235,8 @@ function EscalasPage({ data, h }) {
                             {escalaSelecionada ? (
                                 <>Deseja excluir a escala{' '}
                                     <MDTypography component="span" variant="H5" style={{ fontWeight: 'bold' }}>
-                                        {escalaSelecionada.descricao}
-                                    </MDTypography>{' '}
-                                    e seus respectivos plantões</>
+                                        {escalaSelecionada.descricao}                                    </MDTypography>{' '}
+                                    e seus respectivos plantões?</>
                             ) : (
                                 'A escala selecionada não está disponível.'
                             )}
@@ -255,9 +254,9 @@ function EscalasPage({ data, h }) {
                     <DialogContent>
                         <DialogContentText>
                             {escalaSelecionada ? (
-                                <>Deseja excluir o plantão{' '}
+                                <>Deseja excluir o plantão do dia {' '}
                                     <MDTypography component="span" variant="H5" style={{ fontWeight: 'bold' }}>
-                                        {linhaSelecionada.descricao}
+                                        {formatarData(linhaSelecionada.data)}
                                     </MDTypography>{' ?'}
                                 </>
                             ) : (
@@ -266,7 +265,7 @@ function EscalasPage({ data, h }) {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <MDButton onClick={() => { deleteEscala();handleClose();}}>Sim</MDButton>
+                        <MDButton onClick={() => { deletePlantao();handleClose();fetchEscalas()}}>Sim</MDButton>
                         <MDButton onClick={handleClose} >Não</MDButton>
                     </DialogActions>
                 </Dialog>
@@ -301,7 +300,7 @@ function EscalasPage({ data, h }) {
                         </Grid>
                         <Grid item xs={2} sm={5}  sx={{ height: "max-content" }}>
                             <MDBox mt={2} mr={1} display="flex" justifyContent="flex-end" >
-                                {escalaSelecionada && (<MDButton color="error" size="small"  onClick={() => setDeletar(true)}>deletar</MDButton>)}
+                                {escalaSelecionada && (<MDButton color="error" size="small"  onClick={() => setDeletarEscala(true)}>deletar</MDButton>)}
                                 <MDButton color="dark" size="small" sx={{marginLeft:"7px"}} onClick={() => redirectToAddEscalas()}>voltar</MDButton>
                             </MDBox>
                         </Grid>
