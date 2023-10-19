@@ -40,8 +40,6 @@ function Plantoes({data, h}) {
     const [preferenciaJuizId, setPreferenciaJuizId] = useState(null);
 
 
-
-
     useEffect(() => {
         if(escalaSelecionada) {
             const escalaEncontrada = escalas.find(escala => escala.id === escalaSelecionada.id);
@@ -234,7 +232,6 @@ function Plantoes({data, h}) {
 
                                     {escalaSelecionada &&(
                                         <DataGrid
-
                                             checkboxSelection
                                             disableColumnMenu
                                             sx={{fontSize: '18px', fontWeight:'regular', height:'80%'}}
