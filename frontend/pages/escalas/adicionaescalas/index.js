@@ -170,7 +170,7 @@ function AdicionaEscala() {
 
     const showJSON = () => {
 
-        console.log('datas:',geraPlantoes(modifiedData));
+        console.log('datas:',modifiedData.inicio);
 
     };
     const handleClose = () => {
@@ -192,7 +192,7 @@ function AdicionaEscala() {
     }
 
     const redirectToEscala = (linha) => {
-        window.location.href = `http://10.28.80.30:3000/escalas?escala=${encodeURIComponent(linha.descricao)}`;
+        window.location.href = `http://localhost:3000/escalas?escala=${encodeURIComponent(linha.descricao)}`;
     };
 
     return (
@@ -338,9 +338,8 @@ function AdicionaEscala() {
                                             required
                                             input={{placeholder: "Escolha uma data", format: "dd/MM/yy"}}
                                             value={modifiedData.inicio}
-                                            onChange={(event, value) =>
-                                                setModifiedData({...modifiedData, inicio: value})}/>
-
+                                            onChange={(event, value) => setModifiedData({...modifiedData, inicio: value})}
+                                        />
                                     </Grid>
                                     <Grid item xs={5} xl={6}>
                                         <MDTypography variant="h6">Data de Fim: </MDTypography>
@@ -350,7 +349,8 @@ function AdicionaEscala() {
                                             value={modifiedData.fim}
                                             input={{placeholder: "Escolha uma data", format: "dd/MM/yy"}}
                                             onChange={(event, value) =>
-                                                setModifiedData({...modifiedData, fim: value})}/>
+                                                setModifiedData({...modifiedData, fim: value})}
+                                        />
                                     </Grid>
                                     <Grid item xs={12} xl={8}>
 

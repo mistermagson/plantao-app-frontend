@@ -5,7 +5,7 @@ import MDBox from "/components/MDBox";
 import MDTypography from "/components/MDTypography";
 import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import {DataGrid, GridToolbar} from "@mui/x-data-grid";
 import React, { useState, useEffect, get } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -30,6 +30,14 @@ import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from "@mui/icons-material/Delete";
 import {removePlantao} from "../../utils/plantaoUtils";
+import MDDatePicker from "../../components/MDDatePicker";
+import {adicionaPlantao} from "../../utils/plantaoUtils";
+import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
+import {DateField, LocalizationProvider, StaticDatePicker} from "@mui/x-date-pickers";
+import ptBR from 'date-fns/locale/pt-BR';
+import MDInput from "../../components/MDInput";
+
+
 
 
 function EscalasPage({ data, h }) {
@@ -43,7 +51,36 @@ function EscalasPage({ data, h }) {
     const [salvar, setSalvar] = useState(false);
     const [deletarEscala, setDeletarEscala] = useState(false);
     const [deletarPlantao, setDeletarPlantao] = useState(false);
+    const [addPlantao, setAddPlantao] = useState(false);
+    const [dataPlantao, setDataPlantao] = useState('');
     const [block, setBlock] = useState(null);
+
+
+    const fetchEscalas = async () => {
+        try {
+            const response = await fetch('http://10.28.80.30:1337/api/escalas?populate=plantaos.plantonista.lotacao.varas,participantes.plantoes,participantes.lotacao,preferencia.juizs', {
+                method: 'GET',
+                headers,
+            }, {revalidate: 0});
+
+            if (!response.ok) {
+                throw new Error('Falha ao obter os dados das escalas.');
+            }
+
+            const responseEscala = await response.json();
+
+            if (Array.isArray(responseEscala.data)) {
+                const escalasData = responseEscala.data.map((item) => ({id: item.id, ...item.attributes,}));
+                setEscalas(escalasData);
+
+            } else {
+                setError('Formato de dados inválido.');
+            }
+
+        } catch (error) {
+            setError(error.message);
+        }
+    };
 
 
     useEffect(() => {
@@ -76,11 +113,11 @@ function EscalasPage({ data, h }) {
                 }
             }
         }
-    }, [escalas, escalaSelecionada, block, linhaSelecionada]);
+    }, [escalas, escalaSelecionada, block, linhaSelecionada, plantoes]);
 
     useEffect(() => {
         fetchEscalas();
-    }, [linhaSelecionada, escalaSelecionada, plantoes]);
+    }, [linhaSelecionada]);
 
     const redirectToParticipantes = () => {
         const url = `/escalas/participantes?escala=${encodeURIComponent(escalaSelecionada.descricao)}`;
@@ -95,17 +132,6 @@ function EscalasPage({ data, h }) {
         window.location.href = url;
     };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        try {
-            //EDITAR ALTERAÇÕES DA ESCALA
-        } catch (error) {
-            console.error(error);
-        } finally {
-            const atualizaEscalas = await fetchEscalas(headers);
-            setEscalas(atualizaEscalas);
-        }
-    };
     const onChangeEscala = (selected) => {
         try {
             if (selected) {
@@ -140,9 +166,7 @@ function EscalasPage({ data, h }) {
         return juizesComPlantoesCalculados;
     };
     const showJSON = () => {
-        console.log("plantao", plantoes);
-        console.log("juiz", juizes);
-        console.log("escalas", escalaSelecionada);
+        console.log("plantao data", plantoes[0].data);
     };
     const statusEscala = () => {
         const fechada = {
@@ -164,8 +188,7 @@ function EscalasPage({ data, h }) {
             } catch (error) {
                 return error;
             } finally {
-                const atualizaEscalas = await fetchEscalas(headers);
-                setEscalas(atualizaEscalas);
+                fetchEscalas();
             }
         };
 
@@ -175,6 +198,7 @@ function EscalasPage({ data, h }) {
         setSalvar(false);
         setDeletarEscala(false);
         setDeletarPlantao(false);
+        setAddPlantao(false);
     };
     function formatarData(data) {
         if (!data) return '';
@@ -191,7 +215,7 @@ function EscalasPage({ data, h }) {
             const idEscala = escalaSelecionada.id
             const plantaoArray = escalaSelecionada.plantaos.data.map((plantao) => plantao.id);
             removeEscala(idEscala,plantaoArray, headers)
-            setEscalaSelecionada([]);
+            setEscalaSelecionada(null);
             fetchEscalas()
         }
         catch (error) {
@@ -213,8 +237,22 @@ function EscalasPage({ data, h }) {
         }
     }
 
+    const handleAddPlantao = () => {
+
+
+
+        // Lógica para adicionar o plantão
+        console.log('Plantão escolhido:', dataPlantao);
+        adicionaPlantao(escalaSelecionada.id,dataPlantao,headers)
+        setAddPlantao(false);
+        setDataPlantao("")
+        fetchEscalas()
+    };
+
     return (
         <DashboardLayout>
+            <MDButton size="small" onClick={showJSON} lcolor="info">Exibir</MDButton>
+
             <DashboardNavbar />
             <div>
                 <Dialog open={salvar} onClose={handleClose} maxWidth="md" // Define a largura máxima do diálogo
@@ -274,7 +312,6 @@ function EscalasPage({ data, h }) {
                 <MDTypography variant="h2">Dados da Escala</MDTypography>
             </MDBox>
             <Card>
-                <form onSubmit={handleSubmit}>
                     {/*SELECIONA ESCALA E BOTOES*/}
                     <Grid container spacing={3} pb={3} px={3}>
                         <Grid item xs={10} sm={7} xl={7} >
@@ -399,12 +436,12 @@ function EscalasPage({ data, h }) {
                                         )}
                                         <Grid container spacing={3}>
                                             <Grid item xs={12} xl={7}>
-                                                <Calendario plantoes={plantoes} inicio={escalaSelecionada.inicio} />
+                                                <Calendario plantoes={plantoes} />
                                             </Grid>
                                             <Grid item xs={12} xl={5}>
                                                 <DataGrid
                                                     density="compact"
-                                                    style={{ height: '420px' }}
+                                                    style={{ height: '400px' }}
                                                     editMode="row"
                                                     disableColumnMenu
                                                     sx={{ fontSize: '16px', fontWeight: 'regular', color: 'dark',border:0 }}
@@ -453,14 +490,17 @@ function EscalasPage({ data, h }) {
                                                     hideFooterRowCount={true}
                                                     hideFooterSelectedRowCount={true}
                                                 />
-                                                <Grid mt={-5} >
-                                                    <MDButton color="success" variant="outlined" size="regular" sx={{ width: '100%' }} onClick={redirectToParticipantes}>
-                                                        <AddIcon sx={{ marginRight: 1 }} /> Adicionar Plantões
-                                                    </MDButton>
+                                                <Grid container spacing={1} mt={-5}>
+                                                    <Grid item xs={12} xl={4} >
+                                                        <MDInput type="date" value={dataPlantao}
+                                                           onChange={(prev)=>setDataPlantao(prev.target.value)}/>
+                                                    </Grid>
+                                                    <Grid item xs={12} xl={8} >
+                                                        <MDButton color="success" variant="gradient" size="medium" sx={{ width: '100%' }} onClick={() => handleAddPlantao()}>
+                                                            <AddIcon sx={{ marginRight: 1 }} /> Adicionar Data
+                                                        </MDButton>
+                                                    </Grid>
                                                 </Grid>
-                                            </Grid>
-                                            <Grid item xs={12} xl={5}>
-
                                             </Grid>
                                         </Grid>
                                     </AccordionDetails>
@@ -552,7 +592,6 @@ function EscalasPage({ data, h }) {
 
                         </Grid>
                     )}
-                </form>
             </Card>
         </DashboardLayout>
     );
