@@ -17,6 +17,7 @@ import {DataGrid, GridActionsCellItem, GridToolbar} from '@mui/x-data-grid';
 import Button from "@mui/material/Button";
 import FileOpenIcon from '@mui/icons-material/FileOpen';
 import DeleteIcon from '@mui/icons-material/Delete';
+import {useRouter} from "next/router";
 
 const parseJSON = resp => (resp.json ? resp.json() : resp);
 
@@ -59,6 +60,8 @@ function AdicionaEscala() {
     const [salvar, setSalvar] = useState(false);
     const [deletar, setDeletar] = useState(false);
     const [linhaSelecionada, setLinhaSelecionada] = useState([]);
+    const router = useRouter()
+
 
     const areCamposPreenchidos = () => {
         return (
@@ -270,8 +273,8 @@ function AdicionaEscala() {
                                                         icon={<FileOpenIcon />}
                                                         label="Abrir minuta"
                                                         className="textPrimary"
-                                                        onClick={async () => {
-                                                            redirectToEscala(params.row); // Isso será executado após a conclusão de setLinhaSelecionada
+                                                        onClick={ () => {
+                                                            router.push(`/escalas?escala=${encodeURIComponent(params.row.descricao)}`)
                                                         }}
                                                         color="dark"
                                                     />

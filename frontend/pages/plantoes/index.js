@@ -232,12 +232,13 @@ function Plantoes({data, h}) {
 
                                     {escalaSelecionada &&(
                                         <DataGrid
+                                            style={{ height: '400px' }}
                                             checkboxSelection
                                             disableColumnMenu
-                                            sx={{fontSize: '18px', fontWeight:'regular', height:'80%'}}
+                                            sx={{fontSize: '18px', fontWeight:'regular'}}
                                             pageSizeOptions={[5,10,20]}
                                             initialState={{
-                                                pagination: { paginationModel: { pageSize: 5 } },
+                                                pagination: { paginationModel: { pageSize: 100 } },
                                                 sorting: {sortModel: [{field: 'data', sort: 'asc'}],},
                                             }}
                                             rows={plantoes}
