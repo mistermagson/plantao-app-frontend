@@ -36,6 +36,8 @@ import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
 import {DateField, LocalizationProvider, StaticDatePicker} from "@mui/x-date-pickers";
 import ptBR from 'date-fns/locale/pt-BR';
 import MDInput from "../../components/MDInput";
+import Link from "next/link";
+import clipboardCopy from 'clipboard-copy';
 
 
 
@@ -54,6 +56,9 @@ function EscalasPage({ data, h }) {
     const [addPlantao, setAddPlantao] = useState(false);
     const [dataPlantao, setDataPlantao] = useState('');
     const [block, setBlock] = useState(null);
+    const router = useRouter()
+    const [redirectPlantonistas, setRedirectPlantonistas] = useState("/plantoes")
+    const [redirectParticipantes, setRedirectParticipantes] = useState("/escalas/participantes")
 
 
     const fetchEscalas = async () => {
@@ -96,15 +101,17 @@ function EscalasPage({ data, h }) {
                     ...item.attributes,
                 })));
 
+                setRedirectParticipantes(`/escalas/participantes?escala=${encodeURIComponent(escalaSelecionada.descricao)}`)
+                setRedirectPlantonistas(`/plantoes?escala=${encodeURIComponent(escalaSelecionada.descricao)}`)
             }
         }
         if(block === null){
 
             const params = new URLSearchParams(window.location.search);
             const escalaUrl = params.get('escala');
+
             if(escalaUrl!==null) {
-                const escalaObj = escalas.find((escala) => escala.descricao === escalaUrl);
-                console.log('OBJETO', escalaObj);
+                const escalaObj = escalas.find((escala) => escala.id == escalaUrl);
 
                 if (escalaObj) {
                     setEscalaSelecionada(escalaObj);
@@ -119,18 +126,6 @@ function EscalasPage({ data, h }) {
         fetchEscalas();
     }, [linhaSelecionada]);
 
-    const redirectToParticipantes = () => {
-        const url = `/escalas/participantes?escala=${encodeURIComponent(escalaSelecionada.descricao)}`;
-        window.location.href = url;
-    };
-    const redirectToPlantoes = () => {
-        const url = `/plantoes?escala=${encodeURIComponent(escalaSelecionada.descricao)}`;
-        window.location.href = url;
-    };
-    const redirectToAddEscalas = () => {
-        const url = `http://10.28.80.30:3000/escalas/adicionaescalas`;
-        window.location.href = url;
-    };
 
     const onChangeEscala = (selected) => {
         try {
@@ -238,9 +233,6 @@ function EscalasPage({ data, h }) {
     }
 
     const handleAddPlantao = () => {
-
-
-
         // Lógica para adicionar o plantão
         console.log('Plantão escolhido:', dataPlantao);
         adicionaPlantao(escalaSelecionada.id,dataPlantao,headers)
@@ -338,7 +330,9 @@ function EscalasPage({ data, h }) {
                         <Grid item xs={2} sm={5}  sx={{ height: "max-content" }}>
                             <MDBox mt={2} mr={1} display="flex" justifyContent="flex-end" >
                                 {escalaSelecionada && (<MDButton color="error" size="small"  onClick={() => setDeletarEscala(true)}>deletar</MDButton>)}
-                                <MDButton color="dark" size="small" sx={{marginLeft:"7px"}} onClick={() => redirectToAddEscalas()}>voltar</MDButton>
+                                <Link href="/escalas/adicionaescalas">
+                                    <MDButton color="dark" size="small" sx={{marginLeft:"7px"}} >voltar</MDButton>
+                                </Link>
                             </MDBox>
                         </Grid>
                     </Grid>
@@ -459,8 +453,8 @@ function EscalasPage({ data, h }) {
                                                         {field: 'plantonista', headerName: 'Plantonista', flex:2, minWidth:200,
                                                             renderCell: (params) => (
                                                                 <span style={{color: params.value.data[0] ? 'red' : 'gray',}}>
-                                                        {params.value.data[0] ?  `${params.value.data[0].attributes.nome}`:'- Vazio -' }
-                                                    </span>
+                                                                    {params.value.data[0] ?  `${params.value.data[0].attributes.nome}`:'- Vazio -' }
+                                                                </span>
                                                             ),
                                                         },
                                                         {
@@ -491,11 +485,10 @@ function EscalasPage({ data, h }) {
                                                     hideFooterSelectedRowCount={true}
                                                 />
                                                 <Grid container spacing={1} mt={-5}>
-                                                    <Grid item xs={12} xl={4} >
-                                                        <MDInput type="date" value={dataPlantao}
-                                                           onChange={(prev)=>setDataPlantao(prev.target.value)}/>
+                                                    <Grid item xs={4} md={4} xl={4} >
+                                                        <MDInput type="date" value={dataPlantao} onChange={(prev)=>setDataPlantao(prev.target.value)}/>
                                                     </Grid>
-                                                    <Grid item xs={12} xl={8} >
+                                                    <Grid item xs={8} md={6} xl={8} >
                                                         <MDButton color="success" variant="gradient" size="medium" sx={{ width: '100%' }} onClick={() => handleAddPlantao()}>
                                                             <AddIcon sx={{ marginRight: 1 }} /> Adicionar Data
                                                         </MDButton>
@@ -550,10 +543,11 @@ function EscalasPage({ data, h }) {
                                             slotProps={{ toolbar: { showQuickFilter: true } }}
                                         />
                                             <MDBox mt={2} mr={1} display="flex" justifyContent="flex-end">
-                                                <MDButton color="dark" type='text' size="small" onClick={redirectToParticipantes}>
-                                                    Editar Participantes
-                                                </MDButton>
-
+                                                <Link href={redirectParticipantes}>
+                                                    <MDButton color="dark" type='text' size="small">
+                                                        Editar Participantes
+                                                    </MDButton>
+                                                </Link>
                                             </MDBox>
                                     </AccordionDetails>
                                 </Accordion>
@@ -575,10 +569,9 @@ function EscalasPage({ data, h }) {
                                             )}
                                             {plantoes.length > 0 &&(
                                             <Grid item xs={12} xl={12} pt={2}>
-
                                                 <MinutaPage plantoes={plantoes}/>
                                                 <MDBox mt={2} mr={1} display="flex" justifyContent="flex-end">
-                                                    <MDButton color="dark" size="small" onClick={redirectToPlantoes}>
+                                                    <MDButton color="dark" size="small" onClick={ () => {router.push(`/plantoes?escala=${encodeURIComponent(escalaSelecionada.descricao)}`)}}>
                                                         Editar Plantonistas
                                                     </MDButton>
 

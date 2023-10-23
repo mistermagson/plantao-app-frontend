@@ -274,7 +274,7 @@ function AdicionaEscala() {
                                                         label="Abrir minuta"
                                                         className="textPrimary"
                                                         onClick={ () => {
-                                                            router.push(`/escalas?escala=${encodeURIComponent(params.row.descricao)}`)
+                                                            router.push(`/escalas?escala=${encodeURIComponent(params.row.id)}`)
                                                         }}
                                                         color="dark"
                                                     />
