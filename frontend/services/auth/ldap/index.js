@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-const url = `http://localhost:3001/auth`;
+const url = `http://10.28.80.30:3001/auth`;
 const headers = {
     'Content-Type': 'application/json'
 };

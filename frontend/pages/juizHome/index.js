@@ -51,7 +51,7 @@ function Escalas({ h }) {
 
     const fetchJuizes = async (idJuiz) => {
         try {
-            const response = await fetch(`http://localhost:1337/api/juizs/${idJuiz}?populate=plantoes.escala`, {
+            const response = await fetch(`http://10.28.80.30:1337/api/juizs/${idJuiz}?populate=plantoes.escala`, {
                 method: 'GET',
                 headers,
             });
@@ -70,7 +70,7 @@ function Escalas({ h }) {
 
     const fetchEscalas = async (idJuiz) => {
         try {
-            const response = await fetch(`http://localhost:1337/api/escalas?populate[preferencia][populate][]=juizs&populate[participantes][filters][id][$eq]=${idJuiz}`, {
+            const response = await fetch(`http://10.28.80.30:1337/api/escalas?populate[preferencia][populate][]=juizs&populate[participantes][filters][id][$eq]=${idJuiz}`, {
                 method: 'GET',
                 headers,
             });

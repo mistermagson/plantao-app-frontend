@@ -12,7 +12,7 @@ export const setPlantonista = (idJuiz, plantaoArray,headers ) => {
         status: false
     }
 
-    const urlJuiz =`http://localhost:1337/api/juizs/${idJuiz}`
+    const urlJuiz =`http://10.28.80.30:1337/api/juizs/${idJuiz}`
     const setJuizData = async () => {
         try {
 
@@ -41,7 +41,7 @@ export const removePlantonista = (idJuiz, plantaoArray,headers ) => {
         plantoes:{disconnect: plantaoArray}
     }
 
-    const urlJuiz =`http://localhost:1337/api/juizs/${idJuiz}`
+    const urlJuiz =`http://10.28.80.30:1337/api/juizs/${idJuiz}`
     const setJuizData = async () => {
         try {
             console.log(urlJuiz);
@@ -66,7 +66,7 @@ export const removePlantonista = (idJuiz, plantaoArray,headers ) => {
 export const removePlantao = (idPlantao, headers ) => {
 
 
-    const urlPlantao =`http://localhost:1337/api/plantoes/${idPlantao}`
+    const urlPlantao =`http://10.28.80.30:1337/api/plantoes/${idPlantao}`
     const removePlantao = async () => {
         try {
             console.log(urlPlantao);

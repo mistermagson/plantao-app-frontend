@@ -41,6 +41,7 @@ package-lock.json
 yarn.lock
 **/.next/**
 
+.vs/**
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json

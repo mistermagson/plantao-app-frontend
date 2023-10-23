@@ -40,7 +40,7 @@ function ProductImages() {
 
   const handleSetCurrentImage = ({ currentTarget }) => {
     setCurrentImage(
-      currentTarget.firstChild.src.replace("http://localhost:3000/", "/")
+      currentTarget.firstChild.src.replace("http://10.28.80.30:3000/", "/")
     );
 
     setImgsViewerCurrent(Number(currentTarget.id));
