@@ -124,7 +124,7 @@ function EscalasPage({ data, h }) {
 
     useEffect(() => {
         fetchEscalas();
-    }, [linhaSelecionada]);
+    }, [linhaSelecionada,escalaSelecionada]);
 
 
     const onChangeEscala = (selected) => {
@@ -571,18 +571,17 @@ function EscalasPage({ data, h }) {
                                             <Grid item xs={12} xl={12} pt={2}>
                                                 <MinutaPage plantoes={plantoes}/>
                                                 <MDBox mt={2} mr={1} display="flex" justifyContent="flex-end">
-                                                    <MDButton color="dark" size="small" onClick={ () => {router.push(`/plantoes?escala=${encodeURIComponent(escalaSelecionada.descricao)}`)}}>
+                                                    <Link href={redirectPlantonistas}>
+                                                    <MDButton color="dark" size="small">
                                                         Editar Plantonistas
                                                     </MDButton>
-
+                                                    </Link>
                                                 </MDBox>
                                             </Grid>
                                             )}
                                         </AccordionDetails>
                                     </Accordion>
-
                             </Grid>
-
                         </Grid>
                     )}
             </Card>

@@ -18,6 +18,7 @@ import Button from "@mui/material/Button";
 import FileOpenIcon from '@mui/icons-material/FileOpen';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {useRouter} from "next/router";
+import Link from "next/link";
 
 const parseJSON = resp => (resp.json ? resp.json() : resp);
 
@@ -60,6 +61,7 @@ function AdicionaEscala() {
     const [salvar, setSalvar] = useState(false);
     const [deletar, setDeletar] = useState(false);
     const [linhaSelecionada, setLinhaSelecionada] = useState([]);
+    const [redirectEscala, setRedirectEscala] = useState("/escalas")
     const router = useRouter()
 
 
@@ -269,15 +271,14 @@ function AdicionaEscala() {
                                             width:120,
                                             renderCell: (params) => (
                                                 <div >
-                                                    <GridActionsCellItem
-                                                        icon={<FileOpenIcon />}
-                                                        label="Abrir minuta"
-                                                        className="textPrimary"
-                                                        onClick={ () => {
-                                                            router.push(`/escalas?escala=${encodeURIComponent(params.row.id)}`)
-                                                        }}
-                                                        color="dark"
-                                                    />
+                                                    <Link href={`/escalas?escala=${encodeURIComponent(params.row.id)}`}>
+                                                        <GridActionsCellItem
+                                                            icon={<FileOpenIcon />}
+                                                            label="Abrir minuta"
+                                                            className="textPrimary"
+                                                            color="dark"
+                                                        />
+                                                    </Link>
                                                     <GridActionsCellItem
                                                         icon={<DeleteIcon color="filled" />}
                                                         label="Delete"
