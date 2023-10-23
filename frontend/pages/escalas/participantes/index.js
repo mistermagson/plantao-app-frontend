@@ -23,6 +23,7 @@ import HowToRegIcon from '@mui/icons-material/HowToReg';
 import {removePlantonista} from "../../../utils/plantaoUtils";
 import { useLocation } from 'react-router-dom';
 import {useRouter} from "next/router";
+import getHolidays from "../../../services/holidays";
 
 const headers = {
     'Content-Type': 'application/json',
@@ -152,7 +153,10 @@ function Participantes() {
                 setJuizPreferencialId(juizPreferencial);
             }
         } catch (error) {
-            setError(error.message);
+            console.error('Erro ao atualizar dados:', error);
+        }
+        finally {
+            console.log('Troca de escalas realizada!');
         }
 
     }
@@ -222,7 +226,7 @@ function Participantes() {
 
     const passaEscolha = async()=>{
         try{
-            passaPreferencia(opcaoSelecionada,headers,contador);
+            passaPreferencia(opcaoSelecionada,headers);
             setJuizPreferencialId(null);
 
             await fetchEscalas();
@@ -254,8 +258,8 @@ function Participantes() {
         return juizId === juizPreferencialId;
     };
     const showJSON = () => {
-        console.log('ARRAY juizes',juizes);
-        console.log('ARRAY escalas',escalas);
+        console.log('FERIADOS 2023',opcaoSelecionada);
+
     };
 
 
@@ -268,7 +272,7 @@ function Participantes() {
                 <MDButton size="small" onClick={showJSON} lcolor="info">Exibir</MDButton>
             </MDBox>
             <Grid container>
-                <Grid item xs={12} md={6} xl={12}>
+                <Grid item xs={12} md={12} xl={12}>
                     <Card sx={{height: "100%"}}>
                         <MDBox pt={2} px={4}>
                             <MDTypography variant="h6">
@@ -291,7 +295,7 @@ function Participantes() {
                                 </Grid>
                             </Grid>
                             <Grid container spacing={6} p={2}>
-                                <Grid item xs={12} md={12} xl={6}>
+                                <Grid item xs={12} md={6} xl={6}>
                                     {opcaoSelecionada && (<h5>Juizes Adicionados:</h5>)}
                                     {opcaoSelecionada && (
                                         <DataGrid
@@ -362,7 +366,7 @@ function Participantes() {
                                         </MDBox>
                                     )}
                                 </Grid>
-                                <Grid item xs={12} md={12} xl={6}>
+                                <Grid item xs={12} md={6} xl={6}>
                                     {opcaoSelecionada && (<h5>Juizes Restantes:</h5>)}
                                     {opcaoSelecionada && (
                                         <DataGrid

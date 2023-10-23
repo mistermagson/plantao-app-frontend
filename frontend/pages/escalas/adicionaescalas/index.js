@@ -12,16 +12,12 @@ import TextField from "@mui/material/TextField";
 import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel} from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
 import MDButton from "../../../components/MDButton";
-import {geraDatas, setDatasEscala} from "../../../utils/escalaUtils";
+import {geraDatas, geraFeriados, geraWeekends, removeEscala, setDatasEscala} from "../../../utils/escalaUtils";
 import {DataGrid, GridActionsCellItem, GridToolbar} from '@mui/x-data-grid';
 import Button from "@mui/material/Button";
 import FileOpenIcon from '@mui/icons-material/FileOpen';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PeopleAltSharpIcon from '@mui/icons-material/PeopleAltSharp';
-import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
-import {removeEscala} from "../../../utils/escalaUtils";
-import {removePlantao} from "../../../utils/plantaoUtils";
-import Pagination from '@mui/material/Pagination';
+import {useRouter} from "next/router";
 
 const parseJSON = resp => (resp.json ? resp.json() : resp);
 
@@ -58,13 +54,14 @@ function AdicionaEscala() {
 
     const opEscala = ["juiz-regional", "juiz-local", "juiz-distribuidor", "juiz-recesso", "vara-recesso", "vara-anual"];
     const [modifiedData, setModifiedData] = useState(valorInicial);
-    const [juizes, setJuizes] = useState([]);
     const [escalas, setEscalas] = useState([]);
     const [error, setError] = useState(null);
     const [errorEscalas, setErrorEscalas] = useState(null);
     const [salvar, setSalvar] = useState(false);
     const [deletar, setDeletar] = useState(false);
     const [linhaSelecionada, setLinhaSelecionada] = useState([]);
+    const router = useRouter()
+
 
     const areCamposPreenchidos = () => {
         return (
@@ -106,6 +103,31 @@ function AdicionaEscala() {
     useEffect(() => {
         fetchEscalas();
     }, []);
+
+    useEffect(() => {
+        fetchEscalas();
+    }, [linhaSelecionada]);
+
+    const geraPlantoes = (atributosEscala) =>{
+
+        const feriados = geraFeriados(atributosEscala.inicio,atributosEscala.fim);
+        const finaisDeSemanas = geraWeekends(atributosEscala.inicio,atributosEscala.fim);
+        const diasGerais = geraDatas(atributosEscala.inicio, atributosEscala.fim);
+
+        switch (atributosEscala.tipo) {
+            case "juiz-recesso":
+                return diasGerais;
+            case "juiz-local":
+                const filtraFeriados = diasGerais.filter((data) => !feriados.includes(data));
+                return filtraFeriados.filter((data) => !finaisDeSemanas.includes(data));
+            case "juiz-regional":
+                const uniao = new Set([...feriados, ...finaisDeSemanas]);
+                return Array.from(uniao).sort();
+            default:
+                throw new Error("Tipo de operação inválido. Use 'recesso', 'local' ou 'regional'.");
+        }
+    }
+
     const handleSubmit = async e =>  {
         e.preventDefault();
 
@@ -118,7 +140,9 @@ function AdicionaEscala() {
                 .then(checkStatus)
                 .then(parseJSON)
                 .then(escala => {
-                    const datasEscala = geraDatas(escala.data.attributes.inicio, escala.data.attributes.fim);
+                    const atributos = escala.data.attributes
+                    const datasEscala = geraPlantoes(atributos);
+
                     setDatasEscala(escala.data.id, datasEscala, headers);
                     setSalvar(true);
                     setModifiedData(valorInicial);
@@ -130,6 +154,7 @@ function AdicionaEscala() {
             setErrorEscalas(error);
         }
     };
+
     const handleChange = e => {
         const {name, value} = e.target
         setModifiedData({
@@ -137,6 +162,7 @@ function AdicionaEscala() {
             [name]: value
         })
     }
+
     const handleChangeCheck = e => {
         const {name, value, checked} = e.target;
         setModifiedData({
@@ -144,8 +170,11 @@ function AdicionaEscala() {
             [name]: name === 'fechada' ? checked : value
         });
     }
+
     const showJSON = () => {
-        console.log('JSON:',linhaSelecionada);
+
+        console.log('datas:',modifiedData.inicio);
+
     };
     const handleClose = () => {
         setSalvar(false);
@@ -166,8 +195,7 @@ function AdicionaEscala() {
     }
 
     const redirectToEscala = (linha) => {
-        const url = `http://10.28.80.30:3000/escalas?escala=${encodeURIComponent(linha.descricao)}`;
-        window.location.href = url;
+        window.location.href = `http://localhost:3000/escalas?escala=${encodeURIComponent(linha.descricao)}`;
     };
 
     return (
@@ -206,7 +234,7 @@ function AdicionaEscala() {
                 </Dialog>
             </div>
             <Grid container spacing={2}>
-                <Grid item xs={12} xl={8}>
+                <Grid item xs={12} md={8} xl={8}>
                     <MDBox p={2}>
                         <MDTypography variant="h2">Escalas Criadas</MDTypography>
                     </MDBox>
@@ -245,8 +273,8 @@ function AdicionaEscala() {
                                                         icon={<FileOpenIcon />}
                                                         label="Abrir minuta"
                                                         className="textPrimary"
-                                                        onClick={async () => {
-                                                            redirectToEscala(params.row); // Isso será executado após a conclusão de setLinhaSelecionada
+                                                        onClick={ () => {
+                                                            router.push(`/escalas?escala=${encodeURIComponent(params.row.descricao)}`)
                                                         }}
                                                         color="dark"
                                                     />
@@ -270,7 +298,7 @@ function AdicionaEscala() {
                         </MDBox>
                     </Card>
                 </Grid>
-                <Grid item xs={12} xl={4} sx={{height: "max-content"}}>
+                <Grid item xs={12} md={4} xl={4} sx={{height: "max-content"}}>
                     <MDBox p={2}>
                         <MDTypography variant="h2">Adicionar Escala</MDTypography>
                     </MDBox>
@@ -313,9 +341,8 @@ function AdicionaEscala() {
                                             required
                                             input={{placeholder: "Escolha uma data", format: "dd/MM/yy"}}
                                             value={modifiedData.inicio}
-                                            onChange={(event, value) =>
-                                                setModifiedData({...modifiedData, inicio: value})}/>
-
+                                            onChange={(event, value) => setModifiedData({...modifiedData, inicio: value})}
+                                        />
                                     </Grid>
                                     <Grid item xs={5} xl={6}>
                                         <MDTypography variant="h6">Data de Fim: </MDTypography>
@@ -325,7 +352,8 @@ function AdicionaEscala() {
                                             value={modifiedData.fim}
                                             input={{placeholder: "Escolha uma data", format: "dd/MM/yy"}}
                                             onChange={(event, value) =>
-                                                setModifiedData({...modifiedData, fim: value})}/>
+                                                setModifiedData({...modifiedData, fim: value})}
+                                        />
                                     </Grid>
                                     <Grid item xs={12} xl={8}>
 

@@ -40,17 +40,14 @@ function Plantoes({data, h}) {
     const [preferenciaJuizId, setPreferenciaJuizId] = useState(null);
 
 
-
-
     useEffect(() => {
         if(escalaSelecionada) {
-
             const escalaEncontrada = escalas.find(escala => escala.id === escalaSelecionada.id);
 
             if (escalaEncontrada) {
                 setEscalaSelecionada(escalaEncontrada);
                 setPlantoes(escalaEncontrada.plantaos.data.map(item => ({ id: item.id, ...item.attributes })));
-                setPreferenciaJuizId(escalaSelecionada.preferencia?.data?.id);
+                setPreferenciaJuizId(escalaSelecionada.preferencia.data?.id);
             }
         }
 
@@ -69,6 +66,7 @@ function Plantoes({data, h}) {
                 }
             }
         }
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [escalas, escalaSelecionada, plantoes]);
 
@@ -86,7 +84,6 @@ function Plantoes({data, h}) {
         finally {
             const atualizaEscalas = await fetchEscalas(headers)
             setEscalas(atualizaEscalas)
-            setPreferenciaJuizId(atualizaEscalas.preferencia?.data.id);
             console.log('TUDO CERTO')
 
         }
@@ -102,7 +99,7 @@ function Plantoes({data, h}) {
 
                 const plantaosArray = selected.plantaos.data.map((item) => ({id: item.id, ...item.attributes,}));
                 setPlantoes(plantaosArray);
-                setPreferenciaJuizId(selected.preferencia?.data.id);
+                setPreferenciaJuizId(selected.preferencia.data?.id);
 
                 setJuizSelecionado(null);
             }
@@ -112,6 +109,7 @@ function Plantoes({data, h}) {
         }
 
     }
+
     const showJSON = () => {
 
         console.log('plantao',plantaoSelecionado);
@@ -119,21 +117,20 @@ function Plantoes({data, h}) {
         console.log('inicio',plantoes[0].data);
 
     };
+
     const handleLimparPlantonista = async(row) => {
         try {
             const idJuiz = row.plantonista.data[0].id;
-            console.log(idJuiz, row.id, headers)
             await removePlantonista(idJuiz, row.id, headers);
             setPlantaoSelecionado([]);
             const escalasAtaulizadas = await fetchEscalas(headers)
             setEscalas(escalasAtaulizadas);
-            setPreferenciaJuizId(escalasAtaulizadas.preferencia?.data.id);
-
 
         } catch (error) {
             console.error(error);
         }
     };
+
     const handleClose = () => {
         setPassar(false);
     };
@@ -147,14 +144,12 @@ function Plantoes({data, h}) {
         }finally {
             const escalasAtualizadas = await fetchEscalas(headers)
             setEscalas(escalasAtualizadas);
-            setPreferenciaJuizId(escalasAtualizadas.preferencia?.data.id);
-
         }
     }
 
     return (
         <DashboardLayout>
-           
+            <DashboardNavbar />
             <div>
                 <Dialog open={passar} onClose={handleClose}>
                     <DialogTitle>Passar a Vez</DialogTitle>
@@ -230,20 +225,20 @@ function Plantoes({data, h}) {
                                     </>)}
                                 </MDBox>
                                 <MDBox p>
-                                    { juizSelecionado?.id === preferenciaJuizId
-                                        ? (<h5 style={{ color: 'green', paddingLeft:'20px', marginTop:'-10px'}}> Escolha seus plantões</h5>)
-                                        : (<h5 style={{ color: 'red', paddingLeft: '20px', marginTop: '-10px' }}>Aguarde sua vez para escolher os plantões</h5>)
-                                    }
+                                    {escalaSelecionada !== null && (juizSelecionado?.id === preferenciaJuizId ?(
+                                        <h5 style={{ color: 'green', paddingLeft:'20px', marginTop:'-10px'}}>
+                                        Escolha seus plantões
+                                        </h5>):(<h5 style={{ color: 'red',  paddingLeft:'20px', marginTop:'-10px'}}>Aguarde sua vez para escolher os plantões</h5>))}
 
                                     {escalaSelecionada &&(
                                         <DataGrid
-
+                                            style={{ height: '400px' }}
                                             checkboxSelection
                                             disableColumnMenu
-                                            sx={{fontSize: '18px', fontWeight:'regular', height:'80%'}}
+                                            sx={{fontSize: '18px', fontWeight:'regular'}}
                                             pageSizeOptions={[5,10,20]}
                                             initialState={{
-                                                pagination: { paginationModel: { pageSize: 5 } },
+                                                pagination: { paginationModel: { pageSize: 100 } },
                                                 sorting: {sortModel: [{field: 'data', sort: 'asc'}],},
                                             }}
                                             rows={plantoes}

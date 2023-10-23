@@ -86,3 +86,30 @@ export const removePlantao = (idPlantao, headers ) => {
 
     removePlantao();
 };
+
+export const adicionaPlantao = (idEscala,dia, headers ) => {
+
+    const plantao ={
+        data: dia,
+        escala: idEscala
+    }
+
+    const removePlantao = async () => {
+        try {
+            const response = await fetch('http://10.28.80.30:1337/api/plantoes', {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({data: plantao}),
+            })
+            if (response.ok) {
+                console.log('Plantao adicionado com sucesso:', response);
+            } else {
+                console.log('Erro ao adicionar plantao:', response);
+            }
+        } catch (error) {
+            console.error('Erro ao adicionar plantao:', error);
+        }
+    };
+
+    removePlantao();
+};

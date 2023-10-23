@@ -41,7 +41,7 @@ function Calendario({ plantoes }) {
                 <Calendar
                     fullHeight
                     initialView="dayGridMonth"
-                    initialDate={plantoes[0].data}
+                    initialDate={plantoes[0]?.data}
                     events={eventos}
                     selectable
                     editable
@@ -49,12 +49,7 @@ function Calendario({ plantoes }) {
                     eventMouseLeave={handleEventMouseLeave}
                     locale="pt-br"
                 />
-                <div style={{height: '100px'}}>
-                    {tooltipContent && (
-                        <MDBadgeDot badgeContent={tooltipContent} color={dotColor} size='lg' container />
 
-                    )}
-                </div>
             </div>
         );
     }
