@@ -330,9 +330,11 @@ function EscalasPage({ data, h }) {
                         <Grid item xs={2} sm={5}  sx={{ height: "max-content" }}>
                             <MDBox mt={2} mr={1} display="flex" justifyContent="flex-end" >
                                 {escalaSelecionada && (<MDButton color="error" size="small"  onClick={() => setDeletarEscala(true)}>deletar</MDButton>)}
-                                <Link href="/escalas/adicionaescalas">
-                                    <MDButton color="dark" size="small" sx={{marginLeft:"7px"}} >voltar</MDButton>
-                                </Link>
+
+                                    <MDButton color="dark" size="small" sx={{marginLeft:"7px"}} onClick={ () => {
+                                        router.push("/escalas/adicionaescalas"); setEscalaSelecionada(null)
+                                    }}>voltar</MDButton>
+
                             </MDBox>
                         </Grid>
                     </Grid>
@@ -511,6 +513,13 @@ function EscalasPage({ data, h }) {
                                         <h5 style={{ color: "#344767" }}>Participantes</h5>
                                     </AccordionSummary>
                                     <AccordionDetails>
+                                        <MDBox mb={2} mr={1} >
+                                            <Link href={redirectParticipantes}>
+                                                <MDButton color="dark" type='text' size="small" onClick={ () => setEscalaSelecionada(null)}>
+                                                    Editar Participantes
+                                                </MDButton>
+                                            </Link>
+                                        </MDBox>
                                         <DataGrid
                                             density="compact"
                                             style={{ height: "500px" }}
@@ -542,13 +551,7 @@ function EscalasPage({ data, h }) {
                                             slots={{ toolbar: GridToolbar }}
                                             slotProps={{ toolbar: { showQuickFilter: true } }}
                                         />
-                                            <MDBox mt={2} mr={1} display="flex" justifyContent="flex-end">
-                                                <Link href={redirectParticipantes}>
-                                                    <MDButton color="dark" type='text' size="small">
-                                                        Editar Participantes
-                                                    </MDButton>
-                                                </Link>
-                                            </MDBox>
+
                                     </AccordionDetails>
                                 </Accordion>
                             </Grid>
@@ -569,14 +572,15 @@ function EscalasPage({ data, h }) {
                                             )}
                                             {plantoes.length > 0 &&(
                                             <Grid item xs={12} xl={12} pt={2}>
-                                                <MinutaPage plantoes={plantoes}/>
-                                                <MDBox mt={2} mr={1} display="flex" justifyContent="flex-end">
+                                                <MDBox mb={2} mr={1}>
                                                     <Link href={redirectPlantonistas}>
-                                                    <MDButton color="dark" size="small">
-                                                        Editar Plantonistas
-                                                    </MDButton>
+                                                        <MDButton color="dark" size="small"  onClick={ () => setEscalaSelecionada(null)}>
+                                                            Editar Plantonistas
+                                                        </MDButton>
                                                     </Link>
                                                 </MDBox>
+                                                <MinutaPage plantoes={plantoes}/>
+
                                             </Grid>
                                             )}
                                         </AccordionDetails>

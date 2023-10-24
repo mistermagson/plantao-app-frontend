@@ -49,12 +49,6 @@ function MinutaPage({ plantoes }) {
                     ))}
                     </tbody>
                 </table>
-                {/*<CopyToClipboard text={tableHtml}>
-                <MDButton style={{ marginBottom: '10px', marginTop: '10px', padding: '10px' }} size='small' color='secondary'>
-                    Copiar Tabela
-                </MDButton>
-            </CopyToClipboard>
-            {copied && <h5>Tabela copiada com sucesso!</h5>}*/}
             </div>
         );
 

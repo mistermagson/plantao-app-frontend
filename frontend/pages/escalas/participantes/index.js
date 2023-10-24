@@ -141,6 +141,7 @@ function Participantes() {
             const opcaoSelecionadaAtt = escalas.find(escala => escala.id === opcaoSelecionada.id);
             const juizPreferencial = opcaoSelecionada.preferencia?.data?.id;
             setJuizPreferencialId(juizPreferencial);
+            onChangeVara(varaSelecionada)
 
             if (opcaoSelecionadaAtt) {
                 setOpcaoSelecionada(opcaoSelecionadaAtt)
@@ -175,14 +176,18 @@ function Participantes() {
         try {
             const participantes = selecionada.participantes.data.map((item) => ({id: item.id, ...item.attributes,}));
             setAdicionados(participantes)
+            setAdicionadosFiltro(participantes)
 
             if (participantes) {
                 const naoParticipantes = juizes.filter(item1 => {
                     return !participantes.some(item2 => item2.id === item1.id);
                 });
                 setJuizesRestantes(naoParticipantes);
+                setJuizesRestantesFiltro(naoParticipantes)
                 const juizPreferencial = selecionada.preferencia?.data?.id;
                 setJuizPreferencialId(juizPreferencial);
+                setVaraSelecionada(null)
+
             }
         } catch (error) {
             console.error('Erro ao atualizar dados:', error);
@@ -195,7 +200,7 @@ function Participantes() {
 
     const onChangeVara = (selecionada) => {
         try {
-            if(selecionada != null){
+            if( varaSelecionada != null && selecionada != null){
                 const filtraAdicionados = adicionados.filter((juiz) => juiz.lotacao.data.id === selecionada.id);
                 const filtraRestantes = juizesRestantes.filter((juiz) => juiz.lotacao.data.id === selecionada.id);
 

@@ -218,14 +218,14 @@ function Plantoes({data, h}) {
                                 <MDBox p={2}  >
                                     {escalaSelecionada && (<>
                                         <MDTypography variant="h6" style={{ marginBottom: '-10px' }}>Plantões:</MDTypography>
-                                        {escalaSelecionada.fechada && (
-                                            <span style={{ color: 'red', fontSize: '14px'}}>
-                                              Escala fechada, não é possível modificar os plantões
-                                            </span>)}
                                     </>)}
                                 </MDBox>
                                 <MDBox p>
-                                    {escalaSelecionada !== null && (juizSelecionado?.id === preferenciaJuizId ?(
+                                    {escalaSelecionada.fechada && (
+                                        <h5 style={{ color: 'red',  paddingLeft:'20px', marginTop:'-10px'}}>
+                                            Escala fechada, não é possível modificar os plantões
+                                        </h5>)}
+                                    {!escalaSelecionada.fechada &&(juizSelecionado?.id === preferenciaJuizId ?(
                                         <h5 style={{ color: 'green', paddingLeft:'20px', marginTop:'-10px'}}>
                                         Escolha seus plantões
                                         </h5>):(<h5 style={{ color: 'red',  paddingLeft:'20px', marginTop:'-10px'}}>Aguarde sua vez para escolher os plantões</h5>))}
