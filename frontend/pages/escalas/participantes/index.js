@@ -39,9 +39,13 @@ function Participantes() {
     const [escalaObj, setEscalaObj] = useState([]);
     const [juizes, setJuizes] = useState([]);
     const [juizesRestantes, setJuizesRestantes] = useState([]);
+    const [juizesRestantesFiltro, setJuizesRestantesFiltro] = useState([]);
+    const [adicionados, setAdicionados] = useState([]);
+    const [adicionadosFiltro, setAdicionadosFiltro] = useState([]);
+    const [varas, setVaras] = useState([]);
+    const [varaSelecionada, setVaraSelecionada] = useState(null);
     const [error, setError] = useState(null);
     const [jsonData, setJsonData] = useState([]);
-    const [adicionados, setAdicionados] = useState([]);
     const [juizPreferencialId, setJuizPreferencialId] = useState(null);
     const [block, setBlock] = useState(null);
 
@@ -97,10 +101,38 @@ function Participantes() {
             setError(error.message);
         }
     };
+    const fetchVaras = async () => {
+        try {
+            const response = await fetch('http://10.28.80.30:1337/api/varas', {
+                method: 'GET',
+                headers,
+            });
+
+            if (!response.ok) {
+                throw new Error('Falha ao obter os dados dos juizes.');
+            }
+
+            const responseVara = await response.json();
+            setJsonData(responseVara);
+
+            if (Array.isArray(responseVara.data)) {
+                const varasData = responseVara.data.map((item) => ({id: item.id, ...item.attributes,}));
+                setVaras(varasData);
+                console.log('fetch varas realizado')
+
+            } else {
+                setError('Formato de dados inválido.');
+            }
+
+        } catch (error) {
+            setError(error.message);
+        }
+    };
 
     useEffect( () => {
         fetchEscalas()
         fetchJuizes()
+        fetchVaras()
     }, []);
 
     useEffect(() => {
@@ -157,6 +189,29 @@ function Participantes() {
         }
         finally {
             console.log('Troca de escalas realizada!');
+        }
+
+    }
+
+    const onChangeVara = (selecionada) => {
+        try {
+            if(selecionada != null){
+                const filtraAdicionados = adicionados.filter((juiz) => juiz.lotacao.data.id === selecionada.id);
+                const filtraRestantes = juizesRestantes.filter((juiz) => juiz.lotacao.data.id === selecionada.id);
+
+                setAdicionadosFiltro(filtraAdicionados);
+                setJuizesRestantesFiltro(filtraRestantes);
+            }
+            else{
+                setAdicionadosFiltro(adicionados);
+                setJuizesRestantesFiltro(juizesRestantes);
+            }
+
+        } catch (error) {
+            console.error('Erro ao filtrar dados:', error);
+        }
+        finally {
+            console.log('Troca de varas realizada!');
         }
 
     }
@@ -257,31 +312,38 @@ function Participantes() {
     const isJuizPreferencial = (juizId) => {
         return juizId === juizPreferencialId;
     };
+
     const showJSON = () => {
-        console.log('FERIADOS 2023',opcaoSelecionada);
+        console.log('ADICIONADOS',varaSelecionada);
 
     };
 
-
+    const filtrarJuizesPorVara = (juizes) =>{
+        if (lotacaoId) {
+            return juizes.filter((juiz) => juiz.lotacao.data.id === lotacaoId);
+        }
+        return juizes; // Retorna todos os juízes se lotacaoId for null
+    }
 
     return (
         <DashboardLayout>
             <DashboardNavbar/>
             <MDBox p={2}>
                 <h1>Lista de Participantes</h1>
-                <MDButton size="small" onClick={showJSON} lcolor="info">Exibir</MDButton>
+                <MDButton size="small" onClick={()=>showJSON()} lcolor="info">Exibir</MDButton>
             </MDBox>
             <Grid container>
                 <Grid item xs={12} md={12} xl={12}>
                     <Card sx={{height: "100%"}}>
-                        <MDBox pt={2} px={4}>
-                            <MDTypography variant="h6">
-                                Selecionar escala
-                            </MDTypography>
-                        </MDBox>
+
                         <MDBox p={2} pt={0}>
-                            <Grid container spacing={4} p={2}>
-                                <Grid item xs={12} md={12} xl={6}>
+                            <Grid container spacing={2} p={2}>
+                                <Grid item xs={12} md={12} xl={5}>
+                                    <MDBox py={2}>
+                                        <MDTypography variant="h6">
+                                            Selecionar escala
+                                        </MDTypography>
+                                    </MDBox>
                                     <Autocomplete
                                         options={escalas}
                                         getOptionLabel={escala => escala.descricao}
@@ -291,6 +353,24 @@ function Participantes() {
                                             onChangeEscala(newValue);
                                         }}
                                         renderInput={(params) => <TextField {...params} label="Escala"/>}
+                                    />
+                                </Grid>
+
+                                <Grid item xs={12} md={12} xl={4}>
+                                    <MDBox py={2}>
+                                        <MDTypography variant="h6">
+                                            Filtrar juizes por vara:
+                                        </MDTypography>
+                                    </MDBox>
+                                    <Autocomplete
+                                        options={varas}
+                                        getOptionLabel={vara => vara.descricao}
+                                        value={varaSelecionada}
+                                        onChange={(event, newValue) => {
+                                            setVaraSelecionada(newValue);
+                                            onChangeVara(newValue);
+                                        }}
+                                        renderInput={(params) => <TextField {...params} label="Vara"/>}
                                     />
                                 </Grid>
                             </Grid>
@@ -308,7 +388,7 @@ function Participantes() {
                                                 pagination: {paginationModel: {pageSize: 20}},
 
                                             }}
-                                            rows={adicionados}
+                                            rows={adicionadosFiltro}
                                             columns={[
                                                 {field: 'nome', headerName: 'Nomes', flex: 1,minWidth: 150},
                                                 {
@@ -380,7 +460,7 @@ function Participantes() {
                                                 pagination: {paginationModel: {pageSize: 20}},
                                                 sorting: {sortModel: [{field: 'antiguidade', sort: 'asc'}],},
                                             }}
-                                            rows={juizesRestantes}
+                                            rows={juizesRestantesFiltro}
                                             columns={[{field: 'nome', headerName: 'Nome', flex: 1}, {field: 'antiguidade', headerName: 'Antiguidade', minWidth: 150},]}
                                             onRowSelectionModelChange={(newRowSelectionModel) => {setRowSelectionModel(newRowSelectionModel);}}
                                             rowSelectionModel={rowSelectionModel}
