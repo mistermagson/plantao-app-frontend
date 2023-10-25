@@ -36,7 +36,7 @@ function Participantes() {
     const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
     //--------------------------------------------------------------------------
     const [escalas, setEscalas] = useState([]);
-    const [escalaObj, setEscalaObj] = useState([]);
+    const [escalaObj, setEscalaObj] = useState(null);
     const [juizes, setJuizes] = useState([]);
     const [juizesRestantes, setJuizesRestantes] = useState([]);
     const [juizesRestantesFiltro, setJuizesRestantesFiltro] = useState([]);
@@ -65,6 +65,7 @@ function Participantes() {
             if (Array.isArray(responseJuiz.data)) {
                 const juizesData = responseJuiz.data.map((item) => ({id: item.id, ...item.attributes,}));
                 setJuizes(juizesData);
+                console.log('fetch juizes realizado')
 
             } else {
                 setError('Formato de dados inválido.');
@@ -141,7 +142,6 @@ function Participantes() {
             const opcaoSelecionadaAtt = escalas.find(escala => escala.id === opcaoSelecionada.id);
             const juizPreferencial = opcaoSelecionada.preferencia?.data?.id;
             setJuizPreferencialId(juizPreferencial);
-            onChangeVara(varaSelecionada)
 
             if (opcaoSelecionadaAtt) {
                 setOpcaoSelecionada(opcaoSelecionadaAtt)
@@ -153,11 +153,12 @@ function Participantes() {
             const params = new URLSearchParams(window.location.search);
             const escalaUrl = params.get('escala');
 
-            if(escalaUrl!==null) {
+            if(escalaUrl!==null && juizes.length > 0) {
                 const escalaObj = escalas.find((escala) => escala.descricao === escalaUrl);
                 console.log('OBJETO', escalaObj);
 
-                if (escalaObj) {
+                if (escalaObj !== undefined && escalaObj != null) {
+                    console.log('BLOQUEADO');
                     setOpcaoSelecionada(escalaObj);
                     onChangeEscala(escalaObj);
                     setBlock('bloqueado');
@@ -165,30 +166,31 @@ function Participantes() {
             }
         }
 // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [ escalas, opcaoSelecionada]);
+    }, [ escalas, opcaoSelecionada, juizes]);
 
-    useEffect(() => {
-        onChangeEscala(escalaObj);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [escalaObj]);
 
     const onChangeEscala = (selecionada) => {
         try {
-            const participantes = selecionada.participantes.data.map((item) => ({id: item.id, ...item.attributes,}));
-            setAdicionados(participantes)
-            setAdicionadosFiltro(participantes)
+            console.log('SELECIONADA 1111', selecionada)
+            fetchJuizes().then(() => {
+                console.log('SELECIONADA', selecionada)
+                const participantes = selecionada.participantes.data.map((item) => ({id: item.id, ...item.attributes,}));
+                setAdicionados(participantes)
+                setAdicionadosFiltro(participantes)
 
-            if (participantes) {
-                const naoParticipantes = juizes.filter(item1 => {
-                    return !participantes.some(item2 => item2.id === item1.id);
-                });
-                setJuizesRestantes(naoParticipantes);
-                setJuizesRestantesFiltro(naoParticipantes)
-                const juizPreferencial = selecionada.preferencia?.data?.id;
-                setJuizPreferencialId(juizPreferencial);
-                setVaraSelecionada(null)
+                if (participantes) {
+                    const naoParticipantes = juizes.filter(item1 => {
+                        return !participantes.some(item2 => item2.id === item1.id);
+                    });
 
-            }
+                    setJuizesRestantes(naoParticipantes);
+                    setJuizesRestantesFiltro(naoParticipantes)
+                    const juizPreferencial = selecionada.preferencia?.data?.id;
+                    setJuizPreferencialId(juizPreferencial);
+                    setVaraSelecionada(null)
+
+                }
+            });
         } catch (error) {
             console.error('Erro ao atualizar dados:', error);
         }
@@ -319,16 +321,10 @@ function Participantes() {
     };
 
     const showJSON = () => {
-        console.log('ADICIONADOS',varaSelecionada);
+        console.log('ADICIONADOS',adicionadosFiltro);
+        console.log('restantes',juizesRestantesFiltro);
 
     };
-
-    const filtrarJuizesPorVara = (juizes) =>{
-        if (lotacaoId) {
-            return juizes.filter((juiz) => juiz.lotacao.data.id === lotacaoId);
-        }
-        return juizes; // Retorna todos os juízes se lotacaoId for null
-    }
 
     return (
         <DashboardLayout>
