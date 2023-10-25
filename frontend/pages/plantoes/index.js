@@ -71,6 +71,7 @@ function Plantoes({data, h}) {
     }, [escalas, escalaSelecionada, plantoes]);
 
 
+
     const handleSubmit =  async (event) => {
         event.preventDefault();
         try {
@@ -113,8 +114,7 @@ function Plantoes({data, h}) {
     const showJSON = () => {
 
         console.log('plantao',plantaoSelecionado);
-        console.log('juiz',juizSelecionado);
-        console.log('inicio',plantoes[0].data);
+
 
     };
 
@@ -150,6 +150,8 @@ function Plantoes({data, h}) {
     return (
         <DashboardLayout>
             <DashboardNavbar />
+            <MDButton size="small" onClick={()=>showJSON()} lcolor="info">Exibir</MDButton>
+
             <div>
                 <Dialog open={passar} onClose={handleClose}>
                     <DialogTitle>Passar a Vez</DialogTitle>
@@ -221,13 +223,13 @@ function Plantoes({data, h}) {
                                     </>)}
                                 </MDBox>
                                 <MDBox p>
-                                    {escalaSelecionada.fechada && (
+                                    {escalaSelecionada !== null & escalaSelecionada?.fechada ? (
                                         <h5 style={{ color: 'red',  paddingLeft:'20px', marginTop:'-10px'}}>
                                             Escala fechada, não é possível modificar os plantões
-                                        </h5>)}
-                                    {!escalaSelecionada.fechada &&(juizSelecionado?.id === preferenciaJuizId ?(
+                                        </h5>):(<h5></h5>)}
+                                    {escalaSelecionada !== null && !escalaSelecionada.fechada &&(juizSelecionado?.id === preferenciaJuizId ?(
                                         <h5 style={{ color: 'green', paddingLeft:'20px', marginTop:'-10px'}}>
-                                        Escolha seus plantões
+                                            Escolha seus plantões
                                         </h5>):(<h5 style={{ color: 'red',  paddingLeft:'20px', marginTop:'-10px'}}>Aguarde sua vez para escolher os plantões</h5>))}
 
                                     {escalaSelecionada &&(

@@ -8,10 +8,6 @@ export const setPlantonista = (idJuiz, plantaoArray,headers ) => {
         plantoes:{connect: plantaoArray}
     }
 
-    const statusPlantoes={
-        status: false
-    }
-
     const urlJuiz =`http://10.28.80.30:1337/api/juizs/${idJuiz}`
     const setJuizData = async () => {
         try {
@@ -23,12 +19,12 @@ export const setPlantonista = (idJuiz, plantaoArray,headers ) => {
                 body: JSON.stringify({ data: plantoes }),
             })
             if (response.ok) {
-                console.log('Plantonista atualizado com sucesso:', response);
+                console.log('Plantonista adicionado com sucesso');
             } else {
-                console.log('Erro ao atualizar plantonista:', response);
+                console.log('Erro ao adicionado plantonista:', response);
             }
         } catch (error) {
-            console.error('Erro ao atualizar plantonista:', error);
+            console.error('Erro ao adicionar plantonista:', error);
         }
     };
 
@@ -44,14 +40,13 @@ export const removePlantonista = (idJuiz, plantaoArray,headers ) => {
     const urlJuiz =`http://10.28.80.30:1337/api/juizs/${idJuiz}`
     const setJuizData = async () => {
         try {
-            console.log(urlJuiz);
             const response = await fetch(urlJuiz, {
                 method: 'PUT',
                 headers,
                 body: JSON.stringify({ data: plantoes }),
             })
             if (response.ok) {
-                console.log('Plantonista removido com sucesso:', response);
+                console.log('Plantonista removido com sucesso');
             } else {
                 console.log('Erro ao atualizar plantonista:', response);
             }

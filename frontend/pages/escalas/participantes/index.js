@@ -136,6 +136,21 @@ function Participantes() {
         fetchVaras()
     }, []);
 
+    useEffect( () => {
+
+        if( varaSelecionada != null){
+            const filtraAdicionados = adicionados.filter((juiz) => juiz.lotacao.data.id === varaSelecionada.id);
+            const filtraRestantes = juizesRestantes.filter((juiz) => juiz.lotacao.data.id === varaSelecionada.id);
+
+            setAdicionadosFiltro(filtraAdicionados);
+            setJuizesRestantesFiltro(filtraRestantes);
+        }
+        else{
+            setAdicionadosFiltro(adicionados);
+            setJuizesRestantesFiltro(juizesRestantes);
+        }
+    }, [adicionados, juizesRestantes, varaSelecionada]);
+
     useEffect(() => {
 
         if (opcaoSelecionada) {
@@ -172,7 +187,6 @@ function Participantes() {
     const onChangeEscala = (selecionada) => {
         try {
             console.log('SELECIONADA 1111', selecionada)
-            fetchJuizes().then(() => {
                 console.log('SELECIONADA', selecionada)
                 const participantes = selecionada.participantes.data.map((item) => ({id: item.id, ...item.attributes,}));
                 setAdicionados(participantes)
@@ -190,7 +204,6 @@ function Participantes() {
                     setVaraSelecionada(null)
 
                 }
-            });
         } catch (error) {
             console.error('Erro ao atualizar dados:', error);
         }
@@ -200,28 +213,6 @@ function Participantes() {
 
     }
 
-    const onChangeVara = (selecionada) => {
-        try {
-            if( varaSelecionada != null && selecionada != null){
-                const filtraAdicionados = adicionados.filter((juiz) => juiz.lotacao.data.id === selecionada.id);
-                const filtraRestantes = juizesRestantes.filter((juiz) => juiz.lotacao.data.id === selecionada.id);
-
-                setAdicionadosFiltro(filtraAdicionados);
-                setJuizesRestantesFiltro(filtraRestantes);
-            }
-            else{
-                setAdicionadosFiltro(adicionados);
-                setJuizesRestantesFiltro(juizesRestantes);
-            }
-
-        } catch (error) {
-            console.error('Erro ao filtrar dados:', error);
-        }
-        finally {
-            console.log('Troca de varas realizada!');
-        }
-
-    }
 
     const extrairPlantoes = (juizId) => {
         const escalaId = opcaoSelecionada.id;
@@ -369,7 +360,6 @@ function Participantes() {
                                         value={varaSelecionada}
                                         onChange={(event, newValue) => {
                                             setVaraSelecionada(newValue);
-                                            onChangeVara(newValue);
                                         }}
                                         renderInput={(params) => <TextField {...params} label="Vara"/>}
                                     />
