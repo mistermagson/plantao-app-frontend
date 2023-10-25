@@ -48,7 +48,7 @@ const routes = [
             name: "Escalas",
             key: "profile",
             collapse: [
-            /*  {
+              {
                 name: "Adicionar Escala",
                 key: "participantes",
                 route: "/escalas/adicionaescalas",
@@ -57,7 +57,7 @@ const routes = [
                 name: "Participantes",
                 key: "participantes",
                 route: "/escalas/participantes",
-              },*/
+              },
               {
                 name: "Plantões",
                 key: "datas",
