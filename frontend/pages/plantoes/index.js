@@ -56,7 +56,7 @@ function Plantoes({data, h}) {
             const params = new URLSearchParams(window.location.search);
             const escalaUrl = params.get('escala');
             if(escalaUrl!==null) {
-                const escalaObj = escalas.find((escala) => escala.descricao === escalaUrl);
+                const escalaObj = escalas.find((escala) => escala.id == escalaUrl);
                 console.log('OBJETO', escalaObj);
 
                 if (escalaObj) {

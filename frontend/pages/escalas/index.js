@@ -101,8 +101,8 @@ function EscalasPage({ data, h }) {
                     ...item.attributes,
                 })));
 
-                setRedirectParticipantes(`/escalas/participantes?escala=${encodeURIComponent(escalaSelecionada.descricao)}`)
-                setRedirectPlantonistas(`/plantoes?escala=${encodeURIComponent(escalaSelecionada.descricao)}`)
+                setRedirectParticipantes(`/escalas/participantes?escala=${encodeURIComponent(escalaSelecionada.id)}`)
+                setRedirectPlantonistas(`/plantoes?escala=${encodeURIComponent(escalaSelecionada.id)}`)
             }
         }
         if(block === null){

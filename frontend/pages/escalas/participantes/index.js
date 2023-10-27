@@ -175,7 +175,7 @@ function Participantes() {
             const escalaUrl = params.get('escala');
 
             if(escalaUrl!==null && juizes.length > 0) {
-                const escalaObj = escalas.find((escala) => escala.descricao === escalaUrl);
+                const escalaObj = escalas.find((escala) => escala.id == escalaUrl);
                 console.log('OBJETO', escalaObj);
 
                 if (escalaObj !== undefined && escalaObj != null) {
@@ -467,7 +467,7 @@ function Participantes() {
                                 </Grid>*/}
                                 <Grid>
                                     {!opcaoSelecionada && (
-                                        <MDTypography variant="h6" mx={5} ml={7} mt={-1} mb={-2} fontWeight="light">
+                                        <MDTypography variant="h6" mx={5} ml={7} mt={5} mb={-5} fontWeight="light">
                                             Escala não selecionada
                                         </MDTypography>
                                     )}
@@ -595,10 +595,7 @@ function Participantes() {
                                         />
                                         </div>)}
 
-                                    {opcaoSelecionada && (
-                                        <MDBox mt={2} mr={1} display="flex" justifyContent="flex-end">
-                                            <MDButton color="success" size="small" onClick={() => handleSubmit()}>Adicionar</MDButton>
-                                        </MDBox>)}
+
                                 </Grid>
                             </Grid>
                         </MDBox>
