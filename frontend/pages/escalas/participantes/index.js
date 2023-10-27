@@ -239,14 +239,10 @@ function Participantes() {
 
             const novosAdicionados = adicionados.filter(participante => participante.id !== idJuiz);
             setAdicionados(novosAdicionados);
+            console.log('teste remover',idJuiz, juizPreferencialId)
 
-            const juizRestante = juizes.find(juiz => juiz.id === idJuiz);
 
-            if (juizRestante) {
-                setJuizesRestantes([...juizesRestantes, juizRestante]);
-            }
-
-            if (idJuiz === juizPreferencialId) {
+            if (idJuiz == juizPreferencialId) {
                 removePreferencial(idJuiz, opcaoSelecionada.id, headers);
                 setJuizPreferencialId(null);
             }
