@@ -53,6 +53,7 @@
     "jsonwebtoken": "^9.0.2",
     "jsvectormap": "1.5.1",
     "next": "13.2.4",
+    "nodemailer": "^6.9.7",
     "prop-types": "15.8.1",
     "react": "18.2.0",
     "react-calendar": "^4.6.0",
