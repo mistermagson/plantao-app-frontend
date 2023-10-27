@@ -24,6 +24,8 @@ import {removePlantonista} from "../../../utils/plantaoUtils";
 import { useLocation } from 'react-router-dom';
 import {useRouter} from "next/router";
 import getHolidays from "../../../services/holidays";
+import AddIcon from "@mui/icons-material/Add";
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 const headers = {
     'Content-Type': 'application/json',
@@ -312,10 +314,15 @@ function Participantes() {
     };
 
     const showJSON = () => {
-        console.log('ADICIONADOS',adicionadosFiltro);
-        console.log('restantes',juizesRestantesFiltro);
+        console.log('juizes',juizes);
+
 
     };
+
+    function isJuizAdicionado(juizId) {
+        return adicionados.some((juiz) => juiz.id === juizId);
+    }
+
 
     return (
         <DashboardLayout>
@@ -330,7 +337,7 @@ function Participantes() {
 
                         <MDBox p={2} pt={0}>
                             <Grid container spacing={2} p={2}>
-                                <Grid item xs={12} md={12} xl={5}>
+                                <Grid item xs={12} md={5} xl={5}>
                                     <MDBox py={2}>
                                         <MDTypography variant="h6">
                                             Selecionar escala
@@ -348,7 +355,7 @@ function Participantes() {
                                     />
                                 </Grid>
 
-                                <Grid item xs={12} md={12} xl={4}>
+                                <Grid item xs={12} md={4} xl={4}>
                                     <MDBox py={2}>
                                         <MDTypography variant="h6">
                                             Filtrar juizes por vara:
@@ -366,7 +373,7 @@ function Participantes() {
                                 </Grid>
                             </Grid>
                             <Grid container spacing={6} p={2}>
-                                <Grid item xs={12} md={6} xl={6}>
+                                {/*<Grid item xs={12} md={6} xl={6}>
                                     {opcaoSelecionada && (<h5>Juizes Adicionados:</h5>)}
                                     {opcaoSelecionada && (
                                         <DataGrid
@@ -467,7 +474,7 @@ function Participantes() {
                                         <MDBox mt={2} mr={1} display="flex" justifyContent="flex-end">
                                             <MDButton color="success" size="small" onClick={() => handleSubmit()}>Adicionar</MDButton>
                                         </MDBox>)}
-                                </Grid>
+                                </Grid>*/}
                                 {/*<Grid item xs={12} md={12} xl={10}>
                                     {opcaoSelecionada && (<h5>Juizes Restantes:</h5>)//TODO MONTAR TABELA CORRETAMENTE}
                                     }{ opcaoSelecionada && (
@@ -480,8 +487,117 @@ function Participantes() {
                                         </MDTypography>
                                     )}
                                 </Grid>
+                                <Grid item xs={12} md={12} xl={12}>
+                                    {opcaoSelecionada && (<h5>Listas de Juizes:</h5>)}
+                                    {opcaoSelecionada && (
+                                        <DataGrid
+                                            density="compact"
+                                            editMode="row"
+
+                                            disableColumnMenu
+                                            sx={{fontSize: '16px', fontWeight: 'regular', padding: '10px'}}
+                                            style={{height: '500px'}}
+                                            pageSizeOptions={[5, 10, 20,50,100]}
+                                            initialState={{
+                                                pagination: {paginationModel: {pageSize: 20}},
+                                                sorting: {sortModel: [{field: 'antiguidade', sort: 'asc'}],},
+                                            }}
+                                            rows={juizes}
+                                            columns={[
+                                                {
+                                                    field: 'opcoes',
+                                                    headerName: 'Opções',
+                                                    minWidth: 80,
+                                                    renderCell: (params) => (
+                                                        <div>
+                                                            <Tooltip title={isJuizPreferencial(params.row.id) ? 'Escolhendo...' : 'Definir como Preferencial'}>
+                                                                <GridActionsCellItem
+                                                                    icon={<HowToRegIcon style={{fontSize: 'large'}}/>}
+                                                                    label={isJuizPreferencial(params.row.id) ? 'Escolhendo...' : 'Definir como Preferencial'}
+                                                                    onClick={() => {
+                                                                        if (!isJuizPreferencial(params.row.id)) {
+                                                                            handleAlterarPreferencia(params.row)
+                                                                        }
+                                                                    }}
+                                                                    color={isJuizPreferencial(params.row.id) ? 'primary' : 'default'}
+                                                                />
+                                                            </Tooltip>
+                                                            {isJuizAdicionado(params.row.id) ? (
+                                                                <Tooltip title="Remover Juiz">
+                                                                    <GridActionsCellItem
+                                                                        icon={<RemoveCircleOutlineIcon />}
+                                                                        label="Remover Juiz"
+                                                                        onClick={() => handleLimparParticipante(params.row.id)}
+                                                                        color="inherit"
+                                                                    />
+                                                                </Tooltip>
+                                                            ) : (
+                                                                <Tooltip title="Adicionar Juiz">
+                                                                    <GridActionsCellItem
+                                                                        icon={<AddCircleOutlineIcon />}
+                                                                        label="Adicionar Juiz"
+                                                                        onClick={() => handleSubmit(params.row.id)} // Chame a função para adicionar juiz aqui
+                                                                        color="inherit" // Use 'primary' para destacar a opção de adicionar
+                                                                    />
+                                                                </Tooltip>
+                                                            )}
+                                                        </div>
+                                                    ),
+                                                },
+                                                {
+                                                    field: 'antiguidade',
+                                                    headerName: 'RF',
+                                                    Width: 10,
+                                                    renderCell: (params) => (
+                                                        <div style={{ color: isJuizAdicionado(params.row.id) ? 'green' : 'black' }}>
+                                                            {params.row.antiguidade}
+                                                        </div>
+                                                    ),
+                                                },
+                                                {
+                                                    field: 'nome',
+                                                    headerName: 'Nomes',
+                                                    flex: 1,
+                                                    minWidth: 150,
+                                                    renderCell: (params) => (
+                                                        <div style={{ color: isJuizAdicionado(params.row.id) ? 'green' : 'black' }}>
+                                                            {params.row.nome}
+                                                        </div>
+                                                    ),
+                                                },
+                                                {
+                                                    field: 'lotacao.data.attributes.descricao',
+                                                    headerName: 'Descrição da Vara',
+                                                    flex: 1,
+                                                    minWidth: 150,
+                                                    valueGetter: (params) => {
+                                                        return params.row.lotacao.data.attributes.descricao;
+                                                    },
+                                                    renderCell: (params) => (
+                                                        <div style={{ color: isJuizAdicionado(params.row.id) ? 'green' : 'black' }}>
+                                                            {params.row.lotacao.data.attributes.descricao}
+                                                        </div>
+                                                    ),
+                                                },
+
+                                            ]}
+                                            onRowSelectionModelChange={(newRowSelectionModel) => {setRowSelectionModel(newRowSelectionModel);}}
+                                            rowSelectionModel={rowSelectionModel}
+                                            disableColumnFilter
+                                            disableColumnSelector
+                                            disableDensitySelector
+                                            slots={{toolbar: GridToolbar}}
+                                            slotProps={{toolbar: {showQuickFilter: true,},}}
+
+                                        />)}
+
+                                    {opcaoSelecionada && (
+                                        <MDBox mt={2} mr={1} display="flex" justifyContent="flex-end">
+                                            <MDButton color="success" size="small" onClick={() => handleSubmit()}>Adicionar</MDButton>
+                                        </MDBox>)}
+                                </Grid>
                             </Grid>
-                        </MDBox>
+                        </MDBox>no
                     </Card>
                 </Grid>
             </Grid>
