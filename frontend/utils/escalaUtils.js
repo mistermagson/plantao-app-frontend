@@ -110,7 +110,7 @@ export const setParticipantesEscala = (idEscala, juizesArray,headers) => {
     const participantes={
         participantes:{connect: juizesArray}
     }
-    console.log(idEscala, participantes,headers)
+    console.log('setParticipantes',idEscala, participantes,headers)
     const setEscala = async () => {
         try {
             const response = await fetch(`http://10.28.80.30:1337/api/escalas/${idEscala}`, {

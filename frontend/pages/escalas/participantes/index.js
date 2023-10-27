@@ -26,6 +26,7 @@ import {useRouter} from "next/router";
 import getHolidays from "../../../services/holidays";
 import AddIcon from "@mui/icons-material/Add";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import MouseIcon from '@mui/icons-material/Mouse';
 
 const headers = {
     'Content-Type': 'application/json',
@@ -40,8 +41,7 @@ function Participantes() {
     const [escalas, setEscalas] = useState([]);
     const [escalaObj, setEscalaObj] = useState(null);
     const [juizes, setJuizes] = useState([]);
-    const [juizesRestantes, setJuizesRestantes] = useState([]);
-    const [juizesRestantesFiltro, setJuizesRestantesFiltro] = useState([]);
+    const [juizesFiltro, setJuizesFiltro] = useState([]);
     const [adicionados, setAdicionados] = useState([]);
     const [adicionadosFiltro, setAdicionadosFiltro] = useState([]);
     const [varas, setVaras] = useState([]);
@@ -50,7 +50,11 @@ function Participantes() {
     const [jsonData, setJsonData] = useState([]);
     const [juizPreferencialId, setJuizPreferencialId] = useState(null);
     const [block, setBlock] = useState(null);
+    const [mostrarApenasAdicionados, setMostrarApenasAdicionados] = useState(false);
 
+    const juizesFiltrados = mostrarApenasAdicionados
+        ? adicionados // Se o checkbox estiver marcado, mostre apenas os juízes adicionados
+        : juizesFiltro; // Caso contrário, mostre todos os juízes
 
     const fetchJuizes = async () => {
         try {
@@ -142,16 +146,16 @@ function Participantes() {
 
         if( varaSelecionada != null){
             const filtraAdicionados = adicionados.filter((juiz) => juiz.lotacao.data.id === varaSelecionada.id);
-            const filtraRestantes = juizesRestantes.filter((juiz) => juiz.lotacao.data.id === varaSelecionada.id);
+            const filtraJuizes = juizes.filter((juiz) => juiz.lotacao.data.id === varaSelecionada.id);
 
             setAdicionadosFiltro(filtraAdicionados);
-            setJuizesRestantesFiltro(filtraRestantes);
+            setJuizesFiltro(filtraJuizes);
         }
         else{
             setAdicionadosFiltro(adicionados);
-            setJuizesRestantesFiltro(juizesRestantes);
+            setJuizesFiltro(juizes);
         }
-    }, [adicionados, juizesRestantes, varaSelecionada]);
+    }, [adicionados, juizes, varaSelecionada]);
 
     useEffect(() => {
 
@@ -189,23 +193,18 @@ function Participantes() {
     const onChangeEscala = (selecionada) => {
         try {
             console.log('SELECIONADA 1111', selecionada)
-                console.log('SELECIONADA', selecionada)
-                const participantes = selecionada.participantes.data.map((item) => ({id: item.id, ...item.attributes,}));
-                setAdicionados(participantes)
-                setAdicionadosFiltro(participantes)
+            console.log('SELECIONADA', selecionada)
+            const participantes = selecionada.participantes.data.map((item) => ({id: item.id, ...item.attributes,}));
+            setAdicionados(participantes)
+            setAdicionadosFiltro(participantes)
+            setJuizesFiltro(juizes)
+            setJuizes(juizes)
 
-                if (participantes) {
-                    const naoParticipantes = juizes.filter(item1 => {
-                        return !participantes.some(item2 => item2.id === item1.id);
-                    });
-
-                    setJuizesRestantes(naoParticipantes);
-                    setJuizesRestantesFiltro(naoParticipantes)
-                    const juizPreferencial = selecionada.preferencia?.data?.id;
-                    setJuizPreferencialId(juizPreferencial);
-                    setVaraSelecionada(null)
-
-                }
+            if (participantes) {
+                const juizPreferencial = selecionada.preferencia?.data?.id;
+                setJuizPreferencialId(juizPreferencial);
+                setVaraSelecionada(null)
+            }
         } catch (error) {
             console.error('Erro ao atualizar dados:', error);
         }
@@ -222,15 +221,9 @@ function Participantes() {
         const juizSelecionado = juizes.find((juiz) => juiz.id === juizId);
 
         if (juizSelecionado) {
-            // Acesse a lista de plantões do juiz
             const plantoesJuiz = juizSelecionado.plantoes.data;
-
-            // Filtre os plantões que pertencem à mesma escala selecionada
             const plantoesEscala = plantoesJuiz.filter((plantao) => plantao.attributes.escala.data.id === escalaId);
-
-            // Extrair os IDs dos plantões em um array e  Retornar o array de IDs dos plantões
             return plantoesEscala.map((plantao) => plantao.id);
-
 
         } else {
             console.log('Juiz selecionado não encontrado no array de juízes.');
@@ -279,27 +272,15 @@ function Participantes() {
         }
     }
 
-    const passaEscolha = async()=>{
-        try{
-            passaPreferencia(opcaoSelecionada,headers);
-            setJuizPreferencialId(null);
-
-            await fetchEscalas();
-
-
-        } catch (error) {
-            console.error(error);
-        }
-    }
-    const handleSubmit = () => {
+    const handleSubmit = (idSelecao) => {
         try {
-            setParticipantesEscala(opcaoSelecionada.id, rowSelectionModel, headers)
+            const idJuiz = [idSelecao]
+            setParticipantesEscala(opcaoSelecionada.id, idJuiz, headers)
 
-            const novosAdicionados = adicionados.concat(rowSelectionModel.map(id => juizes.find(juiz => juiz.id === id)));
+            const novosAdicionados = adicionados.concat(idJuiz.map(id => juizes.find(juiz => juiz.id === id)));
             setAdicionados(novosAdicionados);
 
-            const novosJuizesRestantes = juizesRestantes.filter(juiz => !rowSelectionModel.includes(juiz.id));
-            setJuizesRestantes(novosJuizesRestantes);
+
             setRowSelectionModel([]);
         } catch (error) {
             console.error(error);
@@ -314,8 +295,7 @@ function Participantes() {
     };
 
     const showJSON = () => {
-        console.log('juizes',juizes);
-
+        console.log('juizes',rowSelectionModel);
 
     };
 
@@ -323,6 +303,15 @@ function Participantes() {
         return adicionados.some((juiz) => juiz.id === juizId);
     }
 
+    const checkboxStyle = {
+        marginRight: '8px', // Espaçamento à direita do checkbox
+        verticalAlign: 'middle', // Alinhar verticalmente com o texto
+    };
+
+    const labelStyle = {
+        display: 'flex', // Exibir o checkbox e o texto em linha reta
+        alignItems: 'center', // Alinhar verticalmente no centro
+    };
 
     return (
         <DashboardLayout>
@@ -490,19 +479,34 @@ function Participantes() {
                                 <Grid item xs={12} md={12} xl={12}>
                                     {opcaoSelecionada && (<h5>Listas de Juizes:</h5>)}
                                     {opcaoSelecionada && (
+                                        <div>
+                                            <Grid item xs={5} md={4} xl={3}>
+                                            <label style={{...labelStyle, cursor: 'pointer'}}>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={mostrarApenasAdicionados}
+                                                    onChange={() => setMostrarApenasAdicionados(!mostrarApenasAdicionados)}
+                                                    style={{
+                                                        ...checkboxStyle,
+                                                        width: '16px', // Largura personalizada
+                                                        height: '16px', // Altura personalizada
+                                                    }}
+                                                />
+                                                <MDTypography variant="h6" sx={{ fontWeight: 'regular'}}>Apenas adicionados</MDTypography >
+                                            </label>
+                                            </Grid>
                                         <DataGrid
                                             density="compact"
                                             editMode="row"
-
                                             disableColumnMenu
-                                            sx={{fontSize: '16px', fontWeight: 'regular', padding: '10px'}}
+                                            sx={{fontSize: '16px', fontWeight: 'regular', padding: '10px', }}
                                             style={{height: '500px'}}
                                             pageSizeOptions={[5, 10, 20,50,100]}
                                             initialState={{
-                                                pagination: {paginationModel: {pageSize: 20}},
+                                                pagination: {paginationModel: {pageSize: 100}},
                                                 sorting: {sortModel: [{field: 'antiguidade', sort: 'asc'}],},
                                             }}
-                                            rows={juizes}
+                                            rows={juizesFiltrados}
                                             columns={[
                                                 {
                                                     field: 'opcoes',
@@ -512,14 +516,14 @@ function Participantes() {
                                                         <div>
                                                             <Tooltip title={isJuizPreferencial(params.row.id) ? 'Escolhendo...' : 'Definir como Preferencial'}>
                                                                 <GridActionsCellItem
-                                                                    icon={<HowToRegIcon style={{fontSize: 'large'}}/>}
+                                                                    icon={<span className="material-icons-outlined">ads_click</span>}
                                                                     label={isJuizPreferencial(params.row.id) ? 'Escolhendo...' : 'Definir como Preferencial'}
                                                                     onClick={() => {
                                                                         if (!isJuizPreferencial(params.row.id)) {
                                                                             handleAlterarPreferencia(params.row)
                                                                         }
                                                                     }}
-                                                                    color={isJuizPreferencial(params.row.id) ? 'primary' : 'default'}
+                                                                    color={isJuizPreferencial(params.row.id) ? 'error' : 'default'}
                                                                 />
                                                             </Tooltip>
                                                             {isJuizAdicionado(params.row.id) ? (
@@ -536,7 +540,10 @@ function Participantes() {
                                                                     <GridActionsCellItem
                                                                         icon={<AddCircleOutlineIcon />}
                                                                         label="Adicionar Juiz"
-                                                                        onClick={() => handleSubmit(params.row.id)} // Chame a função para adicionar juiz aqui
+                                                                        onClick={() => {
+                                                                            console.log('ADD',params.row)
+                                                                            handleSubmit(params.row.id)
+                                                                        }} // Chame a função para adicionar juiz aqui
                                                                         color="inherit" // Use 'primary' para destacar a opção de adicionar
                                                                     />
                                                                 </Tooltip>
@@ -547,7 +554,7 @@ function Participantes() {
                                                 {
                                                     field: 'antiguidade',
                                                     headerName: 'RF',
-                                                    Width: 10,
+                                                    flex: 0.05,
                                                     renderCell: (params) => (
                                                         <div style={{ color: isJuizAdicionado(params.row.id) ? 'green' : 'black' }}>
                                                             {params.row.antiguidade}
@@ -556,8 +563,8 @@ function Participantes() {
                                                 },
                                                 {
                                                     field: 'nome',
-                                                    headerName: 'Nomes',
-                                                    flex: 1,
+                                                    headerName: 'Nome',
+                                                    flex: 0.7,
                                                     minWidth: 150,
                                                     renderCell: (params) => (
                                                         <div style={{ color: isJuizAdicionado(params.row.id) ? 'green' : 'black' }}>
@@ -567,7 +574,7 @@ function Participantes() {
                                                 },
                                                 {
                                                     field: 'lotacao.data.attributes.descricao',
-                                                    headerName: 'Descrição da Vara',
+                                                    headerName: 'Vara',
                                                     flex: 1,
                                                     minWidth: 150,
                                                     valueGetter: (params) => {
@@ -589,7 +596,8 @@ function Participantes() {
                                             slots={{toolbar: GridToolbar}}
                                             slotProps={{toolbar: {showQuickFilter: true,},}}
 
-                                        />)}
+                                        />
+                                        </div>)}
 
                                     {opcaoSelecionada && (
                                         <MDBox mt={2} mr={1} display="flex" justifyContent="flex-end">
@@ -597,7 +605,7 @@ function Participantes() {
                                         </MDBox>)}
                                 </Grid>
                             </Grid>
-                        </MDBox>no
+                        </MDBox>
                     </Card>
                 </Grid>
             </Grid>
