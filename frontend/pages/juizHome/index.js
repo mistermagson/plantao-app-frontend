@@ -22,6 +22,7 @@ import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import EventIcon from '@mui/icons-material/Event';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DefaultProjectCard from "../../examples/Cards/ProjectCards/DefaultProjectCard";
+import Calendar from "/examples/Calendar";
 
 function Escalas({ h }) {
     const [escalaSelecionada, setEscalaSelecionada] = useState(null);
@@ -199,7 +200,7 @@ function Escalas({ h }) {
                             </MDBox>
                             <MDBox>
                                 <Grid container spacing={3} xl={12}>
-                                    <Grid item xs={12} xl={8}>
+                                    <Grid item xs={12} xl={9}>
                                         {escalas && (
                                             <DataGrid
                                                 editMode="row"
@@ -238,6 +239,7 @@ function Escalas({ h }) {
                                                                         color={isJuizPreferencial(params.row) ? 'success' : 'default'}
                                                                     />
                                                                 </Tooltip>
+
                                                             </div>
                                                         ),
                                                     },]}
@@ -253,27 +255,46 @@ function Escalas({ h }) {
                                                 sortModel={[{field: 'data', sort: 'asc',}]}
                                             />)}
                                     </Grid>
-                                    <Grid item xs={12} xl={4}>
+                                    <Grid item xs={12} xl={3} mt={8} style={{ height: "100%", display: "flex", alignItems: "center" }}>
                                     {rowSelectionModel.length > 0 &&(
+                                        <Card>
+                                            <MDBox p={2}>
                                         <DefaultProjectCard
                                             title= {"Escala: "+escalaSelecionada.descricao}
-                                            description={`Tipo: ${escalaSelecionada.tipo}, 
-                Data de Início: ${formatDate(escalaSelecionada.inicio)}, 
-                Data de Fim: ${formatDate(escalaSelecionada.fim)}, 
-                Preferência: ${escalaSelecionada.preferencia ? escalaSelecionada.preferencia.attributes.nome : 'Nenhum juiz na preferência'}`}
+                                            description={
+                                                <div>
+                                                    <p>Tipo: {escalaSelecionada.tipo}</p>
+                                                    <p>Data de Início: {formatDate(escalaSelecionada.inicio)}</p>
+                                                    <p>Data de Fim: {formatDate(escalaSelecionada.fim)}</p>
+                                                    <br></br>
+                                                    <p>
+                                                        Escolhendo:{" "}
+                                                        {escalaSelecionada.preferencia.data ? (
+                                                            escalaSelecionada.preferencia.data.attributes.nome
+                                                        ) : (
+                                                            'Nenhum juiz na escolha'
+                                                        )}
+                                                    </p>
+                                                </div>
+                                            }
                                             action={{
                                                 type: "internal",
                                                 route: "/plantoes/meusplantoes",
                                                 color: "dark",
                                                 label: "escolher plantoes",
                                             }}
-                                        />
+                                         label={""}/>
+                                            </MDBox>
+                                        </Card>
                                     )}
                                     {rowSelectionModel.length === 0 &&(
-                                        <div>
-                                            <h5>Selecione uma</h5>
-                                            <h5>Escala</h5>
-                                        </div>
+                                        <Card>
+                                            <MDBox p={4}>
+                                                <h4>Selecione uma Escala</h4>
+                                                <br></br>
+                                                <MDTypography variant='h6' fontWeight='light'>As informções da escala escolhida aparecerão aqui</MDTypography>
+                                            </MDBox>
+                                        </Card>
 
                                     )}
                                     </Grid>
@@ -286,18 +307,26 @@ function Escalas({ h }) {
                             </MDBox>
                             <MDBox>
                                 <Grid container spacing={3} xl={12}>
-                                    {plantoes.length <= 0 && (
-                                        <Grid item xs={12} xl={5}>
-                                            <CalendarioJuiz  plantoes={plantoes}/>
+
+                                        <Grid item xs={12} xl={7}>
+                                            {plantoes.length>0 ?
+                                            <CalendarioJuiz  plantoes={plantoes}/> : <Calendar
+                                                    initialView="dayGridMonth"
+
+                                                    events={[]}
+                                                    selectable
+                                                    editable
+                                                />}
                                         </Grid>
-                                    )}
-                                    <Grid item xs={12} xl={7}>
+
+                                    <Grid item xs={12} xl={5}>
                                         {escalas && (
                                             <DataGrid
                                                 editMode="row"
                                                 disableColumnMenu
                                                 sx={{fontSize: '16px', fontWeight: 'regular', padding: '10px',border:0}}
                                                 rows={plantoes}
+                                                initialState={{sorting: {sortModel: [{field: 'data', sort: 'asc'}],},}}
                                                 columns={[{field: 'data', headerName: 'Data', flex: 1, renderCell: (params) => {
                                                         const dateParts = params.value.split('-');
                                                         const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
@@ -320,7 +349,7 @@ function Escalas({ h }) {
                                                 hideExport={true}
                                                 hideFooterRowCount={true}
                                                 hideFooterSelectedRowCount={true}
-                                                style={{height: '460px'}}
+                                                style={{height: '430px'}}
 
                                             />)}
                                     </Grid>
@@ -341,7 +370,7 @@ export async function getServerSideProps() {
             "Bearer ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b",
     };
     const res = await fetch(
-        "http://127.0.0.1:1337/api/escalas?populate=plantaos.plantonista.lotacao.varas,participantes.plantoes,participantes.lotacao,preferencia.juizs",
+        "http://10.28.80.30:1337/api/escalas?populate=plantaos.plantonista.lotacao.varas,participantes.plantoes,participantes.lotacao,preferencia.juizs",
         {
             method: "GET",
             headers: h,

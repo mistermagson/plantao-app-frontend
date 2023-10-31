@@ -150,7 +150,7 @@ function Plantoes({data, h}) {
     return (
         <DashboardLayout>
             <DashboardNavbar />
-            <MDButton size="small" onClick={()=>showJSON()} lcolor="info">Exibir</MDButton>
+            {/*<MDButton size="small" onClick={()=>showJSON()} lcolor="info">Exibir</MDButton>*/}
 
             <div>
                 <Dialog open={passar} onClose={handleClose}>
@@ -215,7 +215,7 @@ function Plantoes({data, h}) {
                                     </Grid>{/* AUTOCOMPLETE JUIZ*/}
                             </Grid>
                         </Grid>
-                        <Grid item xs={12} xl={6.5} pt={2} >
+                        <Grid item xs={12} xl={6} pt={2} >
                             <MDBox px={2}>
                                 <MDBox p={2}  >
                                     {escalaSelecionada && (<>
@@ -292,7 +292,7 @@ function Plantoes({data, h}) {
                                         />
                                     )}
                                     {escalaSelecionada && (
-                                        <MDBox mt={2} display="flex" justifyContent="flex-end">
+                                        <MDBox my={2} display="flex" justifyContent="flex-end">
                                             {plantaoSelecionado.length > 0 && (
                                                 <MDButton color="success" size="small" type="submit" sx={{ marginRight: '10px' }}>
                                                     Adicionar
@@ -306,14 +306,12 @@ function Plantoes({data, h}) {
                                 </MDBox>
                             </MDBox>
                         </Grid>
-                        <Grid item xs={12} xl={5} pt={4} pb={4}>
+                        <Grid item xs={12} xl={6} pt={4} pb={4}>
                             {escalaSelecionada && (
-                                <MDBox px={4}>
-                                    <Calendario plantoes={plantoes} escalaSelecionada={escalaSelecionada}/>
+                                <MDBox px={4} mt={6}>
+                                    <Calendario style={{height:'800px'}} plantoes={plantoes} escalaSelecionada={escalaSelecionada}/>
                                 </MDBox>)}
                         </Grid>
-
-
                     </Grid>
                 </form>
             </Card>
