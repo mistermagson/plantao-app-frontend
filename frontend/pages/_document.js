@@ -7,7 +7,7 @@ import createEmotionServer from "@emotion/server/create-instance";
 export default class MyDocument extends Document {
   render() {
     return (
-      <Html lang="en">
+      <Html lang="pt">
         <Head>
           <meta charSet="utf-8" />
           <meta name="theme-color" content="#1A73E8" />
