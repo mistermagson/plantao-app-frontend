@@ -4,7 +4,7 @@ import MDBox from "/components/MDBox";
 import MDTypography from "/components/MDTypography";
 import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
-import {DataGrid} from '@mui/x-data-grid';
+import {DataGrid, GridToolbar} from '@mui/x-data-grid';
 import React, {useState, useEffect, get} from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -22,6 +22,7 @@ import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} fr
 import {es} from "date-fns/locale";
 import MDAlert from "../../components/MDAlert";
 import Icon from "@mui/material/Icon";
+import Card from "@mui/material/Card";
 
 function Plantoes({data, h}) {
 
@@ -288,6 +289,11 @@ function Plantoes({data, h}) {
                                             }}
                                             onRowSelectionModelChange={(newRowSelectionModel) => {setPlantaoSelecionado(newRowSelectionModel);}}
                                             rowSelectionModel={plantaoSelecionado}
+                                            slots={{toolbar: GridToolbar}}
+                                            slotProps={{toolbar: {showQuickFilter: true,},}}
+                                            disableColumnFilter
+                                            disableColumnSelector
+                                            disableDensitySelector
                                         />
                                     )}
                                     {escalaSelecionada && (
