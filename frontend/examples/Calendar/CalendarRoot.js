@@ -36,7 +36,7 @@ export default styled(Box)(({ theme, ownerState }) => {
     height: "50%",
 
     "& .fc-media-screen": {
-      height: "50%",
+      height: "80%",
       color: dark.main,
     },
 
@@ -103,7 +103,7 @@ export default styled(Box)(({ theme, ownerState }) => {
     },
 
     "& .fc .fc-daygrid-body-unbalanced .fc-daygrid-day-events": {
-      minHeight: pxToRem(20),
+      minHeight: pxToRem(27),
       margin: 0,
       padding: 0,
     },

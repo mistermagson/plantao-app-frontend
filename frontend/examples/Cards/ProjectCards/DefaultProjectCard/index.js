@@ -119,7 +119,7 @@ function DefaultProjectCard({
         >
           {action.type === "internal" ? (
             <Link href={action.route}>
-              <MDButton variant="outlined" size="small" color={action.color}>
+              <MDButton variant="gradient" size="small" color={action.color}>
                 {action.label}
               </MDButton>
             </Link>
@@ -129,7 +129,7 @@ function DefaultProjectCard({
               href={action.route}
               target="_blank"
               rel="noreferrer"
-              variant="outlined"
+              variant="gradient"
               size="small"
               color={action.color}
             >

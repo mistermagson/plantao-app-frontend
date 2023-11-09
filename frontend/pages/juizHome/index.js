@@ -160,7 +160,7 @@ function Escalas({ h }) {
     }
 
     const showJSON = () => {
-        //console.log("--------| escalas |--------", escalas);
+        console.log("--------| escalas |--------", escalaSelecionada);
         /*console.log("--------| juiz |----------", juiz);
         console.log("--------| plantoes |-------", plantoes);*/
         console.log("--------| SELECAO |-------", escalas);
@@ -193,7 +193,7 @@ function Escalas({ h }) {
             </MDBox>
             <Card>
                 <form onSubmit={handleSubmit}>
-                    <Grid container spacing={3}  px={3} py={1} mb={-6}>
+                    <Grid container spacing={3}  px={3} py={1} mb={6}>
                         <Grid item xs={12} sm={12} xl={12}  sx={{ height: "max-content" }}>
                             <MDBox pl={1} my={2}>
                                 <h5 >Minhas escalas:</h5>
@@ -208,14 +208,14 @@ function Escalas({ h }) {
                                                 sx={{fontSize: '16px', fontWeight: 'regular', padding: '10px',}}
                                                 style={{height: 'flex'}}
                                                 rows={escalas}
-                                                columns={[{field: 'descricao', headerName: 'Nome', flex: 1},
+                                                columns={[{field: 'descricao', headerName: 'Escala', flex: 1},
                                                     {
                                                         field: 'inicio',
                                                         headerName: 'Escolha',
                                                         minWidth: 200,
 
                                                         renderCell: (params) => (
-                                                                <span style={{color: isJuizPreferencial(params.row) ? 'green' : 'red',}}>
+                                                                <span style={{color: isJuizPreferencial(params.row) ? 'green' : '',}}>
                                                                     {isJuizPreferencial(params.row) ?  `Escolha seus Plantões `:'Aguarde sua vez ' }
                                                                 </span>)
                                                     },
@@ -255,35 +255,36 @@ function Escalas({ h }) {
                                                 sortModel={[{field: 'data', sort: 'asc',}]}
                                             />)}
                                     </Grid>
-                                    <Grid item xs={12} xl={3} mt={8} style={{ height: "100%", display: "flex", alignItems: "center" }}>
+                                    <Grid item xs={12} xl={3}  style={{ height: "100%", display: "flex", alignItems: "center", alignSelf: 'flex-end' }}>
                                     {rowSelectionModel.length > 0 &&(
                                         <Card>
                                             <MDBox p={2}>
-                                        <DefaultProjectCard
-                                            title= {"Escala: "+escalaSelecionada.descricao}
-                                            description={
-                                                <div>
-                                                    <p>Tipo: {escalaSelecionada.tipo}</p>
-                                                    <p>Data de Início: {formatDate(escalaSelecionada.inicio)}</p>
-                                                    <p>Data de Fim: {formatDate(escalaSelecionada.fim)}</p>
-                                                    <br></br>
-                                                    <p>
-                                                        Escolhendo:{" "}
-                                                        {escalaSelecionada.preferencia.data ? (
-                                                            escalaSelecionada.preferencia.data.attributes.nome
-                                                        ) : (
-                                                            'Nenhum juiz na escolha'
-                                                        )}
-                                                    </p>
-                                                </div>
-                                            }
-                                            action={{
-                                                type: "internal",
-                                                route: "/plantoes/meusplantoes",
-                                                color: "dark",
-                                                label: "escolher plantoes",
-                                            }}
-                                         label={""}/>
+                                            <DefaultProjectCard
+                                                title= {"Escala: "+escalaSelecionada.descricao}
+                                                description={
+                                                    <div style={{ fontSize: '18px' }}>
+                                                        <p>Tipo: {escalaSelecionada.tipo}</p>
+                                                        <p>Data de Início: {formatDate(escalaSelecionada.inicio)}</p>
+                                                        <p>Data de Fim: {formatDate(escalaSelecionada.fim)}</p>
+                                                        <br></br>
+                                                        <p>
+                                                            Escolhendo:{" "}
+                                                            {escalaSelecionada.preferencia.data ? (
+                                                                escalaSelecionada.preferencia.data.attributes.nome
+                                                            ) : (
+                                                                'Nenhum juiz na escolha'
+                                                            )}
+                                                        </p>
+                                                    </div>
+                                                }
+                                                action={{
+                                                    type: "internal",
+                                                    route: "/plantoes/meusplantoes",
+                                                    color: isJuizPreferencial(escalaSelecionada) ? 'success' : 'secondary',
+                                                    label: isJuizPreferencial(escalaSelecionada) ? 'Escolher Plantões' : 'Ver Plantões',
+                                                }}
+                                                label={""}
+                                            />
                                             </MDBox>
                                         </Card>
                                     )}
@@ -292,7 +293,7 @@ function Escalas({ h }) {
                                             <MDBox p={4}>
                                                 <h4>Selecione uma Escala</h4>
                                                 <br></br>
-                                                <MDTypography variant='h6' fontWeight='light'>As informções da escala escolhida aparecerão aqui</MDTypography>
+                                                <MDTypography variant='h5' fontWeight='light'>As informções da escala escolhida aparecerão aqui</MDTypography>
                                             </MDBox>
                                         </Card>
 
@@ -327,7 +328,7 @@ function Escalas({ h }) {
                                                 sx={{fontSize: '16px', fontWeight: 'regular', padding: '10px',border:0}}
                                                 rows={plantoes}
                                                 initialState={{sorting: {sortModel: [{field: 'data', sort: 'asc'}],},}}
-                                                columns={[{field: 'data', headerName: 'Data', flex: 1, renderCell: (params) => {
+                                                columns={[{field: 'data', headerName: 'Plantão', flex: 1, renderCell: (params) => {
                                                         const dateParts = params.value.split('-');
                                                         const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
                                                         return <span>{formattedDate}</span>;
