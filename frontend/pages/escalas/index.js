@@ -423,16 +423,18 @@ function EscalasPage({ data, h }) {
                                         <h5 style={{ color: '#344767' }}>Calendário</h5>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        {plantoes.length <= 0 && (
-                                            <MDBox pb={1.5}>
-                                                <MDTypography variant="h6" sx={{ fontWeight: 'regular' }}>
+                                        {plantoes.length <= 0 ? (
+                                            <Grid item xs={12} xl={3}>
+                                                <Card>
+                                                <MDTypography variant="h5" sx={{ fontWeight: 'regular', margin: '43px' }}>
                                                     Não há plantões vinculados a esta escala.
                                                 </MDTypography>
-                                            </MDBox>
-                                        )}
+                                                </Card>
+                                            </Grid>
+                                        ):(
                                         <Grid container spacing={3}>
                                             <Grid item xs={12} xl={7}>
-                                                <Calendario plantoes={plantoes} />
+                                                <Calendario plantoes={plantoes} dates={['2023-11-01', '2023-11-02','2023-11-03','2023-11-04','2023-11-05', '2023-11-15']} />
                                             </Grid>
                                             <Grid item xs={12} xl={5}>
                                                 <DataGrid
@@ -497,7 +499,7 @@ function EscalasPage({ data, h }) {
                                                     </Grid>
                                                 </Grid>
                                             </Grid>
-                                        </Grid>
+                                        </Grid>)}
                                     </AccordionDetails>
                                 </Accordion>
                             </Grid>
