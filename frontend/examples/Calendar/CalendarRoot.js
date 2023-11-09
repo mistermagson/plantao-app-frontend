@@ -64,6 +64,7 @@ export default styled(Box)(({ theme, ownerState }) => {
     },
 
     "& .fc .fc-daygrid-day-number": {
+      margin: 1,
       color: darkMode ? white.main : grey[700],
       fontSize: '15px',
       fontWeight: fontWeightBold,
@@ -94,15 +95,17 @@ export default styled(Box)(({ theme, ownerState }) => {
     },
 
     "& .fc-daygrid-event": {
-      margin: `${pxToRem(1)} ${pxToRem(2)}`,
+      margin: `${pxToRem(-1)} ${pxToRem(2)}`,
       border: "none",
-      borderRadius: pxToRem(5.6),
+      borderRadius: pxToRem(3.6),
       fontSize: size.sm,
       fontWeight: fontWeightMedium,
     },
 
     "& .fc .fc-daygrid-body-unbalanced .fc-daygrid-day-events": {
-      minHeight: pxToRem(5),
+      minHeight: pxToRem(20),
+      margin: 0,
+      padding: 0,
     },
 
     "& .fc-event-title": {
@@ -114,7 +117,7 @@ export default styled(Box)(({ theme, ownerState }) => {
     "& .fc-button, .fc-today-button, .fc-button:disabled": {
       backgroundColor: `${dark.main} !important`,
       borderColor: `${dark.main} !important`,
-      fontSize: `12px !important`,
+      fontSize: `13px !important`,
       boxShadow: `${md} !important`,
       opacity: "1 !important",
       transition: `all 150ms ease-in`,
