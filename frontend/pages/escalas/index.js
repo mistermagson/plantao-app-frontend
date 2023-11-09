@@ -6,7 +6,7 @@ import MDTypography from "/components/MDTypography";
 import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
 import {DataGrid, GridToolbar} from "@mui/x-data-grid";
-import React, { useState, useEffect, get } from "react";
+import React, {useState, useEffect, get, useRef} from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import MDButton from "../../components/MDButton";
@@ -38,11 +38,11 @@ import ptBR from 'date-fns/locale/pt-BR';
 import MDInput from "../../components/MDInput";
 import Link from "next/link";
 import clipboardCopy from 'clipboard-copy';
-
-
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 
 function EscalasPage({ data, h }) {
+
     const [escalaSelecionada, setEscalaSelecionada] = useState(null);
     const [linhaSelecionada, setLinhaSelecionada] = useState([]);
     const [headers, setHeaders] = useState(h);
@@ -59,6 +59,30 @@ function EscalasPage({ data, h }) {
     const router = useRouter()
     const [redirectPlantonistas, setRedirectPlantonistas] = useState("/plantoes")
     const [redirectParticipantes, setRedirectParticipantes] = useState("/escalas/participantes")
+    const [accordion1Expanded, setAccordion1Expanded] = useState(false);
+    const [accordion2Expanded, setAccordion2Expanded] = useState(false);
+    const [accordion3Expanded, setAccordion3Expanded] = useState(false);
+    const calendarRef = useRef(null);
+
+    const handleGoToDate = () => {
+        if (calendarRef.current) {
+            // Aqui você pode ajustar a data conforme necessário
+            const targetDate = new Date(); // Por padrão, define para a data atual
+            calendarRef.current.getApi().gotoDate(targetDate);
+        }
+    };
+
+    const handleAccordion1Change = (event, isExpanded) => {
+        setAccordion1Expanded(isExpanded);
+    };
+
+    const handleAccordion2Change = (event, isExpanded) => {
+        setAccordion2Expanded(isExpanded);
+    };
+
+    const handleAccordion3Change = (event, isExpanded) => {
+        setAccordion3Expanded(isExpanded);
+    };
 
 
     const fetchEscalas = async () => {
@@ -141,7 +165,7 @@ function EscalasPage({ data, h }) {
                     ...item.attributes,
                 }));
                 setPlantoes(plantaosArray);
-
+                handleGoToDate();
             }
         } catch (error) {
             setError(error.message);
@@ -410,62 +434,45 @@ function EscalasPage({ data, h }) {
 
                     {/*RENDERIZA COMPONENTES JUIZES E PLANTOES*/}
                     {escalaSelecionada && (
-                        <Grid container spacing={1} pb={3} px={3}>
+                        <Grid container spacing={1} py={5} px={3}>
 
                             {/*RENDERIZA CALENDARIO*/}
                             <Grid item xs={12} xl={12}>
-                                <Accordion style={{ boxShadow: 'none' }}>
-                                    <AccordionSummary
-                                        aria-controls="panel1a-content"
-                                        id="panel1a-header"
-                                        expandIcon={<ExpandMoreIcon />}
-                                    >
+                                <Accordion style={{ boxShadow: 'none' }} expanded={accordion1Expanded} onChange={handleAccordion1Change}>
+                                    <AccordionSummary aria-controls="panel1a-content" id="panel1a-header">
+                                        {accordion1Expanded ? (<ExpandLessIcon />) : (<ExpandMoreIcon />)}
                                         <h5 style={{ color: '#344767' }}>Calendário</h5>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        {plantoes.length <= 0 ? (
-                                            <Grid item xs={12} xl={3}>
-                                                <Card>
-                                                <MDTypography variant="h5" sx={{ fontWeight: 'regular', margin: '43px' }}>
-                                                    Não há plantões vinculados a esta escala.
-                                                </MDTypography>
-                                                </Card>
-                                            </Grid>
-                                        ):(
+
                                         <Grid container spacing={3}>
                                             <Grid item xs={12} xl={7}>
-                                                <Calendario plantoes={plantoes} dates={['2023-11-01', '2023-11-02','2023-11-03','2023-11-04','2023-11-05', '2023-11-15']} />
+                                                <Calendario plantoes={plantoes} ref={calendarRef}/>
                                             </Grid>
                                             <Grid item xs={12} xl={5}>
                                                 <DataGrid
                                                     density="compact"
-                                                    style={{ height: '400px' }}
+                                                    style={{ height: '500px' }}
                                                     editMode="row"
                                                     disableColumnMenu
                                                     sx={{ fontSize: '16px', fontWeight: 'regular', color: 'dark',border:0 }}
                                                     pageSizeOptions={[5, 10, 20]}
-                                                    initialState={{
-                                                        pagination: { paginationModel: { pageSize: 100 } },
-                                                    }}
+                                                    initialState={{pagination: { paginationModel: { pageSize: 100 } },}}
                                                     rows={plantoes}
                                                     columns={[
-                                                        {field:'data', headerName:'Datas',width: 120, sortable:false, renderCell: (params) => {
+                                                        {field:'data', headerName:'Plantão',width: 120, sortable:false, renderCell: (params) => {
                                                                 const dateParts = params.value.split('-');
                                                                 const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
                                                                 return <span>{formattedDate}</span>;
                                                             },},
-                                                        {field: 'plantonista', headerName: 'Plantonista', flex:2, minWidth:200,
-                                                            renderCell: (params) => (
+                                                        {field: 'plantonista', headerName: 'Plantonista', flex:2, minWidth:200, renderCell: (params) => (
                                                                 <span style={{color: params.value.data[0] ? 'red' : 'gray',}}>
                                                                     {params.value.data[0] ?  `${params.value.data[0].attributes.nome}`:'- Vazio -' }
                                                                 </span>
                                                             ),
                                                         },
                                                         {
-                                                            field: 'id',
-                                                            headerName: 'Opções',
-                                                            width: 110, align:"center",
-                                                            renderCell: (params) => (
+                                                            field: 'id', headerName: 'Opções', width: 110, align:"center", renderCell: (params) => (
                                                                 <GridActionsCellItem
                                                                     icon={<DeleteIcon color="filled" />}
                                                                     label="Delete"
@@ -473,9 +480,7 @@ function EscalasPage({ data, h }) {
                                                                 />
                                                             ),
                                                         },]}
-                                                    onRowSelectionModelChange={(newRowSelectionModel) => {
-                                                        setRowSelectionModel(newRowSelectionModel);
-                                                    }}
+                                                    onRowSelectionModelChange={(newRowSelectionModel) => {setRowSelectionModel(newRowSelectionModel);}}
                                                     disableColumnFilter
                                                     disableColumnSelector
                                                     disableDensitySelector
@@ -488,30 +493,28 @@ function EscalasPage({ data, h }) {
                                                     hideFooterRowCount={true}
                                                     hideFooterSelectedRowCount={true}
                                                 />
-                                                <Grid container spacing={1} mt={-5}>
-                                                    <Grid item xs={4} md={4} xl={4} >
-                                                        <MDInput type="date" value={dataPlantao} onChange={(prev)=>setDataPlantao(prev.target.value)}/>
+                                                <Grid container spacing={1} mt={-6.5} justifyContent="center" alignItems="center" sx={{ border: '1px solid rgb(224, 224, 224)', borderRadius: '5px', padding: '5px', paddingBottom: '10px' }}>
+                                                    <Grid item xs={6} md={6} xl={4} mt={0.2}>
+                                                        <MDTypography variant="h6">Adicionar novo Plantão:</MDTypography>
                                                     </Grid>
-                                                    <Grid item xs={8} md={6} xl={8} >
-                                                        <MDButton color="success" variant="gradient" size="medium" sx={{ width: '100%' }} onClick={() => handleAddPlantao()}>
-                                                            <AddIcon sx={{ marginRight: 1 }} /> Adicionar Data
+                                                    <Grid item xs={6} md={6} xl={6} >
+                                                        <MDInput type="date" value={dataPlantao} size="large" onChange={(prev)=>setDataPlantao(prev.target.value)}/>
+                                                        <MDButton color="success" variant="gradient" size="medium" sx={{ marginLeft : '5px' }} onClick={() => handleAddPlantao()}>
+                                                            <AddIcon sx={{ margin : '-5px' }} />
                                                         </MDButton>
                                                     </Grid>
                                                 </Grid>
                                             </Grid>
-                                        </Grid>)}
+                                        </Grid>
                                     </AccordionDetails>
                                 </Accordion>
                             </Grid>
 
                             {/*RENDERIZA PARTICIPANTES E MINUTA*/}
                             <Grid item xs={12} xl={6} >
-                                <Accordion style={{ boxShadow: "none" }}>
-                                    <AccordionSummary
-                                        aria-controls="panel1a-content"
-                                        id="panel1a-header"
-                                        expandIcon={<ExpandMoreIcon />}
-                                    >
+                                <Accordion style={{ boxShadow: "none" }} expanded={accordion2Expanded} onChange={handleAccordion2Change}>
+                                    <AccordionSummary aria-controls="panel1a-content" id="panel1a-header">
+                                        {accordion2Expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                                         <h5 style={{ color: "#344767" }}>Participantes</h5>
                                     </AccordionSummary>
                                     <AccordionDetails>
@@ -558,12 +561,9 @@ function EscalasPage({ data, h }) {
                                 </Accordion>
                             </Grid>
                             <Grid item xs={12} xl={6} >
-                                    <Accordion style={{ boxShadow: "none" }}>
-                                        <AccordionSummary
-                                            aria-controls="panel1a-content"
-                                            id="panel1a-header"
-                                            expandIcon={<ExpandMoreIcon />}
-                                        >
+                                    <Accordion style={{ boxShadow: "none" }} expanded={accordion3Expanded} onChange={handleAccordion3Change}>
+                                        <AccordionSummary aria-controls="panel1a-content" id="panel1a-header">
+                                            {accordion3Expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                                             <h5 style={{ color: "#344767" }}>Minuta</h5>
                                         </AccordionSummary>
                                         <AccordionDetails>
