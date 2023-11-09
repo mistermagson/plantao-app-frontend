@@ -55,9 +55,9 @@ function Calendar({ header, ...rest }) {
   const events = rest.events
     ? rest.events.map((el) => ({
         ...el,
-        className: validClassNames.find((item) => item === el.className)
+        /*className: validClassNames.find((item) => item === el.className)
           ? `event-${el.className}`
-          : "event-info",
+          : "event-info",*/
       }))
     : [];
 
