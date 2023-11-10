@@ -24,15 +24,21 @@ function Calendario({ plantoes, escala }) {
     };
 
 
-
-    const startDate = new Date('2023-01-14');
-    const endDate = new Date('2023-12-21'); // Data de término em 31 de dezembro de 2023
-
+    const startDate = new Date('2024-01-07');
+    const endDate = new Date('2024-12-20'); // Data de término em 31 de dezembro de 2023
+    const startingVara = '2civilCG';
     const dateArrays = [];
 
-    function createDateArray(dataInicio, className) {
+
+    function createDateArray(dataInicio, className, startingVara, intervaloDias) {
         let dataFim = new Date(dataInicio);
-        dataFim.setDate(dataFim.getDate() + 14);
+
+        // Aplique o intervalo de dias apenas no primeiro array
+        if (intervaloDias && dateArrays.length === 0) {
+            dataFim.setDate(dataFim.getDate() + intervaloDias);
+        } else {
+            dataFim.setDate(dataFim.getDate() + 14);
+        }
 
         // Se a data de término ultrapassar a endDate, ajuste-a para coincidir com a endDate
         if (dataFim > endDate) {
@@ -49,15 +55,24 @@ function Calendario({ plantoes, escala }) {
     }
 
     let currentDate = startDate;
+    let startingVaraIndex = classNames.indexOf(startingVara);
+    let intervaloDias;  // Defina intervaloDias no escopo exterior
 
     while (currentDate < endDate) {
-        for (const className of classNames) {
+        for (let i = startingVaraIndex; i < classNames.length; i++) {
+            const className = classNames[i];
             if (currentDate < endDate) {
-                dateArrays.push(createDateArray(currentDate, className));
+                // Aplique o intervalo de dias apenas no primeiro array
+                intervaloDias = dateArrays.length === 0 ? 6 : undefined;
+                dateArrays.push(createDateArray(currentDate, className, startingVara, intervaloDias));
             }
+            // Ajuste currentDate para o final do intervalo de dias
             currentDate = new Date(currentDate);
-            currentDate.setDate(currentDate.getDate() + 14);
+            currentDate.setDate(currentDate.getDate() + (intervaloDias || 14));
         }
+
+        // Reinicie o loop a partir da primeira vara se necessário
+        startingVaraIndex = 0;
     }
 
     //console.log(dateArrays);
