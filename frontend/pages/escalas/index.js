@@ -144,10 +144,12 @@ function EscalasPage({ data, h }) {
                 }
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [escalas, escalaSelecionada, block, linhaSelecionada, plantoes]);
 
     useEffect(() => {
         fetchEscalas();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [linhaSelecionada,escalaSelecionada]);
 
 
