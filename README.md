@@ -17,6 +17,9 @@ Arquivos do frontend do projeto
 
 ``` yarn dev ```
 
+### Deploy
+
+``` pm2 start yarn --name "frontend-plantao" -- run start ```
 
 
 ## Backend
@@ -35,3 +38,7 @@ Arquivos do backend do projeto
 ### Rodar Localmente
 
 ``` yarn develop ```
+
+### Deploy
+
+``` pm2 start yarn --name "backend-plantao" -- run start ```
