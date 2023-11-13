@@ -119,12 +119,8 @@ function Calendario({ plantoes, escala }) {
                     duration={{days: 4}}
                     plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                     eventClick={ function(info) {
-                    alert('Event: ' + info.event.title);
-                    alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
-                    alert('View: ' + info.view.type);
+                        console.log('Event: ' + info.event.title);
 
-                    // change the border color just for fun
-                    info.el.style.color = 'red';
                 }}
                     locale="pt-br"
 
