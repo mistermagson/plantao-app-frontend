@@ -18,7 +18,7 @@ import {fetchEscalas} from "../../utils/escalaUtils";
 import Switch from "@mui/material/Switch";
 import Calendario from "../escalas/calendario";
 import {passaPreferencia} from "../../utils/escalaUtils";
-import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
+import {Alert, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 import {es} from "date-fns/locale";
 import MDAlert from "../../components/MDAlert";
 import Icon from "@mui/material/Icon";
@@ -37,6 +37,8 @@ function Plantoes({data, h}) {
     const [fixGet, setFixGet] = useState(0);
     const [block, setBlock] = useState(null);
     const [passar, setPassar] = useState(false);
+    const [sair, setSair] = useState(false);
+    const [rowData, setRowData] = useState(null);
     const [preferenciaJuizId, setPreferenciaJuizId] = useState(null);
 
 
@@ -67,8 +69,7 @@ function Plantoes({data, h}) {
             }
         }
 
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [escalas, escalaSelecionada, plantoes]);
+    }, [escalas, escalaSelecionada, plantoes, block]);
 
 
 
@@ -76,6 +77,8 @@ function Plantoes({data, h}) {
         event.preventDefault();
         try {
             setPlantonista(juizSelecionado.id, plantaoSelecionado, headers)
+            const atualizaEscalas = await fetchEscalas(headers)
+            setEscalas(atualizaEscalas)
             console.log('1- ',plantaoSelecionado)
             setPlantaoSelecionado([])
             console.log('2- ',plantaoSelecionado)
@@ -133,6 +136,7 @@ function Plantoes({data, h}) {
 
     const handleClose = () => {
         setPassar(false);
+        setSair(false);
     };
 
     const passaEscolha = async()=>{
@@ -162,6 +166,20 @@ function Plantoes({data, h}) {
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={() => {passaEscolha();handleClose();}}>Sim</Button>
+                        <Button onClick={handleClose}>Não</Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
+            <div>
+                <Dialog open={sair} onClose={handleClose}>
+                    <DialogTitle>Sair do Plantão</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            Você tem certeza que deseja sair do plantão? Só poderá escolhê-lo novamente quando chegar a sua vez.
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => { handleLimparPlantonista(rowData); handleClose(); }}>Sim</Button>
                         <Button onClick={handleClose}>Não</Button>
                     </DialogActions>
                 </Dialog>
@@ -206,7 +224,7 @@ function Plantoes({data, h}) {
                                                     <li {...props}>
                                                         {option.nome}
                                                         {isPreferencial && (
-                                                            <span style={{ color: 'red', marginLeft: '4px' }}> - Na escolha</span>
+                                                            <span style={{ color: 'green', marginLeft: '4px' }}> - Na escolha</span>
                                                         )}
                                                     </li>
                                                 );
@@ -223,18 +241,31 @@ function Plantoes({data, h}) {
                                     </>)}
                                 </MDBox>
                                 <MDBox p>
-                                    {escalaSelecionada !== null & escalaSelecionada?.fechada ? (
-                                        <h5 style={{ color: 'red',  paddingLeft:'20px', marginTop:'-10px'}}>
-                                            Escala fechada, não é possível modificar os plantões
-                                        </h5>):(<h5></h5>)}
-                                    {escalaSelecionada !== null && !escalaSelecionada.fechada &&(juizSelecionado?.id === preferenciaJuizId ?(
-                                        <h5 style={{ color: 'green', paddingLeft:'20px', marginTop:'-10px'}}>
-                                            Escolha seus plantões
-                                        </h5>):(<h5 style={{ color: 'red',  paddingLeft:'20px', marginTop:'-10px'}}>Aguarde sua vez para escolher os plantões</h5>))}
+                                    {escalaSelecionada === null ? (
+                                        <Alert severity="warning" style={{ paddingLeft: '20px', marginTop: '-10px' }}>
+                                            Selecione uma escala
+                                        </Alert>
+                                    ) : (
+                                        juizSelecionado !== null ? (
+                                            escalaSelecionada !== null && !escalaSelecionada.fechada && juizSelecionado?.id === preferenciaJuizId ? (
+                                                <Alert severity="info" style={{ paddingLeft: '20px', marginTop: '-10px' }}>
+                                                    Escolha seus plantões
+                                                </Alert>
+                                            ) : (
+                                                <Alert severity="error" style={{ paddingLeft: '20px', marginTop: '-10px' }}>
+                                                    Aguarde sua vez para escolher os plantões
+                                                </Alert>
+                                            )
+                                        ) : (
+                                            <Alert severity="warning" style={{ paddingLeft: '20px', marginTop: '-10px' }}>
+                                                Selecione um magistrado
+                                            </Alert>
+                                        )
+                                    )}
 
                                     {escalaSelecionada &&(
                                         <DataGrid
-                                            style={{ height: '400px' }}
+                                            style={{ height: '500px' }}
                                             checkboxSelection
                                             disableColumnMenu
                                             sx={{fontSize: '18px', fontWeight:'regular'}}
@@ -267,7 +298,10 @@ function Plantoes({data, h}) {
                                                                 <GridActionsCellItem
                                                                     icon={<RemoveCircleOutlineIcon/>}
                                                                     label="Limpar Plantonista"
-                                                                    onClick={() => handleLimparPlantonista(params.row)}
+                                                                    onClick={() =>{
+                                                                        setRowData(params.row);
+                                                                        setSair(true);
+                                                                    }}
                                                                     color="inherit"
                                                                 />
                                                                 ) : (
