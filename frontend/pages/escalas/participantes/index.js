@@ -523,7 +523,7 @@ function Participantes() {
                                                                 />
                                                             </Tooltip>
                                                             {isJuizAdicionado(params.row.id) ? (
-                                                                <Tooltip title="Remover Juiz">
+                                                                <Tooltip title="">
                                                                     <GridActionsCellItem
                                                                         icon={<RemoveCircleOutlineIcon />}
                                                                         label="Remover Juiz"
