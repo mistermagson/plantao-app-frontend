@@ -62,6 +62,9 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::vara.vara"
+    },
+    "Link": {
+      "type": "string"
     }
   }
 }
