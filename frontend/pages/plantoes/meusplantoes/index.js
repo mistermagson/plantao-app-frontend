@@ -35,12 +35,10 @@ function Plantoes({data, h}) {
     const [fixGet, setFixGet] = useState(0);
     const [block, setBlock] = useState(null);
     const [preferenciaJuizId, setPreferenciaJuizId] = useState(null);
-    const [juizUrlId, setJuizUrlId] = useState(64);
+    const [juizUrlId, setJuizUrlId] = useState(56);
     const [passar, setPassar] = useState(false);
     const [sair, setSair] = useState(false);
     const [rowData, setRowData] = useState(null);
-
-
 
 
     useEffect(() => {
@@ -61,7 +59,7 @@ function Plantoes({data, h}) {
                 }
             }
 
-            const juizId = 64; // Substitua pelo ID do juiz que você deseja filtrar
+            const juizId = 56; // Substitua pelo ID do juiz que você deseja filtrar
             const escalasDoJuiz = filtrarEscalasPorJuiz(juizId, escalas);
             setEscalas(escalasDoJuiz);
             setBlock('bloqueado');

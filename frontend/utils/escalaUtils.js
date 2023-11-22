@@ -334,3 +334,47 @@ export const passaPreferencia = (escala,headers) => {
 
     setPreferencia(escala.id, proximoJuiz.id, headers);
 };
+
+export const setDescricao = (descricao, idEscala,headers ) => {
+
+    const urlEscala =`http://10.28.80.30:1337/api/escalas/${idEscala}`
+
+    const setEscalaDescricao = async () => {
+        try {
+            const response = await fetch(urlEscala, {
+                method: 'PUT',
+                headers,
+                body: JSON.stringify({ data: {"descricao": `${descricao}`} }),
+            })
+            if (response.ok) {
+                console.log('Descricao atualizada com sucesso:', response);
+            }
+        } catch (error) {
+            console.error('Erro ao atualizar descricao:', error);
+        }
+    };
+
+    setEscalaDescricao();
+};
+
+export const setLink = (link, idEscala,headers ) => {
+
+    const urlEscala =`http://10.28.80.30:1337/api/escalas/${idEscala}`
+
+    const setEscalaLink = async () => {
+        try {
+            const response = await fetch(urlEscala, {
+                method: 'PUT',
+                headers,
+                body: JSON.stringify({ data: {"link": `${link}`} }),
+            })
+            if (response.ok) {
+                console.log('Link atualizada com sucesso:', response);
+            }
+        } catch (error) {
+            console.error('Erro ao atualizar link:', error);
+        }
+    };
+
+    setEscalaLink();
+};

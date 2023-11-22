@@ -15,7 +15,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
 import Tooltip from "@mui/material/Tooltip";
 import { GridActionsCellItem } from "@mui/x-data-grid";
-import {fetchEscalas, removeEscala} from "../../utils/escalaUtils";
+import {fetchEscalas, removeEscala, setDescricao} from "../../utils/escalaUtils";
 import MinutaPage from "./minuta";
 import Calendario from "./calendario";
 import Switch from "@mui/material/Switch";
@@ -23,7 +23,7 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
+import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, InputAdornment} from "@mui/material";
 import Participantes from "./participantes";
 import { useRouter } from "next/router";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
@@ -39,6 +39,10 @@ import MDInput from "../../components/MDInput";
 import Link from "next/link";
 import clipboardCopy from 'clipboard-copy';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import IconButton from "@mui/material/IconButton";
+import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
+import {AccountCircle} from "@mui/icons-material";
 
 
 function EscalasPage({ data, h }) {
@@ -63,6 +67,45 @@ function EscalasPage({ data, h }) {
     const [accordion2Expanded, setAccordion2Expanded] = useState(false);
     const [accordion3Expanded, setAccordion3Expanded] = useState(false);
     const calendarRef = useRef(null);
+    const [link, setLink] = useState(escalaSelecionada?.link || '');
+    const [valorEditavel, setValorEditavel] = useState(escalaSelecionada ? escalaSelecionada.descricao : "");
+    const [editando, setEditando] = useState(false);
+    const [linkEditavel, setLinkEditavel] = useState(link);
+    const [editandoLink, setEditandoLink] = useState(false);
+
+    const handleEditarLink = () => {
+        //setLink(escalaSelecionada.link);
+        setEditandoLink(!editandoLink);
+    };
+
+    const handleSalvarLink = () => {
+        // Lógica para salvar o link aqui
+        console.log('Salvando novo link:', linkEditavel);
+        // Substitua a linha acima com a chamada real para salvar o link
+        setLink(linkEditavel);
+        setEditandoLink(false);
+    };
+
+    const handleChangeLink = (event) => {
+        setLinkEditavel(event.target.value);
+    };
+
+    const handleEditarDescricao = () => {
+        setValorEditavel(escalaSelecionada.descricao);
+        setEditando(!editando);
+    };
+
+    const handleChange = (event) => {
+        setValorEditavel(event.target.value);
+    };
+
+    const handleSalvarDescricao = () => {
+        // Chame a função de salvamento aqui, passando o novo valor
+        console.log('Salvando nova descrição:', valorEditavel);
+        setDescricao(valorEditavel, escalaSelecionada.id, h);
+        // Substitua a linha acima com a chamada real para salvar a descrição
+        setEditando(false); // Finaliza o modo de edição
+    };
 
     const handleGoToDate = () => {
         if (calendarRef.current) {
@@ -188,6 +231,7 @@ function EscalasPage({ data, h }) {
     };
     const showJSON = () => {
         console.log("plantao data", plantoes[0].data);
+        console.log(escalaSelecionada);
     };
     const statusEscala = () => {
         const fechada = {
@@ -266,6 +310,7 @@ function EscalasPage({ data, h }) {
         setDataPlantao("")
         fetchEscalas()
     };
+
 
     return (
         <DashboardLayout>
@@ -375,10 +420,20 @@ function EscalasPage({ data, h }) {
                                         <TextField
                                             fullWidth
                                             id="outlined-descricao-input"
-                                            value={escalaSelecionada ? escalaSelecionada.descricao : ""}
-                                            InputProps={{readOnly: true,}}
+                                            value={editando ? valorEditavel : (escalaSelecionada ? escalaSelecionada.descricao : "")}
                                             variant="standard"
                                             style={{ flex: 1, marginRight: "8px" }}
+                                            onChange={handleChange}
+                                            InputProps={{
+                                                endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        <IconButton aria-label="toggle edicao" onClick={editando ? handleSalvarDescricao : handleEditarDescricao} fontSize="small">
+                                                            {editando ? <SaveIcon fontSize="small"  /> : <EditIcon fontSize="small" />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                ),
+                                            }}
+                                             // Desabilita o TextField quando não estiver editando
                                         />
                                     </Grid>
                                     <Grid item xs={12} xl={5}>
@@ -394,7 +449,7 @@ function EscalasPage({ data, h }) {
                                     </Grid>
                                 </Grid>
                                 <Grid container mt={2} spacing={2}>
-                                    <Grid item xs={6} xl={4}>
+                                    <Grid item xs={6} xl={3}>
                                         <h5 style={{ color: "#344767" }}>Data de início</h5>
                                         <TextField
                                             fullWidth
@@ -405,7 +460,7 @@ function EscalasPage({ data, h }) {
                                             style={{ flex: 1, marginRight: "8px" }}
                                         />
                                     </Grid>
-                                    <Grid item xs={6} xl={4}>
+                                    <Grid item xs={6} xl={3}>
                                         <h5 style={{ color: "#344767" }}>Data de término</h5>
                                         <TextField
                                             fullWidth
@@ -417,6 +472,25 @@ function EscalasPage({ data, h }) {
                                         />
                                     </Grid>
                                     <Grid item xs={6} xl={4}>
+                                        <h5 style={{ color: "#344767" }}>Link</h5>
+                                        <TextField
+                                            fullWidth
+                                            variant="standard"
+                                            value={editandoLink ? linkEditavel : link}
+                                            onChange={handleChangeLink}
+                                            style={{ flex: 1, marginRight: "8px" }}
+                                            InputProps={{
+                                                endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        <IconButton aria-label="toggle edicao link" onClick={editandoLink ? handleSalvarLink : handleEditarLink}>
+                                                            {editandoLink ? <SaveIcon fontSize="small" /> : <EditIcon fontSize="small"/>}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                ),
+                                            }}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6} xl={2}>
                                         <h5 style={{ color: "#344767" }}>Status</h5>
                                         <div style={{ display: "flex", alignItems: "center", marginTop: "5px" }}>
                                             <h5 style={{color: escalaSelecionada ? escalaSelecionada.fechada ? "#f44335" : "#4caf50" : "inherit", marginLeft: "8px"}}>
@@ -429,6 +503,7 @@ function EscalasPage({ data, h }) {
                                             />
                                         </div>
                                     </Grid>
+
                                 </Grid>
                             </Grid>
                         </Grid>

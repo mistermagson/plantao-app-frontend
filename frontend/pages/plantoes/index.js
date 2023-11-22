@@ -242,7 +242,7 @@ function Plantoes({data, h}) {
                                 </MDBox>
                                 <MDBox p>
                                     {escalaSelecionada === null ? (
-                                        <Alert severity="warning" style={{ paddingLeft: '20px', marginTop: '-10px' }}>
+                                        <Alert severity="warning" style={{ paddingLeft: '20px', marginTop: '-20px' }}>
                                             Selecione uma escala
                                         </Alert>
                                     ) : (
