@@ -10,28 +10,25 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import MDButton from "../../components/MDButton";
 import {setPlantonista, removePlantonista} from "../../utils/plantaoUtils";
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import Tooltip from '@mui/material/Tooltip';
 import {GridActionsCellItem,} from '@mui/x-data-grid';
 import {fetchEscalas} from "../../utils/escalaUtils";
-import Switch from "@mui/material/Switch";
 import Calendario from "../escalas/calendario";
 import {passaPreferencia} from "../../utils/escalaUtils";
 import {Alert, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
-import {es} from "date-fns/locale";
-import MDAlert from "../../components/MDAlert";
-import Icon from "@mui/material/Icon";
 import Card from "@mui/material/Card";
 
-function Plantoes({data, h}) {
+function Plantoes({propescalas, cabecalho}) {
+
+    const escalasserverside = propescalas.data.map((item) => ({id: item.id, ...item.attributes,}))
 
     const [escalaSelecionada, setEscalaSelecionada] = useState(null);
     const [juizSelecionado, setJuizSelecionado] = useState(null);
     const [plantaoSelecionado, setPlantaoSelecionado] = useState([]);
-    const [headers, setHeaders] = useState(h);
+    const [headers, setHeaders] = useState(cabecalho);
     const [juizes, setJuizes] = useState([]);
-    const [escalas, setEscalas] = useState(data);
+    const [escalas, setEscalas] = useState(escalasserverside);
     const [plantoes, setPlantoes] = useState([]);
     const [error, setError] = useState(null);
     const [fixGet, setFixGet] = useState(0);
@@ -365,11 +362,8 @@ export async function getServerSideProps() {
     };
     const res = await fetch('http://10.28.80.30:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes&populate[preferencia][populate][0]=juizs', {
         method: 'GET',
-        headers: h,
-    });
-    const responseEscala = await res.json();
-    const data = responseEscala.data.map((item) => ({id: item.id, ...item.attributes,}));
-
-    return { props: {data, h} };
+     })
+        const data = await res.json()
+        return { props: { propescalas: data , cabecalho: h} };
 }
 export default Plantoes;
