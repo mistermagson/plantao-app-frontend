@@ -682,7 +682,7 @@ export async function getServerSideProps() {
         "http://10.28.80.30:1337/api/escalas?populate=plantaos.plantonista.lotacao.varas,participantes.plantoes,participantes.lotacao,preferencia.juizs",
         {
             method: "GET",
-            headers: h,
+          //  headers: h,
         }
     );
     //const data = await res.json();

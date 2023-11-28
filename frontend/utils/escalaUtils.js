@@ -239,7 +239,7 @@ export const fetchEscalas = async (headers) => {
     try {
         const response = await fetch('http://10.28.80.30:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes&populate[preferencia][populate][0]=juizs', {
             method: 'GET',
-            headers,
+           // headers,
         });
 
         if (!response.ok) {

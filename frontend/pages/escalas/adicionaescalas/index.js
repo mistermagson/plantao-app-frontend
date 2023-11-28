@@ -33,10 +33,10 @@ const checkStatus = resp => {
 };
 
 const url = `http://10.28.80.30:1337/api/escalas`;
-const token = 'ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b';
+const token = process.env.PRIVATE_API_TOKEN
 const headers = {
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
+   // Authorization: `Bearer ${token}`,
 };
 
 const valorInicial = {
@@ -78,7 +78,7 @@ function AdicionaEscala() {
         try {
             const response = await fetch('http://10.28.80.30:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes&populate[preferencia][populate][0]=juizs', {
                 method: 'GET',
-                headers,
+                //headers,
             }, {revalidate: 0});
 
             if (!response.ok) {
@@ -138,6 +138,7 @@ function AdicionaEscala() {
                 method: 'POST',
                 headers,
                 body: JSON.stringify({data: modifiedData}),
+
             })
                 .then(checkStatus)
                 .then(parseJSON)
@@ -175,7 +176,8 @@ function AdicionaEscala() {
 
     const showJSON = () => {
 
-        console.log('datas:',modifiedData.inicio);
+        console.log('datas:',modifiedData);
+
 
     };
     const handleClose = () => {
@@ -364,7 +366,7 @@ function AdicionaEscala() {
                                                 control={<Checkbox defaultChecked={modifiedData.fechada}/>}
                                                 label="Fechada"
                                                 name="fechada"
-                                                checked={modifiedData.fechada}
+                                                //checked={modifiedData.fechada}
                                                 onChange={handleChangeCheck}
                                             />
                                         </Grid>
