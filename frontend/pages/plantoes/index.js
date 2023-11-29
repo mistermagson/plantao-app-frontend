@@ -362,7 +362,7 @@ export async function getServerSideProps() {
     };
 
 
-    const res = await fetch(`http://10.28.80.30:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes&populate[preferencia][populate][0]=juizs`, {
+    const res = await fetch(`http://127.0.0.1:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes&populate[preferencia][populate][0]=juizs`, {
         method: 'GET',
      })
         const data = await res.json()

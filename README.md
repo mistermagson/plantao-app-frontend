@@ -27,9 +27,9 @@ Arquivos do backend do projeto
 
 ### Usage
 
-``` git clone https://github.com/mistermagson/plantao-app-frontend.git```
+``` git clone https://github.com/mistermagson/plantao-app-backend.git```
 
-``` cd plantao-app-frontend/backend```
+``` cd plantao-app-backend```
 
 ### Instalar Dependencias
 
