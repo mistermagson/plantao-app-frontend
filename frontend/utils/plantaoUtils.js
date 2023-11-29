@@ -8,7 +8,7 @@ export const setPlantonista = (idJuiz, plantaoArray,headers ) => {
         plantoes:{connect: plantaoArray}
     }
 
-    const urlJuiz =`http://127.0.0.1:1337/api/juizs/${idJuiz}`
+    const urlJuiz =`http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/juizs/${idJuiz}`
     const setJuizData = async () => {
         try {
 
@@ -37,7 +37,7 @@ export const removePlantonista = (idJuiz, plantaoArray,headers ) => {
         plantoes:{disconnect: plantaoArray}
     }
 
-    const urlJuiz =`http://127.0.0.1:1337/api/juizs/${idJuiz}`
+    const urlJuiz =`http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/juizs/${idJuiz}`
     const setJuizData = async () => {
         try {
             const response = await fetch(urlJuiz, {
@@ -61,7 +61,7 @@ export const removePlantonista = (idJuiz, plantaoArray,headers ) => {
 export const removePlantao = (idPlantao, headers ) => {
 
 
-    const urlPlantao =`http://127.0.0.1:1337/api/plantoes/${idPlantao}`
+    const urlPlantao =`http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/plantoes/${idPlantao}`
     const removePlantao = async () => {
         try {
             console.log(urlPlantao);
@@ -91,7 +91,7 @@ export const adicionaPlantao = (idEscala,dia, headers ) => {
 
     const removePlantao = async () => {
         try {
-            const response = await fetch('http://127.0.0.1:1337/api/plantoes', {
+            const response = await fetch(`http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/plantoes`, {
                 method: 'POST',
                 headers,
                 body: JSON.stringify({data: plantao}),

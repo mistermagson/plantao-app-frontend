@@ -32,7 +32,7 @@ const checkStatus = resp => {
     });
 };
 
-const url = `http://127.0.0.1:1337/api/escalas`;
+const url = `http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/escalas`;
 const token = process.env.PRIVATE_API_TOKEN
 const headers = {
     'Content-Type': 'application/json',
@@ -76,7 +76,7 @@ function AdicionaEscala() {
     };
     const fetchEscalas = async () => {
         try {
-            const response = await fetch('http://127.0.0.1:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes&populate[preferencia][populate][0]=juizs', {
+            const response = await fetch(`http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes&populate[preferencia][populate][0]=juizs`, {
                 method: 'GET',
                 //headers,
             }, {revalidate: 0});
@@ -203,9 +203,6 @@ function AdicionaEscala() {
         }
     }
 
-    const redirectToEscala = (linha) => {
-        window.location.href = `http://127.0.0.1:3000/escalas?escala=${encodeURIComponent(linha.descricao)}`;
-    };
 
     return (
         <DashboardLayout>
