@@ -32,11 +32,11 @@ const checkStatus = resp => {
     });
 };
 
-const url = `http://10.28.80.30:1337/api/escalas`;
-const token = 'ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b';
+const url = `http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/escalas`;
+const token = process.env.PRIVATE_API_TOKEN
 const headers = {
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
+   // Authorization: `Bearer ${token}`,
 };
 
 const valorInicial = {
@@ -76,9 +76,9 @@ function AdicionaEscala() {
     };
     const fetchEscalas = async () => {
         try {
-            const response = await fetch('http://10.28.80.30:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes&populate[preferencia][populate][0]=juizs', {
+            const response = await fetch(`http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes&populate[preferencia][populate][0]=juizs`, {
                 method: 'GET',
-                headers,
+                //headers,
             }, {revalidate: 0});
 
             if (!response.ok) {
@@ -115,16 +115,20 @@ function AdicionaEscala() {
         const feriados = geraFeriados(atributosEscala.inicio,atributosEscala.fim);
         const finaisDeSemanas = geraWeekends(atributosEscala.inicio,atributosEscala.fim);
         const diasGerais = geraDatas(atributosEscala.inicio, atributosEscala.fim);
+        let filtraFeriados;
 
         switch (atributosEscala.tipo) {
             case "juiz-recesso":
                 return diasGerais;
             case "juiz-local":
-                const filtraFeriados = diasGerais.filter((data) => !feriados.includes(data));
+                filtraFeriados = diasGerais.filter((data) => !feriados.includes(data));
                 return filtraFeriados.filter((data) => !finaisDeSemanas.includes(data));
             case "juiz-regional":
                 const uniao = new Set([...feriados, ...finaisDeSemanas]);
                 return Array.from(uniao).sort();
+            case "juiz-distribuidor":
+                filtraFeriados = diasGerais.filter((data) => !feriados.includes(data));
+                return filtraFeriados.filter((data) => !finaisDeSemanas.includes(data));
             default:
                 throw new Error("Tipo de operação inválido. Use 'recesso', 'local' ou 'regional'.");
         }
@@ -138,10 +142,12 @@ function AdicionaEscala() {
                 method: 'POST',
                 headers,
                 body: JSON.stringify({data: modifiedData}),
+
             })
                 .then(checkStatus)
                 .then(parseJSON)
                 .then(escala => {
+                    console.log("RESPONSE POST ESCALAS: ->", escala)
                     const atributos = escala.data.attributes
                     const datasEscala = geraPlantoes(atributos);
 
@@ -175,7 +181,8 @@ function AdicionaEscala() {
 
     const showJSON = () => {
 
-        console.log('datas:',modifiedData.inicio);
+        console.log('datas:',modifiedData);
+
 
     };
     const handleClose = () => {
@@ -196,9 +203,6 @@ function AdicionaEscala() {
         }
     }
 
-    const redirectToEscala = (linha) => {
-        window.location.href = `http://localhost:3000/escalas?escala=${encodeURIComponent(linha.descricao)}`;
-    };
 
     return (
         <DashboardLayout>
@@ -364,7 +368,7 @@ function AdicionaEscala() {
                                                 control={<Checkbox defaultChecked={modifiedData.fechada}/>}
                                                 label="Fechada"
                                                 name="fechada"
-                                                checked={modifiedData.fechada}
+                                                //checked={modifiedData.fechada}
                                                 onChange={handleChangeCheck}
                                             />
                                         </Grid>

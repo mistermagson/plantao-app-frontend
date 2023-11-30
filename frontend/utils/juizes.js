@@ -5,7 +5,7 @@ export const cargaJuizes = (juizArray, headers) => {
     const setJuizes = async (item,headers) => {
         try {
             console.log(item)
-            const response = await fetch('http://10.28.80.30:1337/api/juizs', {
+            const response = await fetch(`http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/juizs`, {
                 method: 'POST',
                 headers,
                 body: JSON.stringify({ data: item }),
@@ -26,7 +26,7 @@ export const fetchJuizes = async (headers) => {
     const [data, setData] = [];
 
     try {
-        const response = await fetch('http://10.28.80.30:1337/api/juizs?populate[plantoes][populate][0]=escala', {
+        const response = await fetch(`http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/juizs?populate[plantoes][populate][0]=escala`, {
             method: 'GET',
             headers,
         });
