@@ -30,7 +30,7 @@ import MouseIcon from '@mui/icons-material/Mouse';
 
 const headers = {
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b'
+   // 'Authorization': 'Bearer ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b'
 };
 function Participantes() {
 
@@ -58,7 +58,7 @@ function Participantes() {
 
     const fetchJuizes = async () => {
         try {
-            const response1 = await fetch('http://10.28.80.30:1337/api/juizs?populate[plantoes][populate][0]=escala&populate[lotacao]=*&pagination[pageSize]=30&sort=antiguidade:asc', {
+            const response1 = await fetch(`http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/juizs?populate[plantoes][populate][0]=escala&populate[lotacao]=*&pagination[pageSize]=30&sort=antiguidade:asc`, {
                 method: 'GET',
                 headers,
             });
@@ -83,7 +83,7 @@ function Participantes() {
     };
     const fetchEscalas = async () => {
         try {
-            const response2 = await fetch('http://10.28.80.30:1337/api/escalas?populate[participantes][populate][]=plantoes&populate[preferencia][populate][]=juizs&populate[participantes][populate][]=lotacao', {
+            const response2 = await fetch(`http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/escalas?populate[participantes][populate][]=plantoes&populate[preferencia][populate][]=juizs&populate[participantes][populate][]=lotacao`, {
                 method: 'GET',
                 headers,
             });
@@ -110,7 +110,7 @@ function Participantes() {
     };
     const fetchVaras = async () => {
         try {
-            const response = await fetch('http://10.28.80.30:1337/api/varas', {
+            const response = await fetch(`http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/varas`, {
                 method: 'GET',
                 headers,
             });
