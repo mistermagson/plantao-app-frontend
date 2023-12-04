@@ -13,14 +13,14 @@ function Calendario({ plantoes, escala }) {
 
     const classNames = ['1jefCG', '2jefCG', '1civilCG', '2civilCG', '3crimeCG', '4civilCG', '5crimeCG', '6fiscalCG'];
     const classColors = {
-        '1jefCG': 'rgba(146, 208, 80, 0.9)',    // Amarelo mais transparente
-        '2jefCG': 'rgba(189, 255, 233, 0.99)',    // Verde mais transparente
-        '1civilCG': 'rgba(255, 123, 123, 0.99)',  // Vermelho mais transparente
-        '2civilCG': 'rgba(255, 218, 185, 0.99)',  // Laranja mais transparente
-        '3crimeCG': 'rgba(200, 186, 255, 0.99)', // Roxo mais transparente
-        '4civilCG': 'rgba(75, 131, 255, 0.99)',   // Azul mais transparente
-        '5crimeCG': 'rgba(255, 204, 255, 0.95)',  // Rosa mais transparente
-        '6fiscalCG': 'rgba(255, 253, 183, 0.99)', // Amarelo mais transparente
+        '1jefCG': '#00fdff',    // Amarelo mais transparente
+        '2jefCG': '#ff1100',    // Verde mais transparente
+        '1civilCG': '#000ad2',  // Vermelho mais transparente
+        '2civilCG': '#ff6300',  // Laranja mais transparente
+        '3crimeCG': '#049400', // Roxo mais transparente
+        '4civilCG': '#e500ff',   // Azul mais transparente
+        '5crimeCG': '#fff000',  // Rosa mais transparente
+        '6fiscalCG': '#4a1000', // Amarelo mais transparente
     };
 
 
