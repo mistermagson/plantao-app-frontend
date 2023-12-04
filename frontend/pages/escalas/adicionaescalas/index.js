@@ -190,7 +190,7 @@ function AdicionaEscala() {
         setDeletar(false);
     };
 
-    const deleteEscala = () =>{
+    const deleteEscala = (idEscala) =>{
         try{
             const idEscala = linhaSelecionada.id
             const plantaoArray = linhaSelecionada.plantaos.data.map((plantao) => plantao.id);
@@ -234,7 +234,7 @@ function AdicionaEscala() {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <MDButton onClick={() => { deleteEscala();handleClose();}}>Sim</MDButton>
+                        <MDButton onClick={() => { deleteEscala(id);handleClose();}}>Sim</MDButton>
                         <MDButton onClick={handleClose} >Não</MDButton>
                     </DialogActions>
                 </Dialog>
@@ -286,7 +286,7 @@ function AdicionaEscala() {
                                                     <GridActionsCellItem
                                                         icon={<DeleteIcon color="filled" />}
                                                         label="Delete"
-                                                        onClick={()=> {setLinhaSelecionada(params.row);setDeletar(true)}}
+                                                        onClick={()=> {deleteEscala(params.row.id);setDeletar(true)}}
                                                         color="error"
                                                     />
                                                 </div>

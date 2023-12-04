@@ -56,7 +56,6 @@ function Plantoes({propescalas, cabecalho}) {
             const escalaUrl = params.get('escala');
             if(escalaUrl!==null) {
                 const escalaObj = escalas.find((escala) => escala.id == escalaUrl);
-                console.log('OBJETO', escalaObj);
 
                 if (escalaObj) {
                     setEscalaSelecionada(escalaObj);
@@ -76,17 +75,13 @@ function Plantoes({propescalas, cabecalho}) {
             setPlantonista(juizSelecionado.id, plantaoSelecionado, headers)
             const atualizaEscalas = await fetchEscalas(headers)
             setEscalas(atualizaEscalas)
-            console.log('1- ',plantaoSelecionado)
             setPlantaoSelecionado([])
-            console.log('2- ',plantaoSelecionado)
         } catch (error) {
             console.error(error);
         }
         finally {
             const atualizaEscalas = await fetchEscalas(headers)
             setEscalas(atualizaEscalas)
-            console.log('TUDO CERTO')
-
         }
     };
 
@@ -118,14 +113,13 @@ function Plantoes({propescalas, cabecalho}) {
 
     };
 
-    const handleLimparPlantonista = async(row) => {
+    const handleLimparPlantonista = async (row) => {
         try {
             const idJuiz = row.plantonista.data[0].id;
-            await removePlantonista(idJuiz, row.id, headers);
-            setPlantaoSelecionado([]);
-            const escalasAtaulizadas = await fetchEscalas(headers)
-            setEscalas(escalasAtaulizadas);
+            removePlantonista(idJuiz, row.id, headers);
 
+            const escalasAtualizadas = await fetchEscalas(headers);
+            setEscalas(escalasAtualizadas);
         } catch (error) {
             console.error(error);
         }
@@ -151,8 +145,6 @@ function Plantoes({propescalas, cabecalho}) {
     return (
         <DashboardLayout>
             <DashboardNavbar />
-            {/*<MDButton size="small" onClick={()=>showJSON()} lcolor="info">Exibir</MDButton>*/}
-
             <div>
                 <Dialog open={passar} onClose={handleClose}>
                     <DialogTitle>Passar a Vez</DialogTitle>
@@ -176,7 +168,7 @@ function Plantoes({propescalas, cabecalho}) {
                         </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={() => { handleLimparPlantonista(rowData); handleClose(); }}>Sim</Button>
+                        <Button onClick={() => { handleLimparPlantonista(rowData); handleClose(); handleLimparPlantonista(rowData);}}>Sim</Button>
                         <Button onClick={handleClose}>Não</Button>
                     </DialogActions>
                 </Dialog>
@@ -239,7 +231,7 @@ function Plantoes({propescalas, cabecalho}) {
                                 </MDBox>
                                 <MDBox p>
                                     {escalaSelecionada === null ? (
-                                        <Alert severity="warning" style={{ paddingLeft: '20px', marginTop: '-20px' }}>
+                                        <Alert severity="warning" style={{ paddingLeft: '20px', marginTop: '-20px',  marginBottom: '20px' }}>
                                             Selecione uma escala
                                         </Alert>
                                     ) : (
@@ -291,16 +283,21 @@ function Plantoes({propescalas, cabecalho}) {
                                                     width: 120, align:"center",
                                                     renderCell: (params) => (
                                                         <Tooltip title="Abandonar Plantão">
-                                                            {params.row.plantonista.data[0] && !escalaSelecionada.fechada && juizSelecionado && juizSelecionado.id === params.row.plantonista.data[0].id ? (
-                                                                <GridActionsCellItem
-                                                                    icon={<RemoveCircleOutlineIcon/>}
-                                                                    label="Limpar Plantonista"
-                                                                    onClick={() =>{
-                                                                        setRowData(params.row);
-                                                                        setSair(true);
-                                                                    }}
-                                                                    color="inherit"
-                                                                />
+                                                            {params.row.plantonista.data[0]
+                                                                && !escalaSelecionada.fechada
+                                                                && juizSelecionado
+                                                                && juizSelecionado.id === params.row.plantonista.data[0].id ? (
+                                                                    <GridActionsCellItem
+                                                                        icon={<RemoveCircleOutlineIcon/>}
+                                                                        label="Limpar Plantonista"
+                                                                        onClick={(event) => {
+                                                                            event.preventDefault();
+                                                                            setRowData(params.row)
+                                                                            setSair(true);
+
+                                                                        }}
+                                                                        color="inherit"
+                                                                    />
                                                                 ) : (
                                                                     <div></div>
                                                             )}
