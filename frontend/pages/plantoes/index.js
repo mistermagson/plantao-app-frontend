@@ -4,7 +4,10 @@ import MDBox from "/components/MDBox";
 import MDTypography from "/components/MDTypography";
 import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
-import {DataGrid, GridToolbar} from '@mui/x-data-grid';
+import {DataGrid, GridToolbar,gridPageCountSelector,
+    GridPagination,
+    useGridApiContext,
+    useGridSelector,} from '@mui/x-data-grid';
 import React, {useState, useEffect, get} from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -18,6 +21,8 @@ import Calendario from "../escalas/calendario";
 import {passaPreferencia} from "../../utils/escalaUtils";
 import {Alert, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 import Card from "@mui/material/Card";
+import MuiPagination from '@mui/material/Pagination';
+
 
 function Plantoes({propescalas, cabecalho}) {
 
@@ -142,6 +147,28 @@ function Plantoes({propescalas, cabecalho}) {
         }
     }
 
+    function Pagination({ page, onPageChange, className }) {
+        const apiRef = useGridApiContext();
+        const pageCount = useGridSelector(apiRef, gridPageCountSelector);
+
+        return (
+            <MuiPagination
+                color="info"
+                className={className}
+                count={pageCount}
+                page={page + 1}
+                onChange={(event, newPage) => {
+                    onPageChange(event, newPage - 1);
+                }}
+            />
+        );
+    }
+
+    function CustomPagination(props) {
+        return <GridPagination ActionsComponent={Pagination} {...props} />;
+    }
+
+
     return (
         <DashboardLayout>
             <DashboardNavbar />
@@ -256,12 +283,17 @@ function Plantoes({propescalas, cabecalho}) {
                                         <DataGrid
                                             style={{ height: '500px' }}
                                             checkboxSelection
+                                            editMode="row"
                                             disableColumnMenu
+                                            pageSizeOptions={[5, 10, 20]}
                                             sx={{fontSize: '18px', fontWeight:'regular'}}
-                                            pageSizeOptions={[5,10,20]}
+                                            slots={{
+                                                pagination: CustomPagination,
+                                                toolbar: GridToolbar,
+                                            }}
                                             initialState={{
-                                                pagination: { paginationModel: { pageSize: 100 } },
                                                 sorting: {sortModel: [{field: 'data', sort: 'asc'}],},
+                                                pagination: { paginationModel: { pageSize: 50 } },
                                             }}
                                             rows={plantoes}
                                             columns={[
@@ -317,7 +349,8 @@ function Plantoes({propescalas, cabecalho}) {
                                             }}
                                             onRowSelectionModelChange={(newRowSelectionModel) => {setPlantaoSelecionado(newRowSelectionModel);}}
                                             rowSelectionModel={plantaoSelecionado}
-                                            slots={{toolbar: GridToolbar}}
+                                            hideFooterRowCount={true}
+                                            hideFooterSelectedRowCount={true}
                                             slotProps={{toolbar: {showQuickFilter: true,},}}
                                             disableColumnFilter
                                             disableColumnSelector

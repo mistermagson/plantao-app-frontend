@@ -5,7 +5,14 @@ import MDBox from "/components/MDBox";
 import MDTypography from "/components/MDTypography";
 import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
-import {DataGrid, GridToolbar} from "@mui/x-data-grid";
+import {
+    DataGrid,
+    gridPageCountSelector,
+    GridPagination,
+    GridToolbar,
+    useGridApiContext,
+    useGridSelector
+} from "@mui/x-data-grid";
 import React, {useState, useEffect, get, useRef} from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
@@ -43,6 +50,7 @@ import IconButton from "@mui/material/IconButton";
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import {AccountCircle} from "@mui/icons-material";
+import MuiPagination from "@mui/material/Pagination";
 
 
 function EscalasPage({ data, h }) {
@@ -127,7 +135,6 @@ function EscalasPage({ data, h }) {
         setAccordion3Expanded(isExpanded);
     };
 
-
     const fetchEscalas = async () => {
         try {
             const response = await fetch(`http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/escalas?populate=plantaos.plantonista.lotacao.varas,participantes.plantoes,participantes.lotacao,preferencia.juizs`, {
@@ -153,7 +160,6 @@ function EscalasPage({ data, h }) {
             setError(error.message);
         }
     };
-
 
     useEffect(() => {
         if (escalaSelecionada) {
@@ -194,7 +200,6 @@ function EscalasPage({ data, h }) {
         fetchEscalas();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [linhaSelecionada,escalaSelecionada]);
-
 
     const onChangeEscala = (selected) => {
         try {
@@ -311,7 +316,26 @@ function EscalasPage({ data, h }) {
         fetchEscalas()
     };
 
+    function Pagination({ page, onPageChange, className }) {
+        const apiRef = useGridApiContext();
+        const pageCount = useGridSelector(apiRef, gridPageCountSelector);
 
+        return (
+            <MuiPagination
+                color="info"
+                className={className}
+                count={pageCount}
+                page={page + 1}
+                onChange={(event, newPage) => {
+                    onPageChange(event, newPage - 1);
+                }}
+            />
+        );
+    }
+
+    function CustomPagination(props) {
+        return <GridPagination ActionsComponent={Pagination} {...props} />;
+    }
     return (
         <DashboardLayout>
             <MDButton size="small" onClick={showJSON} lcolor="info">Exibir</MDButton>
@@ -562,15 +586,18 @@ function EscalasPage({ data, h }) {
                                                     disableColumnSelector
                                                     disableDensitySelector
                                                     disableRowSelectionOnClick
-                                                    slots={{ toolbar: GridToolbar }}
+                                                    slots={{
+                                                        pagination: CustomPagination,
+                                                        toolbar: GridToolbar,
+                                                    }}
                                                     slotProps={{ toolbar: { showQuickFilter: true}}}
                                                     sortModel={[{field: 'data', sort: 'asc',}]}
                                                     hideExport={true}
-                                                    hideFooterPagination={true}
+                                                    //hideFooterPagination={true}
                                                     hideFooterRowCount={true}
                                                     hideFooterSelectedRowCount={true}
                                                 />
-                                                <Grid container spacing={1} mt={-6.5} justifyContent="center" alignItems="center" sx={{ border: '1px solid rgb(224, 224, 224)', borderRadius: '5px', padding: '5px', paddingBottom: '10px' }}>
+                                                <Grid container spacing={1}  justifyContent="center" alignItems="center" sx={{ border: '1px solid rgb(224, 224, 224)', borderRadius: '5px', padding: '5px', paddingBottom: '10px' }}>
                                                     <Grid item xs={6} md={6} xl={4} mt={0.2}>
                                                         <MDTypography variant="h6">Adicionar novo Plantão:</MDTypography>
                                                     </Grid>
