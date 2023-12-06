@@ -36,7 +36,6 @@ function Plantoes({propescalas, cabecalho}) {
     const [escalas, setEscalas] = useState(escalasserverside);
     const [plantoes, setPlantoes] = useState([]);
     const [error, setError] = useState(null);
-    const [fixGet, setFixGet] = useState(0);
     const [block, setBlock] = useState(null);
     const [passar, setPassar] = useState(false);
     const [sair, setSair] = useState(false);
@@ -69,25 +68,24 @@ function Plantoes({propescalas, cabecalho}) {
                 }
             }
         }
+        console.log("teste");
 
-    }, [escalas, escalaSelecionada, plantoes, block]);
 
-
+    }, [escalas, escalaSelecionada, block]);
 
     const handleSubmit =  async (event) => {
         event.preventDefault();
         try {
-            setPlantonista(juizSelecionado.id, plantaoSelecionado, headers)
+            await setPlantonista(juizSelecionado.id, plantaoSelecionado, headers)
             const atualizaEscalas = await fetchEscalas(headers)
-            setEscalas(atualizaEscalas)
+            await setEscalas(atualizaEscalas)
             setPlantaoSelecionado([])
         } catch (error) {
             console.error(error);
         }
-        finally {
-            const atualizaEscalas = await fetchEscalas(headers)
-            setEscalas(atualizaEscalas)
-        }
+
+        const atualizaEscalas = await fetchEscalas(headers)
+        await setEscalas(atualizaEscalas)
     };
 
     const onChangeEscala = (selected)=>{
@@ -121,8 +119,8 @@ function Plantoes({propescalas, cabecalho}) {
     const handleLimparPlantonista = async (row) => {
         try {
             const idJuiz = row.plantonista.data[0].id;
-            removePlantonista(idJuiz, row.id, headers);
-
+            await removePlantonista(idJuiz, row.id, headers);
+            setPlantaoSelecionado([]);
             const escalasAtualizadas = await fetchEscalas(headers);
             setEscalas(escalasAtualizadas);
         } catch (error) {
@@ -292,7 +290,6 @@ function Plantoes({propescalas, cabecalho}) {
                                                 toolbar: GridToolbar,
                                             }}
                                             initialState={{
-                                                sorting: {sortModel: [{field: 'data', sort: 'asc'}],},
                                                 pagination: { paginationModel: { pageSize: 50 } },
                                             }}
                                             rows={plantoes}
@@ -326,6 +323,7 @@ function Plantoes({propescalas, cabecalho}) {
                                                                             event.preventDefault();
                                                                             setRowData(params.row)
                                                                             setSair(true);
+                                                                            setRowData(params.row)
 
                                                                         }}
                                                                         color="inherit"
@@ -349,6 +347,7 @@ function Plantoes({propescalas, cabecalho}) {
                                             }}
                                             onRowSelectionModelChange={(newRowSelectionModel) => {setPlantaoSelecionado(newRowSelectionModel);}}
                                             rowSelectionModel={plantaoSelecionado}
+                                            sortModel={[{field: 'data', sort: 'asc',}]}
                                             hideFooterRowCount={true}
                                             hideFooterSelectedRowCount={true}
                                             slotProps={{toolbar: {showQuickFilter: true,},}}

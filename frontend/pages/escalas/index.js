@@ -336,6 +336,7 @@ function EscalasPage({ data, h }) {
     function CustomPagination(props) {
         return <GridPagination ActionsComponent={Pagination} {...props} />;
     }
+
     return (
         <DashboardLayout>
             <MDButton size="small" onClick={showJSON} lcolor="info">Exibir</MDButton>
@@ -557,8 +558,8 @@ function EscalasPage({ data, h }) {
                                                     editMode="row"
                                                     disableColumnMenu
                                                     sx={{ fontSize: '16px', fontWeight: 'regular', color: 'dark',border:0 }}
-                                                    pageSizeOptions={[5, 10, 20]}
-                                                    initialState={{pagination: { paginationModel: { pageSize: 100 } },}}
+                                                    pageSizeOptions={[5, 10, 50, 100]}
+                                                    initialState={{pagination: { paginationModel: { pageSize: 50 } },}}
                                                     rows={plantoes}
                                                     columns={[
                                                         {field:'data', headerName:'Plantão',width: 120, sortable:false, renderCell: (params) => {
