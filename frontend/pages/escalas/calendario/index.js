@@ -172,7 +172,9 @@ function Calendario({ plantoes, escala }) {
                         selectable="true"
                         initialView="dayGridMonth"
                         editable="true"
-                        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                        fixedWeekCount="false"
+                        showNonCurrentDates={"false"}
+                    plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                         locale="pt-br"
                         events={[...dateArrays]}
                     />

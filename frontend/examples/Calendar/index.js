@@ -88,6 +88,8 @@ function Calendar({ header, ...rest }) {
         <FullCalendar
           {...rest}
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+          showNonCurrentDates={false}
+          fixedWeekCount={false}
           events={events}
           height="100%"
         />
