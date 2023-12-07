@@ -235,8 +235,8 @@ function EscalasPage({ data, h }) {
         return juizesComPlantoesCalculados;
     };
     const showJSON = () => {
-        console.log("plantao data", plantoes[0].data);
-        console.log(escalaSelecionada);
+        console.log("plantao data");
+        console.log(escalaSelecionada.preferencia.data);
     };
     const statusEscala = () => {
         const fechada = {
@@ -641,7 +641,12 @@ function EscalasPage({ data, h }) {
                                             rows={juizesComPlantoesCalculados}
                                             columns={[
                                                 { field: "rf", headerName: "RF", width: 70, editable: true },
-                                                { field: "nome", headerName: "Nome", flex: 2, minWidth: 150 },
+                                                { field: "nome", headerName: "Nome", flex: 2, minWidth: 150,
+                                                    renderCell: (params) => (
+                                                        <span style={{color: params.id == escalaSelecionada.preferencia.data.id ? 'green' : 'dark',}}>
+                                                            {params.id == escalaSelecionada.preferencia.data.id ?  `${params.value}  --> Escolhendo`: `${params.value}` }
+                                                        </span>)
+                                                },
                                                 {
                                                     field: "plantoesEscolhidos",
                                                     headerName: "Plantoes",
