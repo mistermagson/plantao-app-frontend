@@ -20,10 +20,7 @@ import {Alert, Dialog, DialogActions, DialogContent, DialogContentText, DialogTi
 import Card from "@mui/material/Card";
 import {PrismaClient} from "@prisma/client";
 
-function Plantoes({propescalas, cabecalho}) {
-
-
-
+function Plantoes({propescalas, cabecalho, result}) {
 
     const escalasserverside = propescalas.data.map((item) => ({id: item.id, ...item.attributes,}))
 
@@ -73,7 +70,6 @@ function Plantoes({propescalas, cabecalho}) {
     }, [escalas, escalaSelecionada, plantoes, block]);
 
 
-
     const handleSubmit =  async (event) => {
         event.preventDefault();
         try {
@@ -117,7 +113,7 @@ function Plantoes({propescalas, cabecalho}) {
 
     const showJSON = () => {
 
-        console.log('plantao',plantaoSelecionado);
+        console.log(result)
 
 
     };
@@ -155,7 +151,7 @@ function Plantoes({propescalas, cabecalho}) {
     return (
         <DashboardLayout>
             <DashboardNavbar />
-            {/*<MDButton size="small" onClick={()=>showJSON()} lcolor="info">Exibir</MDButton>*/}
+            <MDButton size="small" onClick={()=>showJSON()} lcolor="info">Exibir</MDButton>
 
             <div>
                 <Dialog open={passar} onClose={handleClose}>
@@ -364,7 +360,6 @@ export async function getServerSideProps() {
     const prisma = new PrismaClient()
     const todasEscalas = await prisma.escalas.findMany();
 
-    console.log(todasEscalas)
     const escalasPlantoes = await prisma.escalas.findMany(
         {
             include:{
@@ -373,7 +368,7 @@ export async function getServerSideProps() {
         }
     );
 
-    console.log(escalasPlantoes)
+    const result = JSON.parse(JSON.stringify(escalasPlantoes));
 
 
     const h = {
@@ -387,6 +382,7 @@ export async function getServerSideProps() {
         headers: h
      })
         const data = await res.json()
-        return { props: { propescalas: data , cabecalho: h} };
+        return { props: { propescalas: data , cabecalho: h, result } };
 }
+
 export default Plantoes;
