@@ -51,6 +51,17 @@ function Plantoes({propescalas, cabecalho}) {
                 setEscalaSelecionada(escalaEncontrada);
                 setPlantoes(escalaEncontrada.plantaos.data.map(item => ({ id: item.id, ...item.attributes })));
                 setPreferenciaJuizId(escalaSelecionada.preferencia.data?.id);
+
+                const participantesArray = escalaEncontrada.participantes.data.map((item) => ({id: item.id, ...item.attributes,}));
+                setJuizes(participantesArray);
+
+                if(juizSelecionado) {
+                    const juizEncontrado = juizes.find(juiz => juiz.id === juizSelecionado.id);
+
+                    if(juizEncontrado){
+                        setJuizSelecionado(juizEncontrado);
+                    }
+                }
             }
         }
 
@@ -111,7 +122,8 @@ function Plantoes({propescalas, cabecalho}) {
 
     const showJSON = () => {
 
-        console.log('plantao',plantaoSelecionado);
+        console.log('juiz',juizSelecionado.plantoes.data);
+        console.log('escala',escalaSelecionada.plantaos.data);
 
 
     };
@@ -166,10 +178,22 @@ function Plantoes({propescalas, cabecalho}) {
         return <GridPagination ActionsComponent={Pagination} {...props} />;
     }
 
+    function contarPlantoesComuns(juiz, escala) {
+        // Criar um conjunto (Set) para armazenar os ids dos plantões da escala
+        const idsEscala = new Set(escala.map((item) => item.id));
+
+        // Filtrar os plantões do juiz que também estão na escala
+        const plantoesComuns = juiz.filter((item) => idsEscala.has(item.id));
+
+        // Retornar o número de plantões comuns
+        return plantoesComuns.length;
+    }
 
     return (
         <DashboardLayout>
             <DashboardNavbar />
+            <MDButton size="small" onClick={showJSON} lcolor="info">Exibir</MDButton>
+
             <div>
                 <Dialog open={passar} onClose={handleClose}>
                     <DialogTitle>Passar a Vez</DialogTitle>
@@ -247,7 +271,7 @@ function Plantoes({propescalas, cabecalho}) {
                                     </Grid>{/* AUTOCOMPLETE JUIZ*/}
                             </Grid>
                         </Grid>
-                        <Grid item xs={12} xl={6} pt={2} >
+                        <Grid item xs={12} xl={6} pt={1} >
                             <MDBox px={2}>
                                 <MDBox p={2}  >
                                     {escalaSelecionada && (<>
@@ -256,22 +280,22 @@ function Plantoes({propescalas, cabecalho}) {
                                 </MDBox>
                                 <MDBox p>
                                     {escalaSelecionada === null ? (
-                                        <Alert severity="warning" style={{ paddingLeft: '20px', marginTop: '-20px',  marginBottom: '20px' }}>
+                                        <Alert severity="warning" style={{ paddingLeft: '20px', marginTop: '-20px',  marginBottom: '20px', width: '280px' }}>
                                             Selecione uma escala
                                         </Alert>
                                     ) : (
                                         juizSelecionado !== null ? (
                                             escalaSelecionada !== null && !escalaSelecionada.fechada && juizSelecionado?.id === preferenciaJuizId ? (
-                                                <Alert severity="info" style={{ paddingLeft: '20px', marginTop: '-10px' }}>
+                                                <Alert severity="info" style={{ paddingLeft: '20px', marginTop: '-10px', width: '280px' }}>
                                                     Escolha seus plantões
                                                 </Alert>
                                             ) : (
-                                                <Alert severity="error" style={{ paddingLeft: '20px', marginTop: '-10px' }}>
+                                                <Alert severity="error" style={{ paddingLeft: '20px', marginTop: '-10px', width: '390px' }}>
                                                     Aguarde sua vez para escolher os plantões
                                                 </Alert>
                                             )
                                         ) : (
-                                            <Alert severity="warning" style={{ paddingLeft: '20px', marginTop: '-10px' }}>
+                                            <Alert severity="warning" style={{ paddingLeft: '20px', marginTop: '-10px', width: '280px' }}>
                                                 Selecione um magistrado
                                             </Alert>
                                         )
@@ -322,8 +346,9 @@ function Plantoes({propescalas, cabecalho}) {
                                                                         onClick={(event) => {
                                                                             event.preventDefault();
                                                                             setRowData(params.row)
-                                                                            setSair(true);
-                                                                            setRowData(params.row)
+                                                                            //setSair(true);
+                                                                            setRowData(params.row);
+                                                                            handleLimparPlantonista(params.row);
 
                                                                         }}
                                                                         color="inherit"
@@ -373,7 +398,12 @@ function Plantoes({propescalas, cabecalho}) {
                         </Grid>
                         <Grid item xs={12} xl={6} pt={4} pb={4}>
                             {escalaSelecionada && (
-                                <MDBox px={4} mt={6}>
+                                <MDBox px={4} mt={5}>
+                                    {juizSelecionado && (
+                                    <Alert severity="info" style={{ paddingLeft: '20px', marginTop: '-10px', width: '280px' }}>
+                                        Você escolheu {contarPlantoesComuns(juizSelecionado.plantoes.data, escalaSelecionada.plantaos.data)} plantões
+                                    </Alert>
+                                    )}
                                     <Calendario style={{height:'800px'}} plantoes={plantoes} escalaSelecionada={escalaSelecionada}/>
                                 </MDBox>)}
                         </Grid>

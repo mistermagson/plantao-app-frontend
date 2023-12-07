@@ -12,6 +12,7 @@ import Card from "@mui/material/Card";
 function Calendario({ plantoes, escala }) {
 
     const classNames = ['1jefCG', '2jefCG', '1civilCG', '2civilCG', '3crimeCG', '4civilCG', '5crimeCG', '6fiscalCG'];
+
     const classColors = {
         '1jefCG': '#00fdff',    // Amarelo mais transparente
         '2jefCG': '#ff1100',    // Verde mais transparente
