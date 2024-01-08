@@ -31,8 +31,7 @@ function Escalas({ h }) {
     const [juiz, setJuiz] = useState([]);
     const [escalas, setEscalas] = useState([]);
     const [plantoes, setPlantoes] = useState([]);
-    const [idJuiz, setIdJuiz] = useState(64);
-    const [idJuizPreferencia, setIdJuizPreferencia] = useState(34);
+    const [idJuiz, setIdJuiz] = useState(56);
     const [error, setError] = useState(null);
     const [salvar, setSalvar] = useState(false);
     const [block, setBlock] = useState([]);
@@ -310,14 +309,8 @@ function Escalas({ h }) {
                                 <Grid container spacing={3} xl={12}>
 
                                         <Grid item xs={12} xl={7}>
-                                            {plantoes.length>0 ?
-                                            <CalendarioJuiz  plantoes={plantoes}/> : <Calendar
-                                                    initialView="dayGridMonth"
 
-                                                    events={[]}
-                                                    selectable
-                                                    editable
-                                                />}
+                                            <CalendarioJuiz  plantoes={plantoes} headers={h}/>
                                         </Grid>
 
                                     <Grid item xs={12} xl={5}>
