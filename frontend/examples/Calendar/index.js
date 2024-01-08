@@ -90,6 +90,13 @@ function Calendar({ header, ...rest }) {
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
           showNonCurrentDates={false}
           fixedWeekCount={false}
+          droppable={true}
+          /*headerToolbar={{
+              left: 'prev,next today',
+              center: 'title',
+              right: 'dayGridMonth,timeGridWeek,timeGridDay'
+          }}*/
+          buttonText={{today:'Hoje',}}
           events={events}
           height="100%"
         />
