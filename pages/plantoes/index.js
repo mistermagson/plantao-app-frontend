@@ -5,12 +5,7 @@ import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import MuiPagination from '@mui/material/Pagination';
 import TextField from "@mui/material/TextField";
-import {
-    GridPagination,
-    gridPageCountSelector,
-    useGridApiContext,
-    useGridSelector
-} from '@mui/x-data-grid';
+import {GridPagination, gridPageCountSelector, useGridApiContext, useGridSelector} from '@mui/x-data-grid';
 import React, { useEffect, useState } from "react";
 import MDButton from "../../components/MDButton";
 import { fetchEscalas } from "../../utils/escalaUtils";
@@ -24,22 +19,25 @@ import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
 
 function Plantoes({propescalas, cabecalho}) {
 
-    const escalasserverside = propescalas.data.map((item) => ({id: item.id, ...item.attributes,}))
+    const [headers, setHeaders] = useState(cabecalho);
+    const escalasSS = propescalas.data.map((item) => ({id: item.id, ...item.attributes,}))
+
+    const escalasArray = Object.entries(escalasSS).map(([id, escala]) => ({ id, ...escala }));
+    const [juizes, setJuizes] = useState([]);
+    const [escalas, setEscalas] = useState(escalasSS);
+    const [plantoes, setPlantoes] = useState([]);
 
     const [escalaSelecionada, setEscalaSelecionada] = useState(null);
     const [juizSelecionado, setJuizSelecionado] = useState(null);
     const [plantaoSelecionado, setPlantaoSelecionado] = useState([]);
+    const [preferenciaJuizId, setPreferenciaJuizId] = useState(null);
+
     const [qtdPlantoes, setQtdPlantoes] = useState("")
-    const [headers, setHeaders] = useState(cabecalho);
-    const [juizes, setJuizes] = useState([]);
-    const [escalas, setEscalas] = useState(escalasserverside);
-    const [plantoes, setPlantoes] = useState([]);
     const [error, setError] = useState(null);
     const [block, setBlock] = useState(null);
     const [passar, setPassar] = useState(false);
     const [sair, setSair] = useState(false);
     const [rowData, setRowData] = useState(null);
-    const [preferenciaJuizId, setPreferenciaJuizId] = useState(null);
     const [attPlantao, setAttPlantao] = useState(true);
 
 
@@ -64,7 +62,10 @@ function Plantoes({propescalas, cabecalho}) {
                 }
             }
         }
+        passaEscolha();
+    }, [plantoes, escalaSelecionada, block, attPlantao]);
 
+    useEffect(() => {
         if(block === null){
 
             const params = new URLSearchParams(window.location.search);
@@ -79,9 +80,7 @@ function Plantoes({propescalas, cabecalho}) {
                 }
             }
         }
-
-        passaEscolha();
-    }, [plantoes, escalaSelecionada, block, attPlantao]);
+    }, []);
 
     const addPlantao =  async (idPlantoes) => {
         try {
@@ -119,12 +118,14 @@ function Plantoes({propescalas, cabecalho}) {
 
     }
 
-    const showJSON = () => {
-
-        console.log(plantaoSelecionado);
+    const showJSON = async () => {
+        console.log(escalaSelecionada);
         console.log('escala',escalaSelecionada.plantaos.data);
 
+        const atualizaEscalas = await fetchEscalas(headers)
+        await setEscalas(atualizaEscalas)
 
+        setBlock('123')
     };
 
     const handleLimparPlantonista = async (row) => {
@@ -233,65 +234,77 @@ function Plantoes({propescalas, cabecalho}) {
                     <Grid container >
                         <Grid item xs={12} xl={12} >
                             <Grid container spacing={2}  pl={3} >
-                                    <Grid item xs={9} xl={3.5}>
-                                        <MDBox  my={2}>
-                                            <h5>Selecione a escala:</h5>
-                                        </MDBox>
-                                        <Autocomplete
-                                            options={escalas}
-                                            getOptionLabel={escala => escala.descricao}
-                                            value={escalaSelecionada}
-                                            onChange={(event, newValue) =>{
-                                                setEscalaSelecionada(newValue);
-                                                onChangeEscala(newValue);}}
-                                            renderInput={(params) => <TextField {...params} label="Escala" />}
-                                        />
-                                    </Grid>
-                                {/*AUTOCOMPLETE ESCALA*/}
+                                <Grid item xs={9} xl={3.5}>
+                                    <MDBox  my={2}>
+                                        <h5>Selecione a escala:</h5>
+                                    </MDBox>
+                                    <Autocomplete
+                                        options={escalasArray}
+                                        isOptionEqualToValue={(option, value) => option.id === value.id}
+                                        getOptionLabel={escala => escala.descricao}
+                                        value={escalaSelecionada}
+                                        onChange={(event, newValue) =>{
+                                            setEscalaSelecionada(newValue);
+                                            onChangeEscala(newValue);
+                                        }}
+                                        renderInput={(params) => <TextField {...params} label="Escala" />}
+                                    />
+                                </Grid>
 
-                                    <Grid item xs={9}  xl={3.5}>
-                                        <MDBox my={2}>
-                                            <h5>Digite e selecione seu nome:</h5>
-                                        </MDBox>
-                                        <Autocomplete
-                                            options={!juizes ?  [{label:"Carregando...", id:0}] : juizes }
-                                            getOptionLabel={juiz => juiz.nome }
-                                            value={juizSelecionado}
-                                            onChange={(event, newValue) =>setJuizSelecionado(newValue)}
-                                            renderInput={(params) => <TextField {...params} label="Nome do Juiz" required />}
-                                            renderOption={(props, option, { inputValue }) => {
-                                                const preferenciaJuizId = escalaSelecionada?.preferencia?.data?.id;
-                                                const isPreferencial = preferenciaJuizId === option.id;
-                                                return (
-                                                    <li {...props}>
-                                                        {option.nome}
-                                                        {isPreferencial && (
-                                                            <span style={{ color: 'green', marginLeft: '4px' }}> - Na escolha</span>
-                                                        )}
-                                                    </li>
-                                                );
-                                            }}
-                                        />
-                                    </Grid>
+                                <Grid item xs={9}  xl={3.5}>
+                                    <MDBox my={2}>
+                                        <h5>Digite e selecione seu nome:</h5>
+                                    </MDBox>
+                                    <Autocomplete
+                                        options={!juizes ?  [{label:"Carregando...", id:0}] : juizes }
+                                        isOptionEqualToValue={(option, value) => option.id === value.id}
+                                        getOptionLabel={juiz => juiz.nome }
+                                        value={juizSelecionado}
+                                        onChange={(event, newValue) =>setJuizSelecionado(newValue)}
+                                        renderInput={(params) => <TextField {...params} label="Nome do Juiz" required />}
+                                        renderOption={(props, option, { inputValue }) => {
+                                            const preferenciaJuizId = escalaSelecionada?.preferencia?.data?.id;
+                                            const isPreferencial = preferenciaJuizId === option.id;
+                                            return (
+                                                <li {...props}>
+                                                    {option.nome}
+                                                    {isPreferencial && (
+                                                        <span style={{ color: 'green', marginLeft: '4px' }}>
+                                                            - Na escolha
+                                                        </span>
+                                                    )}
+                                                </li>
+                                            );
+                                        }}
+                                    />
+                                </Grid>
                                 <Grid item xs={9} xl={4} style={{ display: 'flex', alignItems: 'flex-end' }}>
                                     <MDBox >
                                         {escalaSelecionada === null ? (
-                                            <Alert severity="warning" style={{  width: '280px', display: 'flex', alignItems: 'center'  }}>
+                                            <Alert
+                                                severity="warning"
+                                                style={{  width: '280px', display: 'flex', alignItems: 'center'  }}>
                                                 Selecione uma escala
                                             </Alert>
                                         ) : (
                                             juizSelecionado !== null ? (
                                                 !(escalaSelecionada === null || escalaSelecionada.fechada || juizSelecionado?.id !== preferenciaJuizId) ? (
-                                                    <Alert severity="info" style={{  width: '280px', display: 'flex', alignItems: 'center'  }}>
+                                                    <Alert
+                                                        severity="info"
+                                                        style={{  width: '280px', display: 'flex', alignItems: 'center'  }}>
                                                         Escolha seus plantões
                                                     </Alert>
                                                 ) : (
-                                                    <Alert severity="error" style={{ paddingLeft: '20px', marginTop: '-10px', width: '390px' }}>
+                                                    <Alert
+                                                        severity="error"
+                                                        style={{ paddingLeft: '20px', marginTop: '-10px', width: '390px' }}>
                                                         Aguarde sua vez para escolher os plantões
                                                     </Alert>
                                                 )
                                             ) : (
-                                                <Alert severity="warning" style={{ paddingLeft: '20px', marginTop: '-10px', width: '280px' }}>
+                                                <Alert
+                                                    severity="warning"
+                                                    style={{ paddingLeft: '20px', marginTop: '-10px', width: '280px' }}>
                                                     Selecione um magistrado
                                                 </Alert>
                                             )
@@ -300,31 +313,31 @@ function Plantoes({propescalas, cabecalho}) {
                                     </MDBox>
                                 </Grid>
 
-                                {/*AUTOCOMPLETE JUIZ*/}
                             </Grid>
                         </Grid>
-                        <Grid item xs={12} xl={4} pt={1} >
-                            <MDBox px={2}>
-                                <MDBox p={2}  >
-                                    {escalaSelecionada && (<>
-                                        <MDTypography variant="h6" style={{ marginBottom: '-10px' }}>Plantões:</MDTypography>
-                                    </>)}
-                                </MDBox>
 
-                            </MDBox>
-                        </Grid>
-                        <Grid item xs={12} xl={12}  pb={4}>
+                        <Grid item xs={12} xl={12} pb={4}>
                             {escalaSelecionada && (
                                 <MDBox px={4} mt={5}>
+                                    <MDTypography variant="h6" style={{ marginBottom: '-10px' }}>Plantões:</MDTypography>
                                     {escalaSelecionada && (
-                                        <MDBox my={2} display="flex" justifyContent="flex-end">
+                                        <MDBox marginBottom={2} display="flex" justifyContent="flex-end">
                                             {plantaoSelecionado.length > 0 && (
-                                                <MDButton color="success" size="small" onClick={()=>addPlantao()} sx={{ marginRight: '10px' }}>
+                                                <MDButton
+                                                    color="success"
+                                                    size="small"
+                                                    onClick={()=>addPlantao()}
+                                                    sx={{ marginRight: '10px' }}>
                                                     Adicionar
                                                 </MDButton>
                                             )}
                                             {juizSelecionado?.id === preferenciaJuizId &&(
-                                                <MDButton size="small" onClick={()=>setPassar(true)} variant='outlined' color="dark">Passar a vez</MDButton>
+                                                <MDButton
+                                                    size="small"
+                                                    onClick={()=>setPassar(true)}
+                                                    variant='outlined'
+                                                    color="dark">Passar a vez
+                                                </MDButton>
                                             )}
                                         </MDBox>
                                     )}
@@ -333,8 +346,16 @@ function Plantoes({propescalas, cabecalho}) {
                                         Você escolheu {contarPlantoesComuns(juizSelecionado.plantoes.data, escalaSelecionada.plantaos.data)} plantões
                                     </Alert>
                                     )}
-                                    <CalendarioPlantao plantoes={plantoes} escala={escalaSelecionada} juizId={juizSelecionado?.id} setPlantao={setPlantaoSelecionado} limpaPlantao={handleLimparPlantonista} addPlantao={addPlantao}/>
-                                </MDBox>)}
+                                    <CalendarioPlantao
+                                        plantoes={plantoes}
+                                        escala={escalaSelecionada}
+                                        juizId={juizSelecionado?.id}
+                                        setPlantao={setPlantaoSelecionado}
+                                        limpaPlantao={handleLimparPlantonista}
+                                        addPlantao={addPlantao}
+                                    />
+                                </MDBox>
+                            )}
                         </Grid>
                     </Grid>
                 </form>
