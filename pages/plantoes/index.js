@@ -63,6 +63,8 @@ function Plantoes({propescalas, cabecalho}) {
             }
         }
         passaEscolha();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [plantoes, escalaSelecionada, block, attPlantao]);
 
     useEffect(() => {
@@ -80,6 +82,7 @@ function Plantoes({propescalas, cabecalho}) {
                 }
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const addPlantao =  async (idPlantoes) => {
@@ -230,7 +233,7 @@ function Plantoes({propescalas, cabecalho}) {
                 <MDTypography variant="h2">Plantões</MDTypography>
             </MDBox>
             <Card>
-                <form >
+
                     <Grid container >
                         <Grid item xs={12} xl={12} >
                             <Grid container spacing={2}  pl={3} >
@@ -250,7 +253,6 @@ function Plantoes({propescalas, cabecalho}) {
                                         renderInput={(params) => <TextField {...params} label="Escala" />}
                                     />
                                 </Grid>
-
                                 <Grid item xs={9}  xl={3.5}>
                                     <MDBox my={2}>
                                         <h5>Digite e selecione seu nome:</h5>
@@ -279,38 +281,25 @@ function Plantoes({propescalas, cabecalho}) {
                                     />
                                 </Grid>
                                 <Grid item xs={9} xl={4} style={{ display: 'flex', alignItems: 'flex-end' }}>
-                                    <MDBox >
-                                        {escalaSelecionada === null ? (
-                                            <Alert
-                                                severity="warning"
-                                                style={{  width: '280px', display: 'flex', alignItems: 'center'  }}>
-                                                Selecione uma escala
-                                            </Alert>
-                                        ) : (
-                                            juizSelecionado !== null ? (
-                                                !(escalaSelecionada === null || escalaSelecionada.fechada || juizSelecionado?.id !== preferenciaJuizId) ? (
-                                                    <Alert
-                                                        severity="info"
-                                                        style={{  width: '280px', display: 'flex', alignItems: 'center'  }}>
-                                                        Escolha seus plantões
-                                                    </Alert>
-                                                ) : (
-                                                    <Alert
-                                                        severity="error"
-                                                        style={{ paddingLeft: '20px', marginTop: '-10px', width: '390px' }}>
-                                                        Aguarde sua vez para escolher os plantões
-                                                    </Alert>
-                                                )
-                                            ) : (
-                                                <Alert
-                                                    severity="warning"
-                                                    style={{ paddingLeft: '20px', marginTop: '-10px', width: '280px' }}>
-                                                    Selecione um magistrado
-                                                </Alert>
-                                            )
-                                        )}
 
-                                    </MDBox>
+                                    {escalaSelecionada === null ? // IF
+                                        <Alert severity="warning">Selecione uma escala</Alert>
+                                        : // ELSE
+                                        (escalaSelecionada.fechada ? // IF
+                                                <Alert severity="error">Essa escala já foi fechada</Alert>
+                                                : // ELSE
+                                                (juizSelecionado !== null && juizSelecionado.id === preferenciaJuizId ?  // IF
+                                                        <Alert severity="info">Escolha seus plantões</Alert>
+                                                        : // ELSE
+                                                        (juizSelecionado !== null && juizSelecionado.id !== preferenciaJuizId ?  // IF
+                                                                <Alert severity="error">Aguarde sua vez para escolher os plantões</Alert>
+                                                                : // ELSE
+                                                                <Alert severity="warning">Selecione um magistrado</Alert>
+                                                        )
+                                                )
+                                        )
+                                    }
+                                </Grid>
                                 </Grid>
 
                             </Grid>
@@ -357,8 +346,6 @@ function Plantoes({propescalas, cabecalho}) {
                                 </MDBox>
                             )}
                         </Grid>
-                    </Grid>
-                </form>
             </Card>
         </DashboardLayout>
     );
