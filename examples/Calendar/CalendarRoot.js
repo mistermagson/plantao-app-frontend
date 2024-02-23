@@ -52,7 +52,7 @@ export default styled(Box)(({ theme, ownerState }) => {
     },
 
     "& .fc-theme-standard td, .fc-theme-standard th": {
-      //borderColor: light.main,
+      borderColor: light.main,
     },
 
     "& .fc th": {
@@ -60,16 +60,16 @@ export default styled(Box)(({ theme, ownerState }) => {
     },
 
     "& .fc .fc-col-header-cell-cushion": {
-      fontSize: size.lg,
+      fontSize: size.sm,
       fontWeight: fontWeightMedium,
       color: darkMode ? white.main : grey[600],
     },
 
     "& .fc .fc-daygrid-day-number": {
       margin: 1,
-      color: darkMode ? white.main : grey[700],
-      fontSize: '16px',
-      fontWeight: fontWeightBold,
+      color: darkMode ? white.main : grey[650],
+      fontSize: '15px',
+      fontWeight: fontWeightMedium,
       width: "100%",
       textAlign: "center",
       border: 'none',
@@ -86,7 +86,7 @@ export default styled(Box)(({ theme, ownerState }) => {
     },
 
     "& .fc .fc-day-today": {
-      border: `2px solid #7B809A !important`,
+      border: `1px solid #7B809A !important`,
       borderColor: `#7B809A !important`,
 
     },
@@ -112,24 +112,23 @@ export default styled(Box)(({ theme, ownerState }) => {
       "&:hover": {
         transform: "scale(1.04)",
         boxShadow: `${md} !important`,
-        border: `1px solid #dddddd !important`,
-        borderColor: `${dark.main} !important`,
+        border: `2px solid #4945ff !important`,
+        borderColor: `#4945ff !important`,
       },
     },
 
 
     "& .fc .fc-daygrid-body-unbalanced .fc-daygrid-day-events": {
       maxHeight: pxToRem(80),
-      minHeight: pxToRem(40),
+      minHeight: pxToRem(35),
       align: 'center',
-      marginLeft: 10,
-      marginRight: 10,
-      marginBottom: 4,
       padding: 1,
     },
 
+
+
     "& .fc-event-title": {
-      fontSize: `${size.sm} !important`,
+      fontSize: `${size.xs} !important`,
       fontWeight: `${fontWeightRegular} !important`,
       padding: `${pxToRem(2)} ${pxToRem(4.8)} ${pxToRem(1.5)} !important`,
     },
@@ -137,13 +136,13 @@ export default styled(Box)(({ theme, ownerState }) => {
     "& .fc-button, .fc-today-button, .fc-button:disabled": {
       backgroundColor: `${dark.main} !important`,
       borderColor: `${dark.main} !important`,
-      fontSize: `13px !important`,
+      fontSize: `${size.sm} !important`,
       boxShadow: `${md} !important`,
       opacity: "1 !important",
       transition: `all 150ms ease-in`,
 
       "&:hover, &:focus, &:active": {
-        transform: "scale(1.03)",
+        transform: "scale(1.02)",
         boxShadow: `${md} !important`,
         backgroundColor: `${dark.main} !important`,
         borderColor: `${dark.main} !important`,
@@ -151,7 +150,7 @@ export default styled(Box)(({ theme, ownerState }) => {
     },
 
     "& .fc .fc-button .fc-icon": {
-      fontSize: '17px',
+      fontSize: size.sm,
     },
 
     "& .fc-toolbar-title": {
