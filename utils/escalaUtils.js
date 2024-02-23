@@ -235,7 +235,7 @@ export const removePreferencial = (idJuiz, idEscala,headers ) => {
     setEscalaData();
 };
 
-export const fetchEscalas = async (headers) => {
+export const fetchEscalas = async () => {
 
     try {
         const response = await fetch(`http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes&populate[preferencia][populate][0]=juizs`, {
