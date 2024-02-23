@@ -62,6 +62,8 @@ function AdicionaEscala() {
     const [deletar, setDeletar] = useState(false);
     const [linhaSelecionada, setLinhaSelecionada] = useState([]);
     const [redirectEscala, setRedirectEscala] = useState("/escalas")
+    const [deleteID, setDeleteID] = useState(null);
+
     const router = useRouter()
 
 
@@ -101,10 +103,6 @@ function AdicionaEscala() {
             setError(error.message);
         }
     };
-
-    useEffect(() => {
-        fetchEscalas();
-    }, []);
 
     useEffect(() => {
         fetchEscalas();
@@ -190,7 +188,7 @@ function AdicionaEscala() {
         setDeletar(false);
     };
 
-    const deleteEscala = (idEscala) =>{
+    const deleteEscala = (linhaSelecionada) =>{
         try{
             const idEscala = linhaSelecionada.id
             const plantaoArray = linhaSelecionada.plantaos.data.map((plantao) => plantao.id);
@@ -225,16 +223,14 @@ function AdicionaEscala() {
                 <Dialog open={deletar} onClose={handleClose}>
                     <DialogTitle>Excluir Escala</DialogTitle>
                     <DialogContent>
-                        <DialogContentText>
-                            Deseja excluir a escala{' '}
-                            <MDTypography component="span" variant="H5" style={{ fontWeight: 'bold' }}>
-                                {linhaSelecionada.descricao}
-                            </MDTypography>{' '}
-                            e seus respectivos plantões?
-                        </DialogContentText>
+                        Deseja excluir a escala{' '}
+                        <span style={{fontWeight: 'bold', color: '#344767', maxWidth: '100px',}}>
+                            {deleteID?.descricao}
+                        </span>{' '}
+                        e seus respectivos plantões?
                     </DialogContent>
                     <DialogActions>
-                        <MDButton onClick={() => { deleteEscala(id);handleClose();}}>Sim</MDButton>
+                        <MDButton onClick={() => { deleteEscala(deleteID);handleClose();}}>Sim</MDButton>
                         <MDButton onClick={handleClose} >Não</MDButton>
                     </DialogActions>
                 </Dialog>
@@ -275,18 +271,19 @@ function AdicionaEscala() {
                                             width:120,
                                             renderCell: (params) => (
                                                 <div >
-                                                    <Link href={`/escalas?escala=${encodeURIComponent(params.row.id)}`}>
+                                                    <Link href={`/escalas?escala=${encodeURIComponent(params.row?.id)}`}>
                                                         <GridActionsCellItem
                                                             icon={<FileOpenIcon />}
                                                             label="Abrir minuta"
                                                             className="textPrimary"
+                                                            onClick={()=> {console.log('trsrtesada', params.row);}}
                                                             color="dark"
                                                         />
                                                     </Link>
                                                     <GridActionsCellItem
                                                         icon={<DeleteIcon color="filled" />}
                                                         label="Delete"
-                                                        onClick={()=> {deleteEscala(params.row.id);setDeletar(true)}}
+                                                        onClick={()=> {setDeleteID(params.row);setDeletar(true)}}
                                                         color="error"
                                                     />
                                                 </div>
@@ -331,6 +328,7 @@ function AdicionaEscala() {
                                             required
                                             name="tipoEscala"
                                             options={opEscala}
+                                            isOptionEqualToValue={(option, value) => option.id === value.id}
                                             value={modifiedData.tipo} // Define o valor selecionado
                                             onChange={(event, newValue) =>
                                                 setModifiedData({...modifiedData, tipo: newValue})
@@ -365,18 +363,19 @@ function AdicionaEscala() {
                                         <Grid ml={1}>
                                             <MDTypography variant="h6">Status da Escala:</MDTypography>
                                             <FormControlLabel
-                                                control={<Checkbox defaultChecked={modifiedData.fechada}/>}
+                                                control={<Checkbox
+                                                        checked={modifiedData.fechada}
+                                                        onChange={handleChangeCheck}/>
+                                                }
                                                 label="Fechada"
                                                 name="fechada"
-                                                //checked={modifiedData.fechada}
-                                                onChange={handleChangeCheck}
                                             />
                                         </Grid>
                                     </Grid>
                                 </Grid>
                                 <Grid mt={4}>
                                     <MDButton size="small" onClick={showJSON} lcolor="info">Exibir</MDButton>
-                                    <MDButton onClick={handleSubmit} size="small" color={`${areCamposPreenchidos() ? 'success' : 'inherit'}`} >Salvar</MDButton>
+                                    <MDButton onClick={handleSubmit} size="small" color={`${areCamposPreenchidos() ? 'success' : 'light'}`} >Salvar</MDButton>
                                 </Grid>
                             </Grid>
                         </form>
