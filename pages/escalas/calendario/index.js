@@ -111,7 +111,6 @@ function Calendario({ plantoes, escala }) {
             <Grid container spacing={3}>
                 <Grid item xs={12} xl={12}>
                 <Calendar
-                    fullHeight
                     selectable="true"
                     initialView="dayGridMonth"
                     initialDate={plantoes[0]?.data}
