@@ -96,26 +96,6 @@ function Header({ tabValue, tabHandler, children }) {
         <Grid item xs={12}>
           <Card sx={{ mt: -16 }}>
             <MDBox minWidth={{ xs: "22rem", md: "25rem" }} mx="auto" mt={6}>
-              <AppBar position="static">
-                <Tabs value={tabValue} onChange={tabHandler}>
-                  <Tab
-                    id="monthly"
-                    label={
-                      <MDBox py={0.5} px={2} color="inherit">
-                        Monthly
-                      </MDBox>
-                    }
-                  />
-                  <Tab
-                    id="annual"
-                    label={
-                      <MDBox py={0.5} px={2} color="inherit">
-                        Annual
-                      </MDBox>
-                    }
-                  />
-                </Tabs>
-              </AppBar>
             </MDBox>
             {children}
           </Card>
