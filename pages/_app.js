@@ -145,8 +145,8 @@ function Main({ Component, pageProps }) {
               onMouseEnter={handleOnMouseEnter}
               onMouseLeave={handleOnMouseLeave}
             />
-            <Configurator />
-            {configsButton}
+            {/*<Configurator />*/}
+            {/*configsButton*/}
           </>
         )}
         {layout === "vr" && <Configurator />}
@@ -166,8 +166,8 @@ function Main({ Component, pageProps }) {
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
           />
-          <Configurator />
-          {configsButton}
+          {/*<Configurator />*/}
+          {/*configsButton*/}
         </>
       )}
       {layout === "vr" && <Configurator />}
