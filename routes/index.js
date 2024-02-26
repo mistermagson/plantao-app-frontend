@@ -54,6 +54,11 @@ const routes = [
                 route: "/escalas/adicionaescalas",
               },
               {
+                name: "Editar Escala",
+                key: "participantes",
+                route: "/escalas",
+              },
+              {
                 name: "Participantes",
                 key: "participantes",
                 route: "/escalas/participantes",

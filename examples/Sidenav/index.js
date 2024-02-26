@@ -15,7 +15,7 @@ Coded by www.creative-tim.com
 
 import { useEffect, useState } from "react";
 
-import Link from "next/link";
+//import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
@@ -25,7 +25,7 @@ import PropTypes from "prop-types";
 // @mui material components
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
-import MuiLink from "@mui/material/Link";
+import Link from "@mui/material/Link";
 import Icon from "@mui/material/Icon";
 
 // NextJS Material Dashboard 2 PRO components
@@ -106,15 +106,13 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const renderNestedCollapse = (collapse) => {
     const template = collapse.map(({ name, route, key, href }) =>
       href ? (
-        <MuiLink
+        <Link
           key={key}
           href={href}
-          target="_blank"
-          rel="noreferrer"
           sx={{ textDecoration: "none" }}
         >
           <SidenavItem name={name} nested />
-        </MuiLink>
+        </Link>
       ) : (
         <Link href={route} key={key} sx={{ textDecoration: "none" }}>
           <SidenavItem name={name} active={route === pathname} nested />
@@ -149,7 +147,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
         );
       } else {
         returnValue = href ? (
-          <MuiLink
+          <Link
             href={href}
             key={key}
             target="_blank"
@@ -157,7 +155,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
             sx={{ textDecoration: "none" }}
           >
             <SidenavItem color={color} name={name} active={key === itemName} />
-          </MuiLink>
+          </Link>
         ) : (
           <Link href={route} key={key} sx={{ textDecoration: "none" }}>
             <SidenavItem color={color} name={name} active={key === itemName} />
@@ -175,7 +173,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
       if (type === "collapse") {
         if (href) {
           returnValue = (
-            <MuiLink
+            <Link
               href={href}
               key={key}
               target="_blank"
@@ -188,7 +186,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
                 active={key === collapseName}
                 noCollapse={noCollapse}
               />
-            </MuiLink>
+            </Link>
           );
         } else if (noCollapse && route) {
           returnValue = (
