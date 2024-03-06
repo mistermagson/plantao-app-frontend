@@ -66,7 +66,6 @@ function AdicionaEscala() {
 
     const router = useRouter()
 
-
     const areCamposPreenchidos = () => {
         return (
             modifiedData.descricao !== '' &&
@@ -178,10 +177,7 @@ function AdicionaEscala() {
     }
 
     const showJSON = () => {
-
         console.log('datas:',modifiedData);
-
-
     };
     const handleClose = () => {
         setSalvar(false);

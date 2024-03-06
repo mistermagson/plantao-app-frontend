@@ -22,7 +22,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
 import Tooltip from "@mui/material/Tooltip";
 import { GridActionsCellItem } from "@mui/x-data-grid";
-import {fetchEscalas, removeEscala, setDescricao} from "../../utils/escalaUtils";
+import {editaLink, fetchEscalas, removeEscala, setDescricao} from "../../utils/escalaUtils";
 import MinutaPage from "./minuta";
 import Calendario from "./calendario";
 import Switch from "@mui/material/Switch";
@@ -71,10 +71,9 @@ function EscalasPage({ data, h }) {
     const router = useRouter()
     const [redirectPlantonistas, setRedirectPlantonistas] = useState("/plantoes")
     const [redirectParticipantes, setRedirectParticipantes] = useState("/escalas/participantes")
-    const [accordion1Expanded, setAccordion1Expanded] = useState(false);
-    const [accordion2Expanded, setAccordion2Expanded] = useState(false);
-    const [accordion3Expanded, setAccordion3Expanded] = useState(false);
-    const calendarRef = useRef(null);
+    const [accordion1Expanded, setAccordion1Expanded] = useState(true);
+    const [accordion2Expanded, setAccordion2Expanded] = useState(true);
+    const [accordion3Expanded, setAccordion3Expanded] = useState(true);
     const [link, setLink] = useState(escalaSelecionada?.link || '');
     const [valorEditavel, setValorEditavel] = useState(escalaSelecionada ? escalaSelecionada.descricao : "");
     const [editando, setEditando] = useState(false);
@@ -82,20 +81,18 @@ function EscalasPage({ data, h }) {
     const [editandoLink, setEditandoLink] = useState(false);
 
     const handleEditarLink = () => {
-        //setLink(escalaSelecionada.link);
+        setLinkEditavel(escalaSelecionada.link);
         setEditandoLink(!editandoLink);
-    };
-
-    const handleSalvarLink = () => {
-        // Lógica para salvar o link aqui
-        console.log('Salvando novo link:', linkEditavel);
-        // Substitua a linha acima com a chamada real para salvar o link
-        setLink(linkEditavel);
-        setEditandoLink(false);
     };
 
     const handleChangeLink = (event) => {
         setLinkEditavel(event.target.value);
+    };
+
+    const handleSalvarLink = () => {
+        editaLink(linkEditavel, escalaSelecionada.id, h)
+        setEditandoLink(false);
+        setTimeout(fetchEscalas, 1000);
     };
 
     const handleEditarDescricao = () => {
@@ -108,19 +105,10 @@ function EscalasPage({ data, h }) {
     };
 
     const handleSalvarDescricao = () => {
-        // Chame a função de salvamento aqui, passando o novo valor
-        console.log('Salvando nova descrição:', valorEditavel);
         setDescricao(valorEditavel, escalaSelecionada.id, h);
-        // Substitua a linha acima com a chamada real para salvar a descrição
-        setEditando(false); // Finaliza o modo de edição
-    };
+        setEditando(false);
+        setTimeout(fetchEscalas, 1000);
 
-    const handleGoToDate = () => {
-        if (calendarRef.current) {
-            // Aqui você pode ajustar a data conforme necessário
-            const targetDate = new Date(); // Por padrão, define para a data atual
-            calendarRef.current.getApi().gotoDate(targetDate);
-        }
     };
 
     const handleAccordion1Change = (event, isExpanded) => {
@@ -199,7 +187,7 @@ function EscalasPage({ data, h }) {
     useEffect(() => {
         fetchEscalas();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [linhaSelecionada,escalaSelecionada]);
+    }, []);
 
     const onChangeEscala = (selected) => {
         try {
@@ -215,7 +203,6 @@ function EscalasPage({ data, h }) {
                     ...item.attributes,
                 }));
                 setPlantoes(plantaosArray);
-                handleGoToDate();
             }
         } catch (error) {
             setError(error.message);
@@ -235,8 +222,9 @@ function EscalasPage({ data, h }) {
         return juizesComPlantoesCalculados;
     };
     const showJSON = () => {
-        console.log("plantao data");
-        console.log(escalaSelecionada.preferencia.data);
+        console.log("editando", editando);
+        console.log("linkEditavel",linkEditavel);
+        console.log("escalaSelecioanda.link", escalaSelecionada.link);
     };
     const statusEscala = () => {
         const fechada = {
@@ -402,7 +390,17 @@ function EscalasPage({ data, h }) {
             <Card>
                     {/*SELECIONA ESCALA E BOTOES*/}
                     <Grid container spacing={3} pb={3} px={3}>
-                        <Grid item xs={10} sm={7} xl={7} >
+                        <Grid item xs={12} sm={12} display="flex" justifyContent="flex-end" sx={{ height: "max-content" }}>
+                            <MDBox mt={2} mr={1} display="flex" justifyContent="flex-end" >
+                                {escalaSelecionada && (<MDButton color="error" size="small"  onClick={() => setDeletarEscala(true)}>deletar</MDButton>)}
+
+                                <MDButton color="dark" size="small" sx={{marginLeft:"7px"}} onClick={ () => {
+                                    router.push("/escalas/adicionaescalas"); setEscalaSelecionada(null)
+                                }}>voltar</MDButton>
+
+                            </MDBox>
+                        </Grid>
+                        <Grid item xs={10} mt={-4} sm={7} xl={7} >
                             <MDBox pl={1} my={2}>
                                 <h5 >Selecione a escala:</h5>
                             </MDBox>
@@ -411,6 +409,8 @@ function EscalasPage({ data, h }) {
                                     <Grid item xs={12} xl={12}>
                                         <Autocomplete
                                             options={escalas}
+                                            id="outlined-escala-input"
+                                            isOptionEqualToValue={(option, value) => option.id === value.id}
                                             getOptionLabel={(escala) => escala.descricao}
                                             value={escalaSelecionada}
                                             onChange={(event, newValue) => {
@@ -423,16 +423,7 @@ function EscalasPage({ data, h }) {
                                 </Grid>
                             </MDBox>
                         </Grid>
-                        <Grid item xs={2} sm={5}  sx={{ height: "max-content" }}>
-                            <MDBox mt={2} mr={1} display="flex" justifyContent="flex-end" >
-                                {escalaSelecionada && (<MDButton color="error" size="small"  onClick={() => setDeletarEscala(true)}>deletar</MDButton>)}
 
-                                    <MDButton color="dark" size="small" sx={{marginLeft:"7px"}} onClick={ () => {
-                                        router.push("/escalas/adicionaescalas"); setEscalaSelecionada(null)
-                                    }}>voltar</MDButton>
-
-                            </MDBox>
-                        </Grid>
                     </Grid>
 
                     {/*RENDERIZA INFORMAÇÕES DA ESCALA*/}
@@ -457,6 +448,7 @@ function EscalasPage({ data, h }) {
                                                         </IconButton>
                                                     </InputAdornment>
                                                 ),
+                                                readOnly: !editando
                                             }}
                                              // Desabilita o TextField quando não estiver editando
                                         />
@@ -467,7 +459,7 @@ function EscalasPage({ data, h }) {
                                             fullWidth
                                             id="outlined-tipo-input"
                                             value={escalaSelecionada ? escalaSelecionada.tipo : ""}
-                                            InputProps={{readOnly: true,}}
+                                            InputProps={{readOnly: true }}
                                             variant="standard"
                                             style={{ flex: 1, marginRight: "8px" }}
                                         />
@@ -501,7 +493,8 @@ function EscalasPage({ data, h }) {
                                         <TextField
                                             fullWidth
                                             variant="standard"
-                                            value={editandoLink ? linkEditavel : link}
+                                            id="outlined-link-input"
+                                            value={editandoLink ? linkEditavel : (escalaSelecionada ? escalaSelecionada.link : "")}
                                             onChange={handleChangeLink}
                                             style={{ flex: 1, marginRight: "8px" }}
                                             InputProps={{
@@ -512,7 +505,9 @@ function EscalasPage({ data, h }) {
                                                         </IconButton>
                                                     </InputAdornment>
                                                 ),
+                                                readOnly: !editandoLink
                                             }}
+                                            color="warning"
                                         />
                                     </Grid>
                                     <Grid item xs={6} xl={2}>
@@ -522,6 +517,7 @@ function EscalasPage({ data, h }) {
                                                 {escalaSelecionada ? escalaSelecionada.fechada ? "Fechada" : "Aberta" : ""}
                                             </h5>
                                             <Switch
+                                                id="outlined-switch-input"
                                                 checked={escalaSelecionada ? escalaSelecionada.fechada : false}
                                                 inputProps={{ "aria-label": "toggle escala" }}
                                                 onChange={() => statusEscala()}
@@ -549,16 +545,17 @@ function EscalasPage({ data, h }) {
 
                                         <Grid container spacing={3}>
                                             <Grid item xs={12} xl={7}>
-                                                <Calendario plantoes={plantoes} ref={calendarRef}/>
+                                                <Calendario plantoes={plantoes} />
                                             </Grid>
                                             <Grid item xs={12} xl={5}>
                                                 <DataGrid
+                                                    id="plantao-table"
                                                     density="compact"
                                                     style={{ height: '500px' }}
                                                     editMode="row"
                                                     disableColumnMenu
                                                     sx={{ fontSize: '16px', fontWeight: 'regular', color: 'dark',border:0 }}
-                                                    pageSizeOptions={[5, 10, 50, 100]}
+                                                    pageSizeOptions={[5, 10, 50]}
                                                     initialState={{pagination: { paginationModel: { pageSize: 50 } },}}
                                                     rows={plantoes}
                                                     columns={[
@@ -603,7 +600,7 @@ function EscalasPage({ data, h }) {
                                                         <MDTypography variant="h6">Adicionar novo Plantão:</MDTypography>
                                                     </Grid>
                                                     <Grid item xs={6} md={6} xl={6} >
-                                                        <MDInput type="date" value={dataPlantao} size="large" onChange={(prev)=>setDataPlantao(prev.target.value)}/>
+                                                        <MDInput id="plantaoNovo-input" type="date" value={dataPlantao} size="large" onChange={(prev)=>setDataPlantao(prev.target.value)}/>
                                                         <MDButton color="success" variant="gradient" size="medium" sx={{ marginLeft : '5px' }} onClick={() => handleAddPlantao()}>
                                                             <AddIcon sx={{ margin : '-5px' }} />
                                                         </MDButton>
@@ -636,7 +633,7 @@ function EscalasPage({ data, h }) {
                                             editMode="row"
                                             disableColumnMenu
                                             sx={{ fontSize: "16px", fontWeight: "regular", color: "dark" }}
-                                            pageSizeOptions={[5, 10, 20]}
+                                            pageSizeOptions={[5, 10, 20,100]}
                                             initialState={{pagination: { paginationModel: { pageSize: 100 } },}}
                                             rows={juizesComPlantoesCalculados}
                                             columns={[
