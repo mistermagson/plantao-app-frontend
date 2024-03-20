@@ -31,7 +31,7 @@ function Escalas({ h }) {
     const [juiz, setJuiz] = useState([]);
     const [escalas, setEscalas] = useState([]);
     const [plantoes, setPlantoes] = useState([]);
-    const [idJuiz, setIdJuiz] = useState(56);
+    const [idJuiz, setIdJuiz] = useState(55);
     const [error, setError] = useState(null);
     const [salvar, setSalvar] = useState(false);
     const [block, setBlock] = useState([]);
@@ -205,7 +205,7 @@ function Escalas({ h }) {
                                                 editMode="row"
                                                 disableColumnMenu
                                                 sx={{fontSize: '16px', fontWeight: 'regular', padding: '10px',}}
-                                                style={{height: 'flex'}}
+                                                style={{height: 'flex', minHeight: '400px'}}
                                                 rows={escalas}
                                                 columns={[{field: 'descricao', headerName: 'Escala', flex: 1},
                                                     {
@@ -224,7 +224,6 @@ function Escalas({ h }) {
                                                         minWidth: 50,
 
                                                         renderCell: (params) => (
-
 
                                                             <div>
                                                                 <Tooltip
@@ -259,12 +258,12 @@ function Escalas({ h }) {
                                         <Card>
                                             <MDBox p={2}>
                                             <DefaultProjectCard
-                                                title= {"Escala: "+escalaSelecionada.descricao}
+                                                title= {escalaSelecionada.descricao}
                                                 description={
                                                     <div style={{ fontSize: '18px' }}>
-                                                        <p>Tipo: {escalaSelecionada.tipo}</p>
-                                                        <p>Data de Início: {formatDate(escalaSelecionada.inicio)}</p>
-                                                        <p>Data de Fim: {formatDate(escalaSelecionada.fim)}</p>
+                                                        <p>{escalaSelecionada.tipo}</p>
+                                                        <p>Início: {formatDate(escalaSelecionada.inicio)}</p>
+                                                        <p>Fim: {formatDate(escalaSelecionada.fim)}</p>
                                                         <br></br>
                                                         <p>
                                                             Escolhendo:{" "}
@@ -287,16 +286,7 @@ function Escalas({ h }) {
                                             </MDBox>
                                         </Card>
                                     )}
-                                    {rowSelectionModel.length === 0 &&(
-                                        <Card>
-                                            <MDBox p={4}>
-                                                <h4>Selecione uma Escala</h4>
-                                                <br></br>
-                                                <MDTypography variant='h5' fontWeight='light'>As informções da escala escolhida aparecerão aqui</MDTypography>
-                                            </MDBox>
-                                        </Card>
-
-                                    )}
+                                    
                                     </Grid>
                                 </Grid>
                             </MDBox>

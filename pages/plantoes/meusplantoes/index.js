@@ -25,6 +25,7 @@ import {es} from "date-fns/locale";
 function Plantoes({data, h}) {
 
     const [escalaSelecionada, setEscalaSelecionada] = useState(null);
+    const [escalasJuiz, setEscalaJuiz] = useState(null);
     const [juizSelecionado, setJuizSelecionado] = useState(null);
     const [plantaoSelecionado, setPlantaoSelecionado] = useState([]);
     const [headers, setHeaders] = useState(h);
@@ -35,7 +36,7 @@ function Plantoes({data, h}) {
     const [fixGet, setFixGet] = useState(0);
     const [block, setBlock] = useState(null);
     const [preferenciaJuizId, setPreferenciaJuizId] = useState(null);
-    const [juizUrlId, setJuizUrlId] = useState(56);
+    const [juizUrlId, setJuizUrlId] = useState(55);
     const [passar, setPassar] = useState(false);
     const [sair, setSair] = useState(false);
     const [rowData, setRowData] = useState(null);
@@ -59,7 +60,7 @@ function Plantoes({data, h}) {
                 }
             }
 
-            const juizId = 56; // Substitua pelo ID do juiz que você deseja filtrar
+            const juizId = 55; // Substitua pelo ID do juiz que você deseja filtrar
             const escalasDoJuiz = filtrarEscalasPorJuiz(juizId, escalas);
             setEscalas(escalasDoJuiz);
             setBlock('bloqueado');
@@ -94,7 +95,7 @@ function Plantoes({data, h}) {
         }
         finally {
             const escalasAtualizadas = await fetchEscalas(headers)
-            const escalasDoJuiz = filtrarEscalasPorJuiz(juizUrlId, escalasAtualizadas);
+            setEscalaJuiz(filtrarEscalasPorJuiz(juizUrlId, escalasAtualizadas));
             setEscalas(escalasDoJuiz);
             console.log('TUDO CERTO')
 
@@ -246,7 +247,6 @@ function Plantoes({data, h}) {
                                 <MDBox p>
                                     {escalaSelecionada &&(
                                         <DataGrid
-
                                             checkboxSelection
                                             disableColumnMenu
                                             sx={{fontSize: '18px', fontWeight:'regular', height:'80%'}}

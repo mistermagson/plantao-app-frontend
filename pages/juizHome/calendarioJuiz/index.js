@@ -78,7 +78,6 @@ function CalendarioJuiz({ plantoes, headers }) {
 
         return (
             <div>
-
                 <Calendar
                     fullHeight
                     initialView="dayGridMonth"
@@ -91,7 +90,6 @@ function CalendarioJuiz({ plantoes, headers }) {
                     eventMouseLeave={handleEventMouseLeave}
                     locale="pt-br"
                     dateClick={handleDateClick}
-
                 />
                 <div style={{height: '100px'}}>
                     {tooltipContent && (
@@ -103,7 +101,20 @@ function CalendarioJuiz({ plantoes, headers }) {
         )
     }
     else{
-        return <></>
+        return (
+        <>
+            <Calendar
+                fullHeight
+                initialView="dayGridMonth"
+                initialDate={plantoes[0]?.data}
+                events={[...eventos]}
+                selectable="true"
+                editable="true"
+                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                locale="pt-br"
+            />
+        </>
+        )
     }
 
 }

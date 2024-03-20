@@ -51,6 +51,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import {AccountCircle} from "@mui/icons-material";
 import MuiPagination from "@mui/material/Pagination";
+import EditRoundedIcon from "@mui/icons-material/EditRounded";
 
 
 function EscalasPage({ data, h }) {
@@ -623,7 +624,8 @@ function EscalasPage({ data, h }) {
                                         <MDBox mb={2} mr={1} >
                                             <Link href={redirectParticipantes}>
                                                 <MDButton color="dark" type='text' size="small" onClick={ () => setEscalaSelecionada(null)}>
-                                                    Editar Participantes
+                                                    <EditRoundedIcon sx={{ marginRight: "1em" }}/>
+                                                    Editar Participantes da escala
                                                 </MDButton>
                                             </Link>
                                         </MDBox>
@@ -640,8 +642,12 @@ function EscalasPage({ data, h }) {
                                                 { field: "rf", headerName: "RF", width: 70, editable: true },
                                                 { field: "nome", headerName: "Nome", flex: 2, minWidth: 150,
                                                     renderCell: (params) => (
-                                                        <span style={{color: params.id == escalaSelecionada.preferencia.data.id ? 'green' : 'dark',}}>
-                                                            {params.id == escalaSelecionada.preferencia.data.id ?  `${params.value}  --> Escolhendo`: `${params.value}` }
+                                                        <span
+                                                            style={{
+                                                            color: params.id === escalaSelecionada.preferencia.data.id ? '#1A73E8' : 'dark',
+                                                            fontWeight: params.id === escalaSelecionada.preferencia.data.id ? 'bold' : 'normal',
+                                                        }}>
+                                                            {params.id == escalaSelecionada.preferencia.data.id ?  `${params.value} ---- Escolhendo Plantões`: `${params.value}` }
                                                         </span>)
                                                 },
                                                 {
@@ -680,11 +686,12 @@ function EscalasPage({ data, h }) {
                                                 </MDBox>
                                             )}
                                             {plantoes.length > 0 &&(
-                                            <Grid item xs={12} xl={12} pt={2}>
+                                            <Grid item xs={12} xl={12} >
                                                 <MDBox mb={2} mr={1}>
                                                     <Link href={redirectPlantonistas}>
                                                         <MDButton color="dark" size="small"  onClick={ () => setEscalaSelecionada(null)}>
-                                                            Editar Plantonistas
+                                                            <EditRoundedIcon sx={{ marginRight: "1em" }}/>
+                                                            Editar Plantões dos magistrados
                                                         </MDButton>
                                                     </Link>
                                                 </MDBox>

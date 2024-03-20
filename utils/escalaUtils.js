@@ -358,7 +358,7 @@ export const setDescricao = (descricao, idEscala,headers ) => {
     setEscalaDescricao();
 };
 
-export const setLink = (link, idEscala,headers ) => {
+export const editaLink = (link, idEscala,headers ) => {
 
     const urlEscala =`http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/escalas/${idEscala}`
 

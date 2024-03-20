@@ -437,22 +437,25 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
 
                                 <MDButton
                                     size="medium"
-                                    variant={escala.preferencia.data.id == juiz.id && !clickHabilitado || addEvent.length > 0 || remEvent.length > 0 ? 'gradient' : 'outlined'}
-                                    color={clickHabilitado ? 'success' : 'info'} onClick={() => {
-                                    toggleClick();
-                                    salvarAlteracoes();
-                                }}>
+                                    variant={escala.preferencia.data.id === juiz.id && !clickHabilitado || addEvent.length > 0 || remEvent.length > 0 ? 'gradient' : 'outlined'}
+                                    color={clickHabilitado ? 'success' : 'info'}
+                                    onClick={() => {
+                                        toggleClick();
+                                        salvarAlteracoes();
+                                    }}
+                                >
                                     {clickHabilitado ? 'Salvar' : 'Escolher Plantões'}
-                                    {clickHabilitado ? <SaveIcon style={{marginLeft: '8px'}}/> :
-                                        <EditRoundedIcon style={{marginLeft: '8px'}}/>}
+                                    {clickHabilitado ? <SaveIcon style={{ marginLeft: '8px' }} /> : <EditRoundedIcon style={{ marginLeft: '8px' }} />}
                                 </MDButton>
-                                {juiz?.id == escala.preferencia.data.id && (
+
+                                {juiz?.id === escala.preferencia.data.id && (
                                     <MDButton
                                         size="medium"
+                                        variant="contained"
                                         onClick={() => setPassar(true)}
-                                        variant='text'
-                                        color="dark"
-                                    >Passar a vez
+                                        color="warning"
+                                    >
+                                        Passar a vez
                                     </MDButton>
                                 )}
                                 <Accordion style={{boxShadow: "none"}} expanded={accordion1Expanded}

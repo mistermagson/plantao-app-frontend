@@ -214,7 +214,6 @@ function Participantes() {
 
     }
 
-
     const extrairPlantoes = (juizId) => {
         const escalaId = opcaoSelecionada.id;
 
@@ -314,7 +313,7 @@ function Participantes() {
             <DashboardNavbar/>
             <MDBox p={2}>
                 <h1>Lista de Participantes</h1>
-                <MDButton size="small" onClick={()=>showJSON()} lcolor="info">Exibir</MDButton>
+                {/*<MDButton size="small" onClick={()=>showJSON()} lcolor="info">Exibir</MDButton>*/}
             </MDBox>
             <Grid container>
                 <Grid item xs={12} md={12} xl={12}>
