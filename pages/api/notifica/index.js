@@ -1,28 +1,32 @@
-export default function handler (req, res) {
-    let nodemailer = require('nodemailer')
-    const transporter = nodemailer.createTransport({
-        port: 587,
-        host: "smtp.office365.com",
-       // service: "gmail",
-        auth: {
-            user: process.env.EMAILSENDER,
-            pass: process.env.PASSWORDSENDER,
-        },
-    });
+import nodemailer from 'nodemailer';
 
-    const mailData = {
-        from: 'mmmagal@trf3.jus.br',
-        to: `${req.body.email}`,
-        subject: `Message From ${req.body.name}`,
-        text: req.body.message
+const transporter = nodemailer.createTransport({
+    host: 'relayh.trf3.jus.br',
+    port: 25,
+    secure: false,
+    ignoreTLS: true
+});
+
+export default async (req, res) => {
+    if (req.method === 'POST') {
+        const { name, email, message } = req.body;
+
+        const mailOptions = {
+            from: ` "NUAJ" admms-nuaj@trf3.jus.br`,
+            to: email,
+            subject: `Email do Sistema de Agendamento de PLANTAO`,
+            text: message,
+            html: `<p>${message}</p>`,
+        };
+
+        try {
+            await transporter.sendMail(mailOptions);
+            return res.status(200).json({ message: 'Email sent successfully' });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ error: 'Error sending email' });
+        }
+    } else {
+        return res.status(405).json({ error: 'Method not allowed' });
     }
-    transporter.sendMail(mailData, function (err, info) {
-        if(err){
-           console.error(error)
-        } else {
-            console.log("Email Enviado");
-             res.send.code(200);
-         }
-
-    })
-}
+};

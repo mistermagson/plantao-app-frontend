@@ -1,0 +1,50 @@
+# Remetente
+$From = "dswpl01@trf3.jus.br"
+
+# Anexo
+# $attachment = "C:\Users\xxxx\baixar.zip"
+
+# Destinatário
+$To = "RASD@TRF3.JUS.BR"
+
+# Assunto
+$Subject = "Alarm Test"
+
+# Corpo do e-mail
+# $Body = "Boa tarde!   Este é um teste de envio de e-mail para conta CANCELADA!  Favor responder para conclusão dos testes.  Obrigada! "
+$MessageBody = @"
+Dear
+System Name: DSWPL01
+Location: Forum
+Customer Info: Empresa: Tribunal Regional Federal da 3ª Região - TRF3
+Site: Pedro Lessa
+Departamento:
+Endereço: Av. Paulista, 1682  2º Subsolo - Bela Vista
+"@
+
+# $Body = "Boa tarde!   Este é um teste de envio de e-mail!  Favor responder se receber esta mensagem.  Obrigada."
+
+# Endereço do servidor SMTP
+$SMTPServer = "relayh.trf3.jus.br"
+
+# Porta
+$SMTPPort = "25"
+
+# A senha do e-mail remetente
+#$password = Get-Content -path "C:\Password_Expiry_Email\smtp.txt" | ConvertTo-SecureString
+
+# Novamente o endereço de e-mail do remetente
+#$userName = "mail@domain"
+
+# Aqui a variável credential está recebendo um novo objeto contendo a o usuário e a senha para a autenticação no SMTP
+#$credential = New-Object System.Management.Automation.PSCredential($username,$password)
+
+# Codificação de caracteres do texto
+#$Encoding= New-Object System.Text.UTF8Encoding
+
+# Realizando o envio da mensagem
+#Send-Mailmessage -smtpServer $smtpServer -from $From -to $To -subject $Subject -body $Body -priority High -encoding UTF8 -port $SMTPPort -UseSsl -Credential $credential -ErrorAction Stop
+
+Send-Mailmessage -smtpServer $smtpServer -from $From -to $To -subject $Subject -body $MessageBody -priority High -encoding UTF8 -port $SMTPPort -ErrorAction Stop
+
+# Send-Mailmessage -smtpServer $smtpServer -from $From -to $To -subject $Subject -body $Body -priority High -Attachment $attachment -encoding UTF8 -port $SMTPPort
