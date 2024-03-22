@@ -25,6 +25,7 @@ import MDBox from "/components/MDBox";
 
 // NextJS Material Dashboard 2 PRO context
 import { useMaterialUIController, setLayout } from "/context";
+import AuthCheck from "../../../context/AuthCheck";
 
 function DashboardLayout({ children }) {
   const [controller, dispatch] = useMaterialUIController();
@@ -36,7 +37,8 @@ function DashboardLayout({ children }) {
   }, [dispatch, pathname]);
 
   return (
-    <MDBox
+      <AuthCheck>
+      <MDBox
       sx={({ breakpoints, transitions, functions: { pxToRem } }) => ({
         p: 3,
         position: "relative",
@@ -52,7 +54,9 @@ function DashboardLayout({ children }) {
     >
       {children}
     </MDBox>
+      </AuthCheck>
   );
+
 }
 
 // Typechecking props for the DashboardLayout
