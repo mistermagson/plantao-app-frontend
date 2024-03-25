@@ -2,6 +2,7 @@
 import {useState} from "react";
 import {removePlantao} from "./plantaoUtils";
 import getHolidays from "../services/holidays";
+import {setCookie} from "nookies";
 
 export const geraDatas = (start, end) => {
     const dateArray = [];
@@ -334,6 +335,7 @@ export const passaPreferencia = (escala,headers) => {
 
 
     setPreferencia(escala.id, proximoJuiz.id, headers);
+    enviarEmail(escala.preferencia.data.attributes,proximoJuiz.attributes)
 };
 
 export const setDescricao = (descricao, idEscala,headers ) => {
@@ -379,3 +381,30 @@ export const editaLink = (link, idEscala,headers ) => {
 
     setEscalaLink();
 };
+
+export const enviarEmail = async (juizFinalizou, juizInicia) =>{
+    console.log(juizFinalizou)
+    console.log(juizInicia)
+
+    try {
+        const res = await fetch("/api/notifica", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: "mmmagal@trf3.jus.br",
+                message: `O juiz  ${juizFinalizou.nome} finalizou a escolha de seus plantões. Agora é a vez do juiz  ${juizInicia.nome} realizar suas escolhas`
+            })
+        });
+
+        if (res.ok) {
+            console.log("Email enviado para o próximo juiz")
+
+        } else {
+            console.log("...Erro ao enviar email:", res.statusText);
+        }
+    } catch (error) {
+        console.log("Erro ao enviar email:", error);
+    }
+}

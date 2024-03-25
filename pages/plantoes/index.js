@@ -39,6 +39,7 @@ function Plantoes({propescalas, cabecalho}) {
     const [qtdPlantoes, setQtdPlantoes] = useState("")
     const [error, setError] = useState(null);
     const [block, setBlock] = useState(null);
+    const [send, setSend] = useState(0);
     const [passar, setPassar] = useState(false);
 
 
@@ -69,6 +70,10 @@ function Plantoes({propescalas, cabecalho}) {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [plantoes,escalas, escalaSelecionada, block, attPlantao]);
+
+    useEffect(() => {
+        console.log('QUEM ESTA NA ESCOLHA É: ',preferenciaJuizId)
+    }, [send]);
 
     useEffect(() => {
 
@@ -126,10 +131,7 @@ function Plantoes({propescalas, cabecalho}) {
     }
 
     const showJSON = async () => {
-        console.log(escalaSelecionada);
-
-        const atualizaEscalas = await fetchEscalas(headers)
-        await setEscalas(atualizaEscalas)
+        console.log(escalaSelecionada.preferencia.data);
 
     };
 
@@ -150,10 +152,10 @@ function Plantoes({propescalas, cabecalho}) {
     };
 
     const passaEscolha = async()=>{
+        const antigo =  escalaSelecionada?.preferencia?.data;
         try{
             passaPreferencia(escalaSelecionada,headers);
             await setEscalas(fetchEscalas(headers))
-
         } catch (error) {
             console.error(error);
         }finally {
@@ -165,7 +167,7 @@ function Plantoes({propescalas, cabecalho}) {
     return (
         <DashboardLayout>
             <DashboardNavbar/>
-            {/*<MDButton size="small" onClick={showJSON} lcolor="info">Exibir</MDButton>*/}
+           <MDButton size="small" onClick={showJSON} lcolor="info">Exibir</MDButton>
             <MDBox p={2}>
                 <MDTypography variant="h2">Plantões</MDTypography>
             </MDBox>
@@ -243,6 +245,7 @@ function Plantoes({propescalas, cabecalho}) {
                             <MDBox px={4} mt={5}>
                                 <MDTypography variant="h6"> Calendário de Plantões:</MDTypography>
                                 <MDTypography variant="body2">
+                                    {/* eslint-disable-next-line react/no-unescaped-entities */}
                                     Clique no botão "Escolher Plantões" e selecione no calendário as datas desejadas, salve as escolhas e quando houver finalizado passe a vez.
                                 </MDTypography>
 
