@@ -393,8 +393,8 @@ export const enviarEmail = async (juizFinalizou, juizInicia) =>{
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                email: "mmmagal@trf3.jus.br",
-                message: `O juiz  ${juizFinalizou.nome} finalizou a escolha de seus plantões. Agora é a vez do juiz  ${juizInicia.nome} realizar suas escolhas`
+                email: "mmmagal@trf3.jus.br, omperei@trf3.jus.br",
+                message: `TESTE EMAILS --- O juiz  ${juizFinalizou.nome} finalizou a escolha de seus plantões. Agora é a vez do juiz  ${juizInicia.nome} realizar suas escolhas`
             })
         });
 
