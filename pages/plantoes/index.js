@@ -19,6 +19,8 @@ import Calendar from "/examples/Calendar";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import {useRouter} from "next/router";
+import {useCookies} from "react-cookie";
 
 
 function Plantoes({propescalas, cabecalho}) {
@@ -39,14 +41,24 @@ function Plantoes({propescalas, cabecalho}) {
     const [qtdPlantoes, setQtdPlantoes] = useState("")
     const [error, setError] = useState(null);
     const [block, setBlock] = useState(null);
-    const [send, setSend] = useState(0);
-    const [passar, setPassar] = useState(false);
 
 
     const [rowData, setRowData] = useState(null);
     const [attPlantao, setAttPlantao] = useState(true);
 
+    const router = useRouter();
+    const [cookies, setCookies] = useCookies(["user_email"]);
 
+    useEffect(() => {
+        if (!cookies.user_email) {
+            router.push("/authentication/login");
+        } else {
+            console.log(juizes.find(juiz => juiz.email === cookies.user_email));
+        }
+
+    }, [cookies]);
+
+    /*
     useEffect(() => {
         if(Array.isArray(escalas) && escalaSelecionada) {
             const escalaEncontrada = escalas.find(escala => escala.id == escalaSelecionada.id);
@@ -68,30 +80,72 @@ function Plantoes({propescalas, cabecalho}) {
                 }
             }
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [plantoes,escalas, escalaSelecionada, block, attPlantao]);
 
-    useEffect(() => {
-        console.log('QUEM ESTA NA ESCOLHA É: ',preferenciaJuizId)
-    }, [send]);
+        if(escalaSelecionada) {
 
-    useEffect(() => {
+            const escalaEncontrada = escalas.find(escala => escala.id === escalaSelecionada.id);
 
-
-        const params = new URLSearchParams(window.location.search);
-        const escalaUrl = params.get('escala');
-        if(escalaUrl!==null) {
-            const escalaObj = escalas.find((escala) => escala.id == escalaUrl);
-
-            if (escalaObj) {
-                setEscalaSelecionada(escalaObj);
-                onChangeEscala(escalaObj);
-                setBlock('bloqueado');
+            if (escalaEncontrada) {
+                setEscalaSelecionada(escalaEncontrada);
+                setPlantoes(escalaEncontrada.plantaos.data.map(item => ({ id: item.id, ...item.attributes })));
+                if(escalaSelecionada.preferencia.data){
+                    setPreferenciaJuizId(escalaSelecionada.preferencia.data.id);
+                }
+                setJuizSelecionado(juizes.find((juiz) => juiz.email == cookies.user_email));
             }
         }
-
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+*/
+
+
+    useEffect(() => {
+        //IRA RODAR UMA UNICA VEZ BUSCANDO NOME DA ESCALA NA URL
+        if(block === null){
+
+            const params = new URLSearchParams(window.location.search);
+            const escalaUrl = params.get('escala');
+
+            if(escalaUrl!==null) {
+                const escalaObj = escalas.find((escala) => escala.descricao === escalaUrl);
+                console.log('OBJETO', escalaObj);
+
+                if (escalaObj) {
+                    setEscalaSelecionada(escalaObj);
+                    onChangeEscala(escalaObj);
+                    setBlock('bloqueado');
+                }
+            }
+
+            const escalasDoJuiz = filtrarEscalasPorJuiz(cookies.user_email, escalas);
+            setEscalas(escalasDoJuiz);
+        }
+
+        if(escalaSelecionada) {
+
+            const escalaEncontrada = escalas.find(escala => escala.id === escalaSelecionada.id);
+
+            if (escalaEncontrada) {
+                setEscalaSelecionada(escalaEncontrada);
+                setPlantoes(escalaEncontrada.plantaos.data.map(item => ({ id: item.id, ...item.attributes })));
+                if(escalaSelecionada.preferencia.data){
+                    setPreferenciaJuizId(escalaSelecionada.preferencia.data.id);
+                }
+                setJuizSelecionado(juizes.find((juiz) => juiz.email == cookies.user_email));
+                console.count("useeffect 2")
+            }
+        }
+// eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    function filtrarEscalasPorJuiz(juizEmail, escalas) {
+        //---- EXIBE APENAS AS ESCALAS QUE O JUIZ FAZ PARTE
+        const escalasFiltradas = escalas.filter((escala) =>
+            escala.participantes.data.some((participante) => participante.attributes.email == cookies.user_email)
+        );
+        return escalasFiltradas;
+    }
+
 
     const addPlantao =  async (idPlantoes) => {
         try {
@@ -131,8 +185,9 @@ function Plantoes({propescalas, cabecalho}) {
     }
 
     const showJSON = async () => {
-        console.log(escalaSelecionada.preferencia.data);
-
+        console.log("find escalas",escalas);
+        console.log("some juiz", juizSelecionado)
+        console.log("cookies",cookies.user_email);
     };
 
     const handleLimparPlantonista = async (row) => {
@@ -145,10 +200,6 @@ function Plantoes({propescalas, cabecalho}) {
         } catch (error) {
             console.error(error);
         }
-    };
-
-    const handleClose = () => {
-        setPassar(false);
     };
 
     const passaEscolha = async()=>{
@@ -180,7 +231,7 @@ function Plantoes({propescalas, cabecalho}) {
                                     <h5>Selecione a escala:</h5>
                                 </MDBox>
                                 <Autocomplete
-                                    options={escalasArray}
+                                    options={escalas}
                                     isOptionEqualToValue={(option, value) => option.id === value.id}
                                     getOptionLabel={escala => escala.descricao}
                                     value={escalaSelecionada}
@@ -191,7 +242,7 @@ function Plantoes({propescalas, cabecalho}) {
                                     renderInput={(params) => <TextField {...params} label="Escala"/>}
                                 />
                             </Grid>
-                            <Grid item xs={11} xl={3.5}>
+                            {/*<Grid item xs={11} xl={3.5}>
                                 <MDBox my={2}>
                                     <h5>Digite e selecione seu nome:</h5>
                                 </MDBox>
@@ -217,7 +268,7 @@ function Plantoes({propescalas, cabecalho}) {
                                         );
                                     }}
                                 />
-                            </Grid>
+                            </Grid>*/}
                             <Grid item xs={11} xl={4} style={{display: 'flex', alignItems: 'flex-end'}}>
                                 {escalaSelecionada === null ? // IF
                                     <Alert severity="warning">Selecione uma escala</Alert>
@@ -225,7 +276,7 @@ function Plantoes({propescalas, cabecalho}) {
                                     (escalaSelecionada.fechada ? // IF
                                             <Alert severity="error">Essa escala já foi fechada</Alert>
                                             : // ELSE
-                                            (juizSelecionado !== null && juizSelecionado.id === preferenciaJuizId ?  // IF
+                                            (juizSelecionado !== null && juizSelecionado.id === preferenciaJuizId && juizSelecionado !== "" ?  // IF
                                                     <Alert severity="info">Escolha seus plantões</Alert>
                                                     : // ELSE
                                                     (juizSelecionado !== null && juizSelecionado.id !== preferenciaJuizId ?  // IF
