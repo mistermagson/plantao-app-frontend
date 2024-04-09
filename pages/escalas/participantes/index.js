@@ -9,24 +9,15 @@ import {DataGrid, GridActionsCellItem, GridToolbar} from '@mui/x-data-grid';
 import React, {useEffect, useState} from "react";
 import TextField from "@mui/material/TextField";
 import {
-    fetchEscalas,
-    passaPreferencia,
     removeParticipantesEscala,
     removePreferencial,
     setParticipantesEscala,
     setPreferencia
 } from "../../../utils/escalaUtils";
-import MDButton from "../../../components/MDButton";
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import Tooltip from '@mui/material/Tooltip';
-import HowToRegIcon from '@mui/icons-material/HowToReg';
 import {removePlantonista} from "../../../utils/plantaoUtils";
-import { useLocation } from 'react-router-dom';
-import {useRouter} from "next/router";
-import getHolidays from "../../../services/holidays";
-import AddIcon from "@mui/icons-material/Add";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import MouseIcon from '@mui/icons-material/Mouse';
 
 const headers = {
     'Content-Type': 'application/json',
@@ -357,113 +348,6 @@ function Participantes() {
                                 </Grid>
                             </Grid>
                             <Grid container spacing={6} p={2}>
-                                {/*<Grid item xs={12} md={6} xl={6}>
-                                    {opcaoSelecionada && (<h5>Juizes Adicionados:</h5>)}
-                                    {opcaoSelecionada && (
-                                        <DataGrid
-                                            disableRowSelectionOnClick
-                                            disableColumnMenu
-                                            sx={{fontSize: '16px', fontWeight: 'regular', padding: '10px'}}
-                                            style={{height: '500px'}}
-                                            pageSizeOptions={[5, 10, 20,50,100]}
-                                            initialState={{
-                                                pagination: {paginationModel: {pageSize: 20}},
-
-                                            }}
-                                            rows={adicionadosFiltro}
-                                            columns={[
-                                                {field: 'nome', headerName: 'Nomes', flex: 1,minWidth: 150},
-                                                {
-                                                    field: 'lotacaoDescricao', // Nome da nova coluna
-                                                    headerName: 'Descrição da Vara',
-                                                    flex: 1,minWidth: 150,
-                                                    valueGetter: (params) => {
-                                                        return params.row.lotacao.data.attributes.descricao;
-                                                    },
-                                                },
-                                                {field: 'antiguidade', headerName: 'Antiguidade', minWidth: 30},
-                                                {
-                                                    field: 'id',
-                                                    headerName: 'Opções',
-                                                    minWidth: 80,
-                                                    renderCell: (params) => (
-                                                        <div>
-                                                            <Tooltip
-                                                                title={isJuizPreferencial(params.row.id) ? 'Escolhendo...' : 'Definir como Preferencial'}>
-                                                                <GridActionsCellItem
-                                                                    icon={<HowToRegIcon style={{fontSize: 'large'}}/>}
-                                                                    label={isJuizPreferencial(params.row.id) ? 'Escolhendo...' : 'Definir como Preferencial'}
-                                                                    onClick={() => {
-                                                                        if (!isJuizPreferencial(params.row.id)) {
-                                                                            handleAlterarPreferencia(params.row)
-                                                                        }
-                                                                    }}
-                                                                    color={isJuizPreferencial(params.row.id) ? 'primary' : 'default'}
-                                                                />
-                                                            </Tooltip>
-                                                            <Tooltip title="Remover Juiz">
-                                                                <GridActionsCellItem
-                                                                    icon={<RemoveCircleOutlineIcon/>}
-                                                                    label="Remover Juiz"
-                                                                    onClick={() => handleLimparParticipante(params.row.id)}
-                                                                    color="inherit"
-                                                                />
-                                                            </Tooltip>
-                                                        </div>
-                                                    ),
-                                                },]}
-                                            disableColumnFilter
-                                            disableColumnSelector
-                                            disableDensitySelector
-                                            slots={{toolbar: GridToolbar}}
-                                            slotProps={{
-                                                toolbar: {
-                                                    showQuickFilter: true,
-                                                },
-                                            }}
-                                        />)}
-                                    {opcaoSelecionada && (
-                                        <MDBox mt={2} display="flex" justifyContent="flex-end">
-                                            <MDButton size="small" onClick={()=>passaEscolha()} lcolor="info">Passar a vez</MDButton>
-                                        </MDBox>
-                                    )}
-                                </Grid>
-                                <Grid item xs={12} md={6} xl={6}>
-                                    {opcaoSelecionada && (<h5>Juizes Restantes:</h5>)}
-                                    {opcaoSelecionada && (
-                                        <DataGrid
-                                            editMode="row"
-                                            checkboxSelection
-                                            disableColumnMenu
-                                            sx={{fontSize: '16px', fontWeight: 'regular', padding: '10px'}}
-                                            style={{height: '500px'}}
-                                            pageSizeOptions={[5, 10, 20,50,100]}
-                                            initialState={{
-                                                pagination: {paginationModel: {pageSize: 20}},
-                                                sorting: {sortModel: [{field: 'antiguidade', sort: 'asc'}],},
-                                            }}
-                                            rows={juizesRestantesFiltro}
-                                            columns={[{field: 'nome', headerName: 'Nome', flex: 1}, {field: 'antiguidade', headerName: 'Antiguidade', minWidth: 150},]}
-                                            onRowSelectionModelChange={(newRowSelectionModel) => {setRowSelectionModel(newRowSelectionModel);}}
-                                            rowSelectionModel={rowSelectionModel}
-                                            disableColumnFilter
-                                            disableColumnSelector
-                                            disableDensitySelector
-                                            slots={{toolbar: GridToolbar}}
-                                            slotProps={{toolbar: {showQuickFilter: true,},}}
-
-                                        />)}
-
-                                    {opcaoSelecionada && (
-                                        <MDBox mt={2} mr={1} display="flex" justifyContent="flex-end">
-                                            <MDButton color="success" size="small" onClick={() => handleSubmit()}>Adicionar</MDButton>
-                                        </MDBox>)}
-                                </Grid>*/}
-                                {/*<Grid item xs={12} md={12} xl={10}>
-                                    {opcaoSelecionada && (<h5>Juizes Restantes:</h5>)//TODO MONTAR TABELA CORRETAMENTE}
-                                    }{ opcaoSelecionada && (
-                                        <CollapsibleTable data={juizes} /> )}
-                                </Grid>*/}
                                 <Grid>
                                     {!opcaoSelecionada && (
                                         <MDTypography variant="h6" mx={5} ml={7} mt={5} mb={-5} fontWeight="light">
