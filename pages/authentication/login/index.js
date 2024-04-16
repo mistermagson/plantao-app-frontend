@@ -92,7 +92,7 @@ function LoginForm() {
         return null;
     };
     return (
-        <BasicLayout image={bgImage}>
+        <BasicLayout >
             <Card>
                 <MDBox
                     variant="gradient"

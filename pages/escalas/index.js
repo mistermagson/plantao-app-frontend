@@ -644,10 +644,10 @@ function EscalasPage({ data, h }) {
                                                     renderCell: (params) => (
                                                         <span
                                                             style={{
-                                                            color: params.id === escalaSelecionada.preferencia.data.id ? '#1A73E8' : 'dark',
-                                                            fontWeight: params.id === escalaSelecionada.preferencia.data.id ? 'bold' : 'normal',
+                                                            color: params.id === escalaSelecionada?.preferencia?.data?.id ? '#1A73E8' : 'dark',
+                                                            fontWeight: params.id === escalaSelecionada?.preferencia?.data?.id ? 'bold' : 'normal',
                                                         }}>
-                                                            {params.id == escalaSelecionada.preferencia.data.id ?  `${params.value} ---- Escolhendo Plantões`: `${params.value}` }
+                                                            {params.id == escalaSelecionada?.preferencia?.data?.id ?  `${params.value} ---- Escolhendo Plantões`: `${params.value}` }
                                                         </span>)
                                                 },
                                                 {
