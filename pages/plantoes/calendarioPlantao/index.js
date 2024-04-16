@@ -437,7 +437,7 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
 
                                 <MDButton
                                     size="medium"
-                                    variant={escala.preferencia.data.id === juiz.id && !clickHabilitado || addEvent.length > 0 || remEvent.length > 0 ? 'gradient' : 'outlined'}
+                                    variant={escala.preferencia.data.id === juiz?.id && !clickHabilitado || addEvent.length > 0 || remEvent.length > 0 ? 'gradient' : 'outlined'}
                                     color={clickHabilitado ? 'success' : 'info'}
                                     onClick={() => {
                                         toggleClick();
@@ -473,7 +473,7 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                                             sx={{fontSize: "16px", fontWeight: "regular", color: "dark", border: 0}}
                                             pageSizeOptions={[5, 10, 20, 100]}
                                             initialState={{pagination: {paginationModel: {pageSize: 100}},}}
-                                            rows={plantoes.filter(plantao => plantao.plantonista?.data[0]?.id == juiz.id)}
+                                            rows={plantoes.filter(plantao => plantao.plantonista?.data[0]?.id == juiz?.id)}
                                             columns={[
                                                 {
                                                     field: 'data',
@@ -515,7 +515,7 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                                             severity="info"
                                             style={{paddingLeft: '20px', marginTop: '-30px'}}>
                                             Você
-                                            escolheu {contarPlantoesComuns(juiz.plantoes.data, escala.plantaos.data)} plantões
+                                            escolheu {contarPlantoesComuns(juiz?.plantoes.data, escala.plantaos.data)} plantões
                                         </Alert>
                                     </AccordionDetails>
                                 </Accordion>
