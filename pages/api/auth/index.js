@@ -4,7 +4,6 @@ import ActiveDirectory from "activedirectory2";
 
 export default async function solicitaLogIn(request, response){
     const {email, password} = request.body;
-    console.log("request: ",request,"response: ",response)
 
     let config = {
         url: process.env.LDAP_SERVER, // Endereço do Servidor LDAP / AD
