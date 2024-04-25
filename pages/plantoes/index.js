@@ -96,7 +96,8 @@ function Plantoes({propescalas, cabecalho}) {
 
         }
     }, [plantoes,cookies.user_email,escalaSelecionada,escalas, juizes]);
-
+    //TODO Magson - ver a possibilidade de colocar essa funcao no getServerSide pra carregar antes de renderizar a pagina
+    // e passar o resultado por PROPS para o Componente
     function filtrarEscalasPorJuiz(juizEmail, escalas) {
         //---- EXIBE APENAS AS ESCALAS QUE O JUIZ FAZ PARTE
         const escalasFiltradas = escalas.filter((escala) =>
