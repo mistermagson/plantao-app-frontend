@@ -7,7 +7,7 @@ const transporter = nodemailer.createTransport({
     ignoreTLS: true
 });
 
-export default async (req, res) => {
+export default async function notificaEmail(req, res){
     if (req.method === 'POST') {
         const { name, email, message } = req.body;
 
@@ -30,3 +30,4 @@ export default async (req, res) => {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 };
+//api é chamada pela função enviarEmail em escalaUtils.js
