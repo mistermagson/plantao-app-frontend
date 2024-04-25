@@ -26,12 +26,12 @@ const routes = [
         name: "Configurações",
         key: "configuracoes",
         route: "/pages/account/settings",
-      },
+      },*/
       {
         name: "Logout",
         key: "logout",
         route: "/authentication/sign-in/basic",
-      },*/
+      },
     ],
   },
   //{ type: "divider", key: "divider-2" },

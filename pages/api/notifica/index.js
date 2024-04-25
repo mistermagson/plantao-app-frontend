@@ -7,7 +7,9 @@ const transporter = nodemailer.createTransport({
     ignoreTLS: true
 });
 
-async function Notifica (req, res) {
+
+async function notificaEmail(req, res){
+
     if (req.method === 'POST') {
         const { name, email, message } = req.body;
 
@@ -31,4 +33,6 @@ async function Notifica (req, res) {
     }
 };
 
-export default Notifica
+
+export default notificaEmail
+
