@@ -23,7 +23,7 @@ function LoginForm() {
         if (token) {
             router.push("/"); // Redirecionar se já estiver autenticado
         }
-    }, []);
+    }, [router]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;

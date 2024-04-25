@@ -46,7 +46,7 @@ function Plantoes({propescalas, cabecalho}) {
             console.log(juizes.find(juiz => juiz.email === cookies.user_email));
         }
 
-    }, [cookies]);
+    }, [cookies, juizes, router]);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -70,7 +70,7 @@ function Plantoes({propescalas, cabecalho}) {
 
 
 
-    }, [cookies.user_email, escalas]);
+    }, [cookies.user_email, escalas,filtrarEscalasPorJuiz]);
 
     useEffect(() => {
         if(escalaSelecionada) {
@@ -89,7 +89,7 @@ function Plantoes({propescalas, cabecalho}) {
             setJuizSelecionado(juizes.find((juiz) => juiz.email == cookies.user_email));
 
         }
-    }, [plantoes]);
+    }, [plantoes,cookies.user_email,escalaSelecionada,escalas, juizes]);
 
     function filtrarEscalasPorJuiz(juizEmail, escalas) {
         //---- EXIBE APENAS AS ESCALAS QUE O JUIZ FAZ PARTE
