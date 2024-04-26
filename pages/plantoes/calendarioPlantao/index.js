@@ -50,8 +50,8 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
 
     //TODO - Impedir o que uma const de Calendar realize o Map em sua declaração --------
     //--warning maximum update depth exceeded--
-    const attEvent = plantoes?.map((plantao) => formatarPlantoes(plantao))
-    const [eventos, setEventos] = useState(plantoes?.map((plantao) => formatarPlantoes(plantao)));
+    const attEvent = plantoes?.map((plantao) => formatarPlantoes(plantao)) || [];
+    const [eventos, setEventos] = useState(plantoes?.map((plantao) => formatarPlantoes(plantao))) || [];
     //-----------------------------
 
     const [addEvent, setAddEvent] = useState([]);
@@ -68,47 +68,51 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
     const [accordion1Expanded, setAccordion1Expanded] = useState(false);
     const [accordion2Expanded, setAccordion2Expanded] = useState(false);
 
+    const[qtdEscolhida, setQtdEscolhida] = useState(0)
 
-    const classNames = ['1jefCG', '2jefCG', '1civilCG', '2civilCG', '3crimeCG', '4civilCG', '5crimeCG', '6fiscalCG'];
+    useEffect(()=>{
 
-    const classColors = {
-        '1jefCG': '#73e8e8',    // Amarelo mais transparente
-        '2jefCG': '#f31c0d',    // Verde mais transparente
-        '1civilCG': '#0e4cc2',  // Vermelho mais transparente
-        '2civilCG': '#f77001',  // Laranja mais transparente
-        '3crimeCG': '#7f05ad', // Roxo mais transparente
-        '4civilCG': '#13bb0f',   // Azul mais transparente
-        '5crimeCG': '#fff304',  // Rosa mais transparente
-        '6fiscalCG': '#721808', // Amarelo mais transparente
-    };
+    },[])
 
-    const classLegend = {
-        '1jefCG': '1ª vara gabinete do JEF',
-        '2jefCG': '2ª vara gabinete do JEF',
-        '1civilCG': '1ª vara cível de Campo Grande',
-        '2civilCG': '2ª vara cível de Campo Grande',
-        '3crimeCG': '3ª vara criminal de Campo Grande',
-        '4civilCG': '4ª vara cível de Campo Grande',
-        '5crimeCG': '5ª vara criminal de Campo Grande',
-        '6fiscalCG': '6ª vara fiscal de Campo Grande',
-    };
+    if(plantoes && escala){
 
-    const dateArrays = [];
+        const classNames = ['1jefCG', '2jefCG', '1civilCG', '2civilCG', '3crimeCG', '4civilCG', '5crimeCG', '6fiscalCG'];
+        const classColors = {
+            '1jefCG': '#73e8e8',    // Amarelo mais transparente
+            '2jefCG': '#f31c0d',    // Verde mais transparente
+            '1civilCG': '#0e4cc2',  // Vermelho mais transparente
+            '2civilCG': '#f77001',  // Laranja mais transparente
+            '3crimeCG': '#7f05ad', // Roxo mais transparente
+            '4civilCG': '#13bb0f',   // Azul mais transparente
+            '5crimeCG': '#fff304',  // Rosa mais transparente
+            '6fiscalCG': '#721808', // Amarelo mais transparente
+        };
+        const classLegend = {
+            '1jefCG': '1ª vara gabinete do JEF',
+            '2jefCG': '2ª vara gabinete do JEF',
+            '1civilCG': '1ª vara cível de Campo Grande',
+            '2civilCG': '2ª vara cível de Campo Grande',
+            '3crimeCG': '3ª vara criminal de Campo Grande',
+            '4civilCG': '4ª vara cível de Campo Grande',
+            '5crimeCG': '5ª vara criminal de Campo Grande',
+            '6fiscalCG': '6ª vara fiscal de Campo Grande',
+        };
+        const dateArrays = [];
 
-    function contarPlantoesComuns(juiz, escala) {
-        // Criar um conjunto (Set) para armazenar os ids dos plantões da escala
-        const idsEscala = new Set(escala.map((item) => item.id));
 
-        // Filtrar os plantões do juiz que também estão na escala
-        const plantoesComuns = juiz.filter((item) => idsEscala.has(item.id));
+        function contarPlantoesComuns(juiz, escala) {
+            // Criar um conjunto (Set) para armazenar os ids dos plantões da escala
+            const idsEscala = new Set(escala?.map((item) => item.id));
 
-        // Retornar o número de plantões comuns
-        // Retornar o número de plantões comuns
+            // Filtrar os plantões do juiz que também estão na escala
+            const plantoesComuns = juiz.filter((item) => idsEscala.has(item.id));
 
-        return (plantoesComuns.length);
-    }
+            // Retornar o número de plantões comuns
 
-    // CRIA BACKGROUND EVENTS de cada vara--------------|v
+            return (plantoesComuns.length);
+        }
+
+        // CRIA BACKGROUND EVENTS de cada vara--------------|v
         function createBgEvents(dateArrays) {
 
             const startDate = new Date('2024-01-07');
@@ -162,394 +166,378 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                 startingVaraIndex = 0;
             }
         }
+
         createBgEvents(dateArrays);
-    //--------------------------------------------------|^
+        //--------------------------------------------------|^
 
-    const handleEventClick = (info) => {
+        const handleEventClick = (info) => {
 
-        if (!juiz) {
-            setAlerta(true);
-        } else {
-            const idJuiz = juiz.id;
-            const idPreferencia = escala.preferencia.data.id;
-            const clickedEvent = info.event;
+            if (!juiz) {
+                setAlerta(true);
+            } else {
+                const idJuiz = juiz.id;
+                //const idPreferencia = escala.preferencia.data.id;
+                const clickedEvent = info.event;
 
-            if (clickedEvent.backgroundColor === '#7B809A' && !addEvent.find((event) => event.id == clickedEvent.id)) {
-                const customEvent = {
-                    title: clickedEvent.title,
-                    date: clickedEvent.start.toISOString().split('T')[0],
-                    color: "#fb8c00",
-                    id: parseInt(clickedEvent.id),
-                };
-
-                setAddEvent((prevAddEvent) => [...prevAddEvent, customEvent]);
-                setEventos((prevEventos) => prevEventos.filter((evento) => evento.id != clickedEvent.id));
-                console.log('preferencia: ', idJuiz, ' clickedEvent: ', clickedEvent.extendedProps)
-
-
-            } else if (clickedEvent.backgroundColor === '#4CAF50' && !remEvent.find((event) => event.id === clickedEvent.id)) {
-
-                if(clickedEvent.extendedProps.plantonistaId == juiz.id){
+                if (clickedEvent.backgroundColor === '#7B809A' && !addEvent.find((event) => event.id == clickedEvent.id)) {
                     const customEvent = {
                         title: clickedEvent.title,
                         date: clickedEvent.start.toISOString().split('T')[0],
-                        color: "#F44335",
+                        color: "#fb8c00",
                         id: parseInt(clickedEvent.id),
-                        plantonistaId: juiz.id
                     };
 
-                    setRemEvent((prevRemEvent) => [...prevRemEvent, customEvent]);
+                    setAddEvent((prevAddEvent) => [...prevAddEvent, customEvent]);
                     setEventos((prevEventos) => prevEventos.filter((evento) => evento.id != clickedEvent.id));
-                }
+                    console.log('preferencia: ', idJuiz, ' clickedEvent: ', clickedEvent.extendedProps)
 
-            } else if (clickedEvent.backgroundColor === '#1A73E8') {
-                setAbrir(true);
-            } else if (!eventos.find((event) => event.id == clickedEvent.id)) {
 
-                const controlId = clickedEvent.extendedProps.plantonistaId;
+                } else if (clickedEvent.backgroundColor === '#4CAF50' && !remEvent.find((event) => event.id === clickedEvent.id)) {
 
-                const colorMapping = {
-                    '#fb8c00': '#7B809A',
-                    '#F44335': '#4CAF50',
-                    // Adicione mais cores conforme necessário
-                };
+                    if (clickedEvent.extendedProps.plantonistaId == juiz.id) {
+                        const customEvent = {
+                            title: clickedEvent.title,
+                            date: clickedEvent.start.toISOString().split('T')[0],
+                            color: "#F44335",
+                            id: parseInt(clickedEvent.id),
+                            plantonistaId: juiz.id
+                        };
 
-                const backgroundColor = clickedEvent.backgroundColor;
-                const customColor = colorMapping[backgroundColor];
+                        setRemEvent((prevRemEvent) => [...prevRemEvent, customEvent]);
+                        setEventos((prevEventos) => prevEventos.filter((evento) => evento.id != clickedEvent.id));
+                    }
 
-                if (customColor) {
-                    const customEvent = {
-                        title: clickedEvent.title,
-                        date: clickedEvent.start.toISOString().split('T')[0],
-                        color: customColor,
-                        id: parseInt(clickedEvent.id),
-                        plantonistaId: controlId,
+                } else if (clickedEvent.backgroundColor === '#1A73E8') {
+                    setAbrir(true);
+                } else if (!eventos.find((event) => event.id == clickedEvent.id)) {
+
+                    const controlId = clickedEvent.extendedProps.plantonistaId;
+
+                    const colorMapping = {
+                        '#fb8c00': '#7B809A',
+                        '#F44335': '#4CAF50',
+                        // Adicione mais cores conforme necessário
                     };
 
-                    setEventos((prevEventos) => [...prevEventos, customEvent]);
+                    const backgroundColor = clickedEvent.backgroundColor;
+                    const customColor = colorMapping[backgroundColor];
+
+                    if (customColor) {
+                        const customEvent = {
+                            title: clickedEvent.title,
+                            date: clickedEvent.start.toISOString().split('T')[0],
+                            color: customColor,
+                            id: parseInt(clickedEvent.id),
+                            plantonistaId: controlId,
+                        };
+
+                        setEventos((prevEventos) => [...prevEventos, customEvent]);
+                    }
+
+                    const novosRem = remEvent.filter((evento) => evento.id != clickedEvent.id);
+                    setRemEvent(novosRem);
+
+                    const novosAdd = addEvent.filter((evento) => evento.id != clickedEvent.id);
+                    setAddEvent(novosAdd);
                 }
-
-                const novosRem = remEvent.filter((evento) => evento.id != clickedEvent.id);
-                setRemEvent(novosRem);
-
-                const novosAdd = addEvent.filter((evento) => evento.id != clickedEvent.id);
-                setAddEvent(novosAdd);
             }
-        }
 
-    };
-
-    const toggleClick = () => {
-        if (!juiz) {
-            setAlerta(true);
-        }else if (escala.preferencia.data.id !== juiz.id){
-            setAguarde(true);
-        }else{
-            setClickHabilitado((prev) => !prev); // Inverte o estado atual
-        }
-    };
-
-    const showJSON = () => {
-        console.log("showJson", juiz)
-        console.log("asdasd", plantoes)
-        console.log("xcvxcvvcv", plantoes.filter(plantao => plantao.plantonista?.data[0]?.id == juiz.id))
-    };
-
-    const salvarAlteracoes = async () => {
-
-        const extractDates = (events) => {
-            return events.map(event => event.id);
         };
 
-        if (addEvent.length > 0) {
-            const datesArray = extractDates(addEvent);
-            addPlantao(datesArray);
-            setAddEvent([])
-        }
+        const toggleClick = () => {
+            if (!juiz) {
+                setAlerta(true);
+            } else if (escala?.preferencia.data.id !== juiz.id) {
+                setAguarde(true);
+            } else {
+                setClickHabilitado((prev) => !prev); // Inverte o estado atual
+            }
+        };
 
-        if (remEvent.length > 0) {
-            const remArray = extractDates(remEvent);
-            limpaPlantao(remArray)
-            console.warn('removendo...', remArray);
-            setRemEvent([]);
-        }
+        const showJSON = () => {
+            console.log("showJson", juiz)
+            console.log("asdasd", plantoes)
+            console.log("xcvxcvvcv", plantoes.filter(plantao => plantao.plantonista?.data[0]?.id == juiz.id))
+        };
 
-        fetchData();
-        setEventos(attEvent)
-    };
+        const salvarAlteracoes = async () => {
 
-    const handleClose = () => {
-        setAbrir(false);
-        setSair(false);
-        setAlerta(false);
-        setSalvar(false);
-        setAguarde(false);
-        setPassar(false);
-    };
+            const extractDates = (events) => {
+                return events?.map(event => event.id);
+            };
 
-    function Pagination({ page, onPageChange, className }) {
-        const apiRef = useGridApiContext();
-        const pageCount = useGridSelector(apiRef, gridPageCountSelector);
+            if (addEvent.length > 0) {
+                const datesArray = extractDates(addEvent);
+                addPlantao(datesArray);
+                setAddEvent([])
+            }
+
+            if (remEvent.length > 0) {
+                const remArray = extractDates(remEvent);
+                limpaPlantao(remArray)
+                console.warn('removendo...', remArray);
+                setRemEvent([]);
+            }
+
+            fetchData();
+            setEventos(attEvent)
+        };
+
+        const handleClose = () => {
+            setAbrir(false);
+            setSair(false);
+            setAlerta(false);
+            setSalvar(false);
+            setAguarde(false);
+            setPassar(false);
+        };
+
+        const handleAccordion1Change = (event, isExpanded) => {
+            setAccordion1Expanded(isExpanded);
+        };
+
+        const handleAccordion2Change = (event, isExpanded) => {
+            setAccordion2Expanded(isExpanded);
+        };
 
         return (
-            <MuiPagination
-                color="info"
-                className={className}
-                count={pageCount}
-                page={page + 1}
-                onChange={(event, newPage) => {
-                    onPageChange(event, newPage - 1);
-                }}
-            />
-        );
-    }
+            <>
+                <div>
+                    <Dialog open={alerta} onClose={handleClose}>
+                        <DialogTitle>
+                            <ReportProblemRoundedIcon/>
+                        </DialogTitle>
+                        <DialogContent>
+                            Selecione um magistrado
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleClose}>Ok</Button>
+                        </DialogActions>
+                    </Dialog>
+                </div>
+                <div>
+                    <Dialog open={aguarde} onClose={handleClose}>
+                        <DialogTitle>
+                            <ReportProblemRoundedIcon/>
+                        </DialogTitle>
+                        <DialogContent>
+                            Aguarde sua vez para escolher os plantões
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleClose}>Ok</Button>
+                        </DialogActions>
+                    </Dialog>
+                </div>
+                <div>
+                    <Dialog open={abrir} onClose={handleClose}>
+                        <DialogTitle>
+                            <ReportProblemRoundedIcon/>
+                        </DialogTitle>
+                        <DialogContent>
+                            O plantão já pertencente a outro magistrado
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleClose}>Ok</Button>
+                        </DialogActions>
+                    </Dialog>
+                </div>
+                <div>
+                    <Dialog open={sair} onClose={handleClose}>
+                        <DialogTitle>Sair do Plantão</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText>
+                                Você tem certeza que deseja sair do plantão? Só poderá escolhê-lo novamente quando
+                                chegar a
+                                sua vez.
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={() => {
+                                handleClose();
+                            }}>Sim</Button>
+                            <Button onClick={handleClose}>Não</Button>
+                        </DialogActions>
+                    </Dialog>
+                </div>
+                <div>
+                    <Dialog open={salvar} onClose={handleClose}>
+                        <DialogTitle>
+                            <ReportProblemRoundedIcon/>
+                        </DialogTitle>
+                        <DialogContent>
+                            O plantão já pertencente a outro magistrado
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleClose}>Ok</Button>
+                        </DialogActions>
+                    </Dialog>
+                </div>
+                <div>
+                    <Dialog open={passar} onClose={handleClose}>
+                        <DialogTitle>Passar a Vez</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText>
+                                Você tem certeza que deseja encerrar sua escolha?
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={() => {
+                                handleClose();
+                                passarEscolha();
+                            }}>Sim</Button>
+                            <Button onClick={handleClose}>Não</Button>
+                        </DialogActions>
+                    </Dialog>
+                </div>
+                <Grid container spacing={1}>
+                    <Grid item xs={12} xl={8} style={{height: "550px"}}>
+                        {clickHabilitado ? (
+                            <Calendar
+                                selectable="true"
+                                initialView="dayGridMonth"
+                                initialDate={plantoes?.[0]?.data}
+                                events={[...dateArrays, ...dateArrays, ...eventos, ...addEvent, ...remEvent]}
+                                editable="true"
+                                duration={{days: 4}}
+                                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                                eventClick={handleEventClick} // Use a função criada para lidar com o clique no evento
+                                locale="pt-br"
+                            />
+                        ) : (
+                            <Calendar
+                                initialView="dayGridMonth"
+                                initialDate={plantoes?.[0]?.data}
+                                events={[...dateArrays, ...dateArrays, ...attEvent]}
+                                duration={{days: 4}}
+                                plugins={[dayGridPlugin, timeGridPlugin]}
+                                locale="pt-br"
+                            />
+                        )}
+                    </Grid>
+                    <Grid item xs={12} xl={2.5}>
+                        <Card>
+                            {juiz !== null && (
+                                <>
+                                    {/*<MDButton size="large" onClick={showJSON}>Exibir</MDButton>*/}
 
-    function CustomPagination(props) {
-        return <GridPagination ActionsComponent={Pagination} {...props} />;
-    }
-
-    const handleAccordion1Change = (event, isExpanded) => {
-        setAccordion1Expanded(isExpanded);
-    };
-
-    const handleAccordion2Change = (event, isExpanded) => {
-        setAccordion2Expanded(isExpanded);
-    };
-
-    return (
-        <>
-            <div>
-                <Dialog open={alerta} onClose={handleClose}>
-                    <DialogTitle>
-                        <ReportProblemRoundedIcon/>
-                    </DialogTitle>
-                    <DialogContent>
-                        Selecione um magistrado
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleClose}>Ok</Button>
-                    </DialogActions>
-                </Dialog>
-            </div>
-            <div>
-                <Dialog open={aguarde} onClose={handleClose}>
-                    <DialogTitle>
-                        <ReportProblemRoundedIcon/>
-                    </DialogTitle>
-                    <DialogContent>
-                        Aguarde sua vez para escolher os plantões
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleClose}>Ok</Button>
-                    </DialogActions>
-                </Dialog>
-            </div>
-            <div>
-                <Dialog open={abrir} onClose={handleClose}>
-                    <DialogTitle>
-                        <ReportProblemRoundedIcon/>
-                    </DialogTitle>
-                    <DialogContent>
-                        O plantão já pertencente a outro magistrado
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleClose}>Ok</Button>
-                    </DialogActions>
-                </Dialog>
-            </div>
-            <div>
-                <Dialog open={sair} onClose={handleClose}>
-                    <DialogTitle>Sair do Plantão</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>
-                            Você tem certeza que deseja sair do plantão? Só poderá escolhê-lo novamente quando chegar a
-                            sua vez.
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={() => {
-                            handleClose();
-                        }}>Sim</Button>
-                        <Button onClick={handleClose}>Não</Button>
-                    </DialogActions>
-                </Dialog>
-            </div>
-            <div>
-                <Dialog open={salvar} onClose={handleClose}>
-                    <DialogTitle>
-                        <ReportProblemRoundedIcon/>
-                    </DialogTitle>
-                    <DialogContent>
-                        O plantão já pertencente a outro magistrado
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleClose}>Ok</Button>
-                    </DialogActions>
-                </Dialog>
-            </div>
-            <div>
-                <Dialog open={passar} onClose={handleClose}>
-                    <DialogTitle>Passar a Vez</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>
-                            Você tem certeza que deseja encerrar sua escolha?
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={() => {
-                            handleClose();
-                            passarEscolha();
-                        }}>Sim</Button>
-                        <Button onClick={handleClose}>Não</Button>
-                    </DialogActions>
-                </Dialog>
-            </div>
-            <Grid container spacing={1}>
-                <Grid item xs={12} xl={8} style={{height: "550px"}}>
-                    {clickHabilitado ? (
-                        <Calendar
-                            selectable="true"
-                            initialView="dayGridMonth"
-                            initialDate={plantoes[0]?.data}
-                            events={[...dateArrays, ...dateArrays, ...eventos, ...addEvent, ...remEvent]}
-                            editable="true"
-                            duration={{days: 4}}
-                            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-                            eventClick={handleEventClick} // Use a função criada para lidar com o clique no evento
-                            locale="pt-br"
-                        />
-                    ) : (
-                        <Calendar
-                            initialView="dayGridMonth"
-                            initialDate={plantoes[0]?.data}
-                            events={[...dateArrays, ...dateArrays, ...attEvent]}
-                            duration={{days: 4}}
-                            plugins={[dayGridPlugin, timeGridPlugin]}
-                            locale="pt-br"
-                        />
-                    )}
-                </Grid>
-                <Grid item xs={12} xl={2.5}>
-                    <Card>
-                        {juiz !== null && (
-                            <>
-                                {/*<MDButton size="large" onClick={showJSON}>Exibir</MDButton>*/}
-
-                                <MDButton
-                                    size="medium"
-                                    variant={escala.preferencia.data.id === juiz?.id && !clickHabilitado || addEvent.length > 0 || remEvent.length > 0 ? 'gradient' : 'outlined'}
-                                    color={clickHabilitado ? 'success' : 'info'}
-                                    onClick={() => {
-                                        toggleClick();
-                                        salvarAlteracoes();
-                                    }}
-                                >
-                                    {clickHabilitado ? 'Salvar' : 'Escolher Plantões'}
-                                    {clickHabilitado ? <SaveIcon style={{ marginLeft: '8px' }} /> : <EditRoundedIcon style={{ marginLeft: '8px' }} />}
-                                </MDButton>
-
-                                {juiz?.id === escala.preferencia.data.id && (
                                     <MDButton
                                         size="medium"
-                                        variant="contained"
-                                        onClick={() => setPassar(true)}
-                                        color="warning"
+                                        variant={escala?.preferencia.data.id === juiz?.id && !clickHabilitado || addEvent.length > 0 || remEvent.length > 0 ? 'gradient' : 'outlined'}
+                                        color={clickHabilitado ? 'success' : 'info'}
+                                        onClick={() => {
+                                            toggleClick();
+                                            salvarAlteracoes();
+                                        }}
                                     >
-                                        Passar a vez
+                                        {clickHabilitado ? 'Salvar' : 'Escolher Plantões'}
+                                        {clickHabilitado ? <SaveIcon style={{marginLeft: '8px'}}/> :
+                                            <EditRoundedIcon style={{marginLeft: '8px'}}/>}
                                     </MDButton>
-                                )}
-                                <Accordion style={{boxShadow: "none"}} expanded={accordion1Expanded}
-                                           onChange={handleAccordion1Change}>
-                                    <AccordionSummary aria-controls="panel1a-content" id="panel1a-header">
-                                        {accordion1Expanded ? <ExpandLessIcon/> : <ExpandMoreIcon/>}
-                                        <h5 style={{color: "#344767"}}>Seus plantões</h5>
-                                    </AccordionSummary>
-                                    <AccordionDetails>
-                                        <DataGrid
-                                            density="compact"
-                                            style={{height: "275px"}}
-                                            editMode="row"
-                                            disableColumnMenu
-                                            sx={{fontSize: "16px", fontWeight: "regular", color: "dark", border: 0}}
-                                            pageSizeOptions={[5, 10, 20, 100]}
-                                            initialState={{pagination: {paginationModel: {pageSize: 100}},}}
-                                            rows={plantoes.filter(plantao => plantao.plantonista?.data[0]?.id == juiz?.id)}
-                                            columns={[
-                                                {
-                                                    field: 'data',
-                                                    headerName: 'Datas',
-                                                    flex: 1,
-                                                    sortable: false,
-                                                    renderCell: (params) => {
-                                                        const dateParts = params.value.split('-');
-                                                        const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
-                                                        return <span>{formattedDate}</span>;
+
+                                    {juiz?.id === escala?.preferencia.data.id && (
+                                        <MDButton
+                                            size="medium"
+                                            variant="contained"
+                                            onClick={() => setPassar(true)}
+                                            color="warning"
+                                        >
+                                            Passar a vez
+                                        </MDButton>
+                                    )}
+                                    <Accordion style={{boxShadow: "none"}} expanded={accordion1Expanded}
+                                               onChange={handleAccordion1Change}>
+                                        <AccordionSummary aria-controls="panel1a-content" id="panel1a-header">
+                                            {accordion1Expanded ? <ExpandLessIcon/> : <ExpandMoreIcon/>}
+                                            <h5 style={{color: "#344767"}}>Seus plantões</h5>
+                                        </AccordionSummary>
+                                        <AccordionDetails>
+                                            <DataGrid
+                                                density="compact"
+                                                style={{height: "275px"}}
+                                                editMode="row"
+                                                disableColumnMenu
+                                                sx={{fontSize: "16px", fontWeight: "regular", color: "dark", border: 0}}
+                                                pageSizeOptions={[5, 10, 20, 100]}
+                                                initialState={{pagination: {paginationModel: {pageSize: 100}},}}
+                                                rows={plantoes?.filter(plantao => plantao?.plantonista?.data[0]?.id == juiz?.id)}
+                                                columns={[
+                                                    {
+                                                        field: 'data',
+                                                        headerName: 'Datas',
+                                                        flex: 1,
+                                                        sortable: false,
+                                                        renderCell: (params) => {
+                                                            const dateParts = params.value.split('-');
+                                                            const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+                                                            return <span>{formattedDate}</span>;
+                                                        },
                                                     },
-                                                },
-                                                /*{
-                                                    field: 'id',
-                                                    headerName: 'Opções',
-                                                    align: "center",
-                                                    renderCell: (params) => (
-                                                        <GridActionsCellItem
-                                                            icon={<DeleteIcon color="filled"/>}
-                                                            label="Delete"
-                                                            onClick={() => console.log("hi")/!*{setLinhaSelecionada(params.row);setDeletarPlantao(true)}*!/}
-                                                        />
-                                                    ),
-                                                },*/]}
-                                            //onRowSelectionModelChange={(newRowSelectionModel) => {setRowSelectionModel(newRowSelectionModel);}}
-                                            disableColumnFilter
-                                            disableColumnSelector
-                                            disableDensitySelector
-                                            disableRowSelectionOnClick
-                                            slotProps={{toolbar: {showQuickFilter: true}}}
-                                            sortModel={[{field: 'date', sort: 'asc',}]}
-                                            hideExport={true}
-                                            hideFooterPagination={true}
-                                            hideFooterRowCount={true}
-                                            hideFooterSelectedRowCount={true}
-                                        />
-                                        <Alert
-                                            variant="outlined"
-                                            severity="info"
-                                            style={{paddingLeft: '20px', marginTop: '-30px'}}>
-                                            Você
-                                            escolheu {contarPlantoesComuns(juiz?.plantoes.data, escala.plantaos.data)} plantões
-                                        </Alert>
-                                    </AccordionDetails>
-                                </Accordion>
-                                <Accordion style={{boxShadow: "none"}} expanded={accordion2Expanded}
-                                           onChange={handleAccordion2Change}>
-                                    <AccordionSummary aria-controls="panel1a-content" id="panel1a-header">
-                                        {accordion2Expanded ? <ExpandLessIcon/> : <ExpandMoreIcon/>}
-                                        <h5 style={{color: "#344767"}}>Legenda do Calendário</h5>
-                                    </AccordionSummary>
-                                    <AccordionDetails>
-                                        {Object.keys(classColors).map((className) => (
-                                            <div key={className}
-                                                 style={{display: 'flex', alignItems: 'center', margin: ' 0'}}>
-                                                <div
-                                                    style={{
-                                                        width: '15px',
-                                                        height: '15px',
-                                                        backgroundColor: classColors[className],
-                                                        marginRight: '8px',
-                                                        border: '1px solid #000',
-                                                    }}
-                                                ></div>
-                                                <div style={{fontSize: '14px'}}>{classLegend[className]}</div>
-                                            </div>
-                                        ))}
-                                    </AccordionDetails>
-                                </Accordion>
-                            </>
-                        )}
-                    </Card>
+                                                    /*{
+                                                        field: 'id',
+                                                        headerName: 'Opções',
+                                                        align: "center",
+                                                        renderCell: (params) => (
+                                                            <GridActionsCellItem
+                                                                icon={<DeleteIcon color="filled"/>}
+                                                                label="Delete"
+                                                                onClick={() => console.log("hi")/!*{setLinhaSelecionada(params.row);setDeletarPlantao(true)}*!/}
+                                                            />
+                                                        ),
+                                                    },*/]}
+                                                //onRowSelectionModelChange={(newRowSelectionModel) => {setRowSelectionModel(newRowSelectionModel);}}
+                                                disableColumnFilter
+                                                disableColumnSelector
+                                                disableDensitySelector
+                                                disableRowSelectionOnClick
+                                                slotProps={{toolbar: {showQuickFilter: true}}}
+                                                sortModel={[{field: 'date', sort: 'asc',}]}
+                                                hideExport={true}
+                                                hideFooterPagination={true}
+                                                hideFooterRowCount={true}
+                                                hideFooterSelectedRowCount={true}
+                                            />
+                                            <Alert
+                                                variant="outlined"
+                                                severity="info"
+                                                style={{paddingLeft: '20px', marginTop: '-30px'}}>
+                                                Você
+                                                escolheu {contarPlantoesComuns(juiz?.plantoes.data, escala?.plantaos.data)} plantões
+                                            </Alert>
+                                        </AccordionDetails>
+                                    </Accordion>
+                                    <Accordion style={{boxShadow: "none"}} expanded={accordion2Expanded}
+                                               onChange={handleAccordion2Change}>
+                                        <AccordionSummary aria-controls="panel1a-content" id="panel1a-header">
+                                            {accordion2Expanded ? <ExpandLessIcon/> : <ExpandMoreIcon/>}
+                                            <h5 style={{color: "#344767"}}>Legenda do Calendário</h5>
+                                        </AccordionSummary>
+                                        <AccordionDetails>
+                                            {Object.keys(classColors)?.map((className) => (
+                                                <div key={className}
+                                                     style={{display: 'flex', alignItems: 'center', margin: ' 0'}}>
+                                                    <div
+                                                        style={{
+                                                            width: '15px',
+                                                            height: '15px',
+                                                            backgroundColor: classColors[className],
+                                                            marginRight: '8px',
+                                                            border: '1px solid #000',
+                                                        }}
+                                                    ></div>
+                                                    <div style={{fontSize: '14px'}}>{classLegend[className]}</div>
+                                                </div>
+                                            ))}
+                                        </AccordionDetails>
+                                    </Accordion>
+                                </>
+                            )}
+                        </Card>
+                    </Grid>
                 </Grid>
-            </Grid>
-        </>
-    );
+            </>
+        );
+    }
+    else{return <></>}
 }
 
 export default Calendario;

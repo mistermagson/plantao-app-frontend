@@ -299,7 +299,6 @@ function Escalas({ h }) {
                                 <Grid container spacing={3} xl={12}>
 
                                         <Grid item xs={12} xl={7}>
-
                                             <CalendarioJuiz  plantoes={plantoes} headers={h}/>
                                         </Grid>
 

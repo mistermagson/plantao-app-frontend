@@ -18,6 +18,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import {useRouter} from "next/router";
 import {useCookies} from "react-cookie";
+import {parseCookies} from "nookies";
 
 //TODO SET STATE CONTAGEM DE PLANTOES
 //TODO ORDENAR LISTA PLANTOES
@@ -262,17 +263,28 @@ function Plantoes({propescalas, cabecalho}) {
     );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(ctx) {
+    const cookies = parseCookies(ctx);
+    const authToken = cookies.authToken;
+    const userData = cookies.user_email || '{}'; // Pega os dados do usuário ou retorna um objeto vazio
+
     const h = {
         'Content-Type': 'application/json',
         //'Authorization': 'Bearer ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b'
     };
-
     const res = await fetch(`http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes&populate[preferencia][populate][0]=juizs`, {
         method: 'GET',
         headers: h
-     })
-        const data = await res.json()
-        return { props: { propescalas: data , cabecalho: h} };
+    })
+
+    function filtrarEscalasPorJuiz(juizEmail, escalas) {
+        //---- EXIBE APENAS AS ESCALAS QUE O JUIZ FAZ PARTE
+        const escalasFiltradas = escalas.filter((escala) =>
+            escala.participantes.data.some((participante) => participante.attributes.email == juizEmail)
+        );
+        return escalasFiltradas;
+    }
+    const data = await res.json()
+    return { props: { propescalas: data , cabecalho: h} };
 }
 export default Plantoes;

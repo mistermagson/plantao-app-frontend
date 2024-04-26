@@ -17,7 +17,7 @@ function CalendarioJuiz({ plantoes, headers }) {
     const [tooltipContent, setTooltipContent] = useState(null);
     const [dotColor, setDotColor] = useState(null);
 
-    if (plantoes?.length > 0) {
+    if (plantoes && plantoes?.length > 0 ) {
 
         const eventos = plantoes?.map((plantao) => {
             const escala = plantao.escala;
@@ -106,7 +106,7 @@ function CalendarioJuiz({ plantoes, headers }) {
             <Calendar
                 fullHeight
                 initialView="dayGridMonth"
-                initialDate={plantoes[0]?.data}
+                initialDate={plantoes?.[0]?.data}
                 events={[...eventos]}
                 selectable="true"
                 editable="true"
