@@ -3,7 +3,40 @@ import MDButton from "../../../components/MDButton";
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 function MinutaPage({ plantoes }) {
+
+    const mergeRows = (plantoes) => {
+        const mergedRows = [];
+        let currentRow = null;
+
+        for (const plantao of plantoes) {
+            if (
+                currentRow &&
+                currentRow.plantonista &&
+                currentRow.plantonista.data &&
+                currentRow.plantonista.data[0]?.attributes.nome ===
+                plantao.plantonista.data[0]?.attributes.nome
+            ) {
+                currentRow.data.push(plantao.data);
+            } else {
+                if (currentRow) {
+                    mergedRows.push(currentRow);
+                }
+                currentRow = {
+                    plantonista: plantao.plantonista,
+                    data: [plantao.data],
+                };
+            }
+        }
+
+        if (currentRow) {
+            mergedRows.push(currentRow);
+        }
+
+        return mergedRows;
+    };
+
     if (plantoes?.length > 0) {
+
         const tableCellStyle = {
             border: '1px solid #ccc',
             padding: '6px',
@@ -27,11 +60,14 @@ function MinutaPage({ plantoes }) {
             return dateA - dateB;
         });
 
+        // Mescle as linhas sequenciais com o mesmo plantonista
+        const mergedRows = mergeRows(plantoesOrdenados);
+
         return (
             <div>
                 <table
                     id="minuta-table"
-                    style={{width: '100%', borderCollapse: 'collapse', border: '1px solid #ccc'}}
+                    style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #ccc' }}
                 >
                     <thead>
                     <tr>
@@ -40,17 +76,24 @@ function MinutaPage({ plantoes }) {
                     </tr>
                     </thead>
                     <tbody>
-                    {plantoesOrdenados?.map((plantao) => (
-                        <tr key={plantao.id}>
-                            <td style={tableCellStyle}>{dataAjustada(plantao.data)}</td>
+                    {mergedRows.map((row, index) => (
+                        <tr key={index}>
                             <td style={tableCellStyle}>
-                                {plantao.plantonista && plantao.plantonista.data && plantao.plantonista.data.length > 0 ? (
+                                {row.data.map((data, index) => (
+                                    <React.Fragment key={index}>
+                                        {dataAjustada(data)}
+                                        <br />
+                                    </React.Fragment>
+                                ))}
+                            </td>
+                            <td style={tableCellStyle}>
+                                {row.plantonista && row.plantonista.data && row.plantonista.data[0]?.attributes.nome ? (
                                     <>
-                                        {plantao.plantonista.data[0].attributes.nome} <br/>
-                                        {`${plantao.plantonista.data[0].attributes.cargo} da ${
-                                            plantao.plantonista.data[0].attributes.lotacao &&
-                                            plantao.plantonista.data[0].attributes.lotacao.data &&
-                                            plantao.plantonista.data[0].attributes.lotacao.data.attributes.descricao
+                                        {row.plantonista.data[0].attributes.nome} <br />
+                                        {`${row.plantonista.data[0].attributes.cargo} da ${
+                                            row.plantonista.data[0].attributes.lotacao &&
+                                            row.plantonista.data[0].attributes.lotacao.data &&
+                                            row.plantonista.data[0].attributes.lotacao.data.attributes.descricao
                                         }`}
                                     </>
                                 ) : (
