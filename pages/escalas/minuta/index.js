@@ -43,7 +43,7 @@ function MinutaPage({ plantoes }) {
             textAlign: 'center',
             verticalAlign: 'middle',
             fontFamily: 'Times New Roman',
-            fontSize: '19px',
+            fontSize: '12px',
             color: 'black',
         };
 
@@ -60,50 +60,74 @@ function MinutaPage({ plantoes }) {
             return dateA - dateB;
         });
 
-        // Mescle as linhas sequenciais com o mesmo plantonista
-        const mergedRows = mergeRows(plantoesOrdenados);
+        // Agrupe os plantões por mês
+        const plantoesAgrupadosPorMes = {};
+        plantoesOrdenados.forEach((plantao) => {
+            const month = new Date(plantao.data).getMonth() + 1;
+            const year = new Date(plantao.data).getFullYear();
+            const key = `${year}-${month}`;
+            if (!plantoesAgrupadosPorMes[key]) {
+                plantoesAgrupadosPorMes[key] = [];
+            }
+            plantoesAgrupadosPorMes[key].push(plantao);
+        });
+
+        // Mescle as linhas sequenciais com o mesmo plantonista para cada mês
+        const mergedRowsPorMes = {};
+        Object.keys(plantoesAgrupadosPorMes).forEach((key) => {
+            mergedRowsPorMes[key] = mergeRows(plantoesAgrupadosPorMes[key]);
+        });
 
         return (
             <div>
-                <table
-                    id="minuta-table"
-                    style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #ccc' }}
-                >
-                    <thead>
-                    <tr>
-                        <th style={tableCellStyle}>DATA</th>
-                        <th style={tableCellStyle}>JUÍZES(AS) PLANTONISTAS</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {mergedRows.map((row, index) => (
-                        <tr key={index}>
-                            <td style={tableCellStyle}>
-                                {row.data.map((data, index) => (
-                                    <React.Fragment key={index}>
-                                        {dataAjustada(data)}
-                                        <br />
-                                    </React.Fragment>
+                {Object.keys(mergedRowsPorMes).map((key) => {
+                    const [year, month] = key.split('-');
+                    const mes = new Date(parseInt(year), parseInt(month) - 1).toLocaleString('default', { month: 'long' });
+                    return (
+                        <div key={key}>
+                            <table
+                                id="minuta-table"
+                                style={{width: '100%', borderCollapse: 'collapse', border: '1px solid #ccc'}}
+                            >
+                                <thead>
+                                <tr>
+                                    <th style={tableCellStyle}>PERÍODO - {(mes).toUpperCase()}</th>
+                                    <th style={tableCellStyle}>JUÍZES(AS) PLANTONISTAS</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {mergedRowsPorMes[key].map((row, index) => (
+                                    <tr key={index}>
+                                        <td style={tableCellStyle}>
+                                            {row.data.map((data, index) => (
+                                                <React.Fragment key={index}>
+                                                    {dataAjustada(data)}
+                                                    <br/>
+                                                </React.Fragment>
+                                            ))}
+                                        </td>
+                                        <td style={tableCellStyle}>
+                                            {row.plantonista && row.plantonista.data && row.plantonista.data[0]?.attributes.nome ? (
+                                                <>
+                                                    {row.plantonista.data[0].attributes.nome} <br/>
+                                                    {`${row.plantonista.data[0].attributes.cargo} da ${
+                                                        row.plantonista.data[0].attributes.lotacao &&
+                                                        row.plantonista.data[0].attributes.lotacao.data &&
+                                                        row.plantonista.data[0].attributes.lotacao.data.attributes.descricao
+                                                    }`}
+                                                </>
+                                            ) : (
+                                                'Nenhum plantonista'
+                                            )}
+                                        </td>
+                                    </tr>
                                 ))}
-                            </td>
-                            <td style={tableCellStyle}>
-                                {row.plantonista && row.plantonista.data && row.plantonista.data[0]?.attributes.nome ? (
-                                    <>
-                                        {row.plantonista.data[0].attributes.nome} <br />
-                                        {`${row.plantonista.data[0].attributes.cargo} da ${
-                                            row.plantonista.data[0].attributes.lotacao &&
-                                            row.plantonista.data[0].attributes.lotacao.data &&
-                                            row.plantonista.data[0].attributes.lotacao.data.attributes.descricao
-                                        }`}
-                                    </>
-                                ) : (
-                                    'Nenhum plantonista'
-                                )}
-                            </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
+                                </tbody>
+                            </table>
+                            <div style={{height: '24px'}}/>
+                        </div>
+                    );
+                })}
             </div>
         );
     }
