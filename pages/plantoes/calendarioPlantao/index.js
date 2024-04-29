@@ -71,8 +71,16 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
     const[qtdEscolhida, setQtdEscolhida] = useState(0)
 
     useEffect(()=>{
+        console.log('a')
+        console.log('b')
 
-    },[])
+        if(plantoes && plantoes.length > 0 && escala !== undefined && escala !== null && juiz !== null){
+
+            setQtdEscolhida(plantoes?.filter(plantao => plantao?.plantonista?.data[0]?.id == juiz?.id).length);
+
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[eventos, escala])
 
     if(plantoes && escala){
 
@@ -346,9 +354,7 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                         <DialogTitle>Sair do Plantão</DialogTitle>
                         <DialogContent>
                             <DialogContentText>
-                                Você tem certeza que deseja sair do plantão? Só poderá escolhê-lo novamente quando
-                                chegar a
-                                sua vez.
+                                Você tem certeza que deseja sair do plantão? Só poderá escolhê-lo novamente quando chegar a sua vez.
                             </DialogContentText>
                         </DialogContent>
                         <DialogActions>
@@ -424,23 +430,14 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                                         size="medium"
                                         variant={escala?.preferencia.data.id === juiz?.id && !clickHabilitado || addEvent.length > 0 || remEvent.length > 0 ? 'gradient' : 'outlined'}
                                         color={clickHabilitado ? 'success' : 'info'}
-                                        onClick={() => {
-                                            toggleClick();
-                                            salvarAlteracoes();
-                                        }}
+                                        onClick={() => {toggleClick();salvarAlteracoes();}}
                                     >
                                         {clickHabilitado ? 'Salvar' : 'Escolher Plantões'}
-                                        {clickHabilitado ? <SaveIcon style={{marginLeft: '8px'}}/> :
-                                            <EditRoundedIcon style={{marginLeft: '8px'}}/>}
+                                        {clickHabilitado ? <SaveIcon style={{marginLeft: '8px'}}/> : <EditRoundedIcon style={{marginLeft: '8px'}}/>}
                                     </MDButton>
 
                                     {juiz?.id === escala?.preferencia.data.id && (
-                                        <MDButton
-                                            size="medium"
-                                            variant="contained"
-                                            onClick={() => setPassar(true)}
-                                            color="warning"
-                                        >
+                                        <MDButton size="medium" variant="contained" onClick={() => setPassar(true)} color="warning">
                                             Passar a vez
                                         </MDButton>
                                     )}
@@ -500,13 +497,11 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                                                 variant="outlined"
                                                 severity="info"
                                                 style={{paddingLeft: '20px', marginTop: '-30px'}}>
-                                                Você
-                                                escolheu {contarPlantoesComuns(juiz?.plantoes.data, escala?.plantaos.data)} plantões
+                                                Você escolheu {qtdEscolhida} plantões
                                             </Alert>
                                         </AccordionDetails>
                                     </Accordion>
-                                    <Accordion style={{boxShadow: "none"}} expanded={accordion2Expanded}
-                                               onChange={handleAccordion2Change}>
+                                    <Accordion style={{boxShadow: "none"}} expanded={accordion2Expanded} onChange={handleAccordion2Change}>
                                         <AccordionSummary aria-controls="panel1a-content" id="panel1a-header">
                                             {accordion2Expanded ? <ExpandLessIcon/> : <ExpandMoreIcon/>}
                                             <h5 style={{color: "#344767"}}>Legenda do Calendário</h5>
