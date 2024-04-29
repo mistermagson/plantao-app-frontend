@@ -449,39 +449,26 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                                         </AccordionSummary>
                                         <AccordionDetails>
                                             <DataGrid
-                                                density="compact"
                                                 style={{height: "275px"}}
                                                 editMode="row"
                                                 disableColumnMenu
                                                 sx={{fontSize: "16px", fontWeight: "regular", color: "dark", border: 0}}
                                                 pageSizeOptions={[5, 10, 20, 100]}
-                                                initialState={{pagination: {paginationModel: {pageSize: 100}},}}
+                                                initialState={{pagination: {paginationModel: {pageSize: 100}}, sorting: {sortModel: [{ field: 'data', sort: 'asc' }],},}}
                                                 rows={plantoes?.filter(plantao => plantao?.plantonista?.data[0]?.id == juiz?.id)}
-                                                columns={[
-                                                    {
-                                                        field: 'data',
-                                                        headerName: 'Datas',
-                                                        flex: 1,
-                                                        sortable: false,
-                                                        renderCell: (params) => {
-                                                            const dateParts = params.value.split('-');
-                                                            const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
-                                                            return <span>{formattedDate}</span>;
-                                                        },
+                                                columns=
+                                                {[{
+                                                    field: 'data',
+                                                    headerName: 'Datas',
+                                                    flex: 1,
+                                                    sortable: false,
+                                                    renderCell: (params) => {
+                                                        const dateParts = params.value.split('-');
+                                                        const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+                                                        return <span>{formattedDate}</span>;
                                                     },
-                                                    /*{
-                                                        field: 'id',
-                                                        headerName: 'Opções',
-                                                        align: "center",
-                                                        renderCell: (params) => (
-                                                            <GridActionsCellItem
-                                                                icon={<DeleteIcon color="filled"/>}
-                                                                label="Delete"
-                                                                onClick={() => console.log("hi")/!*{setLinhaSelecionada(params.row);setDeletarPlantao(true)}*!/}
-                                                            />
-                                                        ),
-                                                    },*/]}
-                                                //onRowSelectionModelChange={(newRowSelectionModel) => {setRowSelectionModel(newRowSelectionModel);}}
+                                                },
+                                                ]}
                                                 disableColumnFilter
                                                 disableColumnSelector
                                                 disableDensitySelector

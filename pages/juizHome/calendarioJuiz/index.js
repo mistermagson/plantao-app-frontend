@@ -22,7 +22,7 @@ function CalendarioJuiz({ plantoes, headers }) {
         const eventos = plantoes?.map((plantao) => {
             const escala = plantao.escala;
             const title = escala
-                ? escala.data.attributes.descricao
+                ? escala.data.attributes.tipo
                 : "Vazio";
 
             const className = escala ? "info" : "secondary";

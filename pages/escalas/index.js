@@ -566,7 +566,7 @@ function EscalasPage({ data, h }) {
                                                                 return <span>{formattedDate}</span>;
                                                             },},
                                                         {field: 'plantonista', headerName: 'Plantonista', flex:2, minWidth:200, renderCell: (params) => (
-                                                                <span style={{color: params.value.data[0] ? 'red' : 'gray',}}>
+                                                                <span style={{fontWeight: "500",color: params.value.data[0] ? '' : 'gray',}}>
                                                                     {params.value.data[0] ?  `${params.value.data[0].attributes.nome}`:'- Vazio -' }
                                                                 </span>
                                                             ),

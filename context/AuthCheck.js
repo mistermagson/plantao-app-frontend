@@ -4,7 +4,6 @@ import { useCookies } from "react-cookie";
 
 const AuthCheck = (props) => {
     const router = useRouter();
-    console.log("=/= ~ AuthCheck ~ route:", router)
     const [cookies, setCookies] = useCookies(["auth_token"]);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 

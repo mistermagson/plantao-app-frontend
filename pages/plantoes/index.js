@@ -20,12 +20,9 @@ import {useRouter} from "next/router";
 import {useCookies} from "react-cookie";
 import {parseCookies} from "nookies";
 
-//TODO SET STATE CONTAGEM DE PLANTOES
-//TODO ORDENAR LISTA PLANTOES
-//TODO BOTAO LOGOUT
 //TODO DISPARO DE EMAIL PELO REGIONAL (ideia de que o juiz escolha os plantoes de todas as escalas de uma só vez)
 //TODO AGRUPAR DADOS DA MINUTA E EXPORTAR CONFORME MODELO PORTARIA https://www.jfms.jus.br/documentos-intranet/user_upload/SEI_10410081_Portaria_57.pdf e https://www.jfms.jus.br/documentos-intranet/user_upload/SEI_10410091_Portaria_58.pdf
-//TODO ATRIBUTO 'NOTIFICAR' E 'ATRIBUTO PLANTOES' POR JUIZ EM ESCALAS
+//TODO ATRIBUTO 'NOTIFICAR' E ATRIBUTO 'PLANTOES POR JUIZ' EM ESCALAS
 
 function Plantoes({propescalas, cabecalho}) {
 
