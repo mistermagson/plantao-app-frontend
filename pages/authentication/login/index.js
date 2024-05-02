@@ -21,7 +21,7 @@ function LoginForm() {
     useEffect(() => {
         const { token } = parseCookies();
         if (token) {
-            router.push("/"); // Redirecionar se já estiver autenticado
+            router.push("/plantoes"); // Redirecionar se já estiver autenticado
         }
     }, [router]);
 
@@ -68,7 +68,7 @@ function LoginForm() {
                     path: "/",
                 });
                 setLoginStatus("sucesso");
-                router.push("/"); // Redirecionar para a página principal após o login
+                router.push("/plantoes"); // Redirecionar para a página principal após o login
             } else {
                 setLoginStatus("erro");
                 console.log("Erro ao autenticar:", res.statusText);
