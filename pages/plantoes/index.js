@@ -24,12 +24,10 @@ import {parseCookies} from "nookies";
 //TODO AGRUPAR DADOS DA MINUTA E EXPORTAR CONFORME MODELO PORTARIA https://www.jfms.jus.br/documentos-intranet/user_upload/SEI_10410081_Portaria_57.pdf e https://www.jfms.jus.br/documentos-intranet/user_upload/SEI_10410091_Portaria_58.pdf
 //TODO ATRIBUTO 'NOTIFICAR' E ATRIBUTO 'PLANTOES POR JUIZ' EM ESCALAS
 
-function Plantoes({propescalas, cabecalho}) {
+function Plantoes({cabecalho, format_escalas}) {
 
     const [headers, setHeaders] = useState(cabecalho);
-    const serverSide = propescalas.data.map((item) => ({id: item.id, ...item.attributes,}))
-
-    const [escalas, setEscalas] = useState(serverSide);
+    const [escalas, setEscalas] = useState(format_escalas);
     const [juizes, setJuizes] = useState([]);
     const [plantoes, setPlantoes] = useState([]);
 
@@ -45,7 +43,7 @@ function Plantoes({propescalas, cabecalho}) {
 
     useEffect(() => {
         if (!cookies.user_email) {
-            router.push("/authentication/login");
+            router.push("/");
         } else {
             console.log(juizes.find(juiz => juiz.email === cookies.user_email));
         }
@@ -67,14 +65,8 @@ function Plantoes({propescalas, cabecalho}) {
             }
         }
 
-        if(escalas){
-            const escalasDoJuiz = filtrarEscalasPorJuiz(cookies.user_email, escalas);
-            setEscalas(escalasDoJuiz);
-        }
 
-
-
-    }, [cookies.user_email, escalas,filtrarEscalasPorJuiz]);
+    }, [cookies.user_email, escalas]);
 
     useEffect(() => {
         if(escalaSelecionada) {
@@ -94,15 +86,6 @@ function Plantoes({propescalas, cabecalho}) {
 
         }
     }, [plantoes,cookies.user_email,escalaSelecionada,escalas, juizes]);
-    //TODO Magson - ver a possibilidade de colocar essa funcao no getServerSide pra carregar antes de renderizar a pagina
-    // e passar o resultado por PROPS para o Componente
-    function filtrarEscalasPorJuiz(juizEmail, escalas) {
-        //---- EXIBE APENAS AS ESCALAS QUE O JUIZ FAZ PARTE
-        const escalasFiltradas = escalas.filter((escala) =>
-            escala.participantes.data.some((participante) => participante.attributes.email == cookies.user_email)
-        );
-        return escalasFiltradas;
-    }
 
     const addPlantao =  async (idPlantoes) => {
         try {
@@ -163,7 +146,6 @@ function Plantoes({propescalas, cabecalho}) {
     }
 
     const showJSON = async () => {
-        console.log("find escalas juiz",filtrarEscalasPorJuiz(cookies.user_email, escalas));
         console.log("juiz selecionado",juizSelecionado )
         console.log("cookies",cookies.user_email)
         console.log("setJuiz",juizes.find((juiz) => juiz.email === cookies.user_email))
@@ -262,8 +244,9 @@ function Plantoes({propescalas, cabecalho}) {
 
 export async function getServerSideProps(ctx) {
     const cookies = parseCookies(ctx);
-    const authToken = cookies.authToken;
+    const authToken = cookies.auth_token;
     const userData = cookies.user_email || '{}'; // Pega os dados do usuário ou retorna um objeto vazio
+
 
     const h = {
         'Content-Type': 'application/json',
@@ -275,13 +258,17 @@ export async function getServerSideProps(ctx) {
     })
 
     function filtrarEscalasPorJuiz(juizEmail, escalas) {
+        const serverSide = escalas.data.map((item) => ({id: item.id, ...item.attributes,}))
+
         //---- EXIBE APENAS AS ESCALAS QUE O JUIZ FAZ PARTE
-        const escalasFiltradas = escalas.filter((escala) =>
+        const escalasFiltradas = serverSide.filter((escala) =>
             escala.participantes.data.some((participante) => participante.attributes.email == juizEmail)
         );
         return escalasFiltradas;
     }
+
     const data = await res.json()
-    return { props: { propescalas: data , cabecalho: h} };
+    const escala = filtrarEscalasPorJuiz(userData, data)
+    return { props: { cabecalho: h, format_escalas: escala} };
 }
 export default Plantoes;
