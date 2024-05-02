@@ -48,6 +48,7 @@ import {
   setTransparentSidenav,
   setWhiteSidenav,
 } from "/context";
+import {destroyCookie} from "nookies";
 
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const [openCollapse, setOpenCollapse] = useState(false);
@@ -125,6 +126,14 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   // Render the all the collpases from the routes.js
   const renderCollapse = (collapses) =>
     collapses.map(({ name, collapse, route, href, key }) => {
+
+      function handleLogout() {
+        // Destruir o cookie authToken
+        destroyCookie(null, 'auth_token', { path: '/' });
+        // Opcionalmente, destruir outros cookies se necessário
+        destroyCookie(null, 'user_email', { path: '/' });
+        //window.location.href = '/authentication/login';
+      }
       let returnValue;
 
       if (collapse) {
@@ -147,19 +156,23 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
         );
       } else {
         returnValue = href ? (
-          <Link
-            href={href}
-            key={key}
-            target="_blank"
-            rel="noreferrer"
-            sx={{ textDecoration: "none" }}
-          >
-            <SidenavItem color={color} name={name} active={key === itemName} />
-          </Link>
+            <Link
+                href={href}
+                key={key}
+                target="_blank"
+                rel="noreferrer"
+                sx={{ textDecoration: "none" }}
+            >
+              <SidenavItem color={color} name={name} active={key === itemName} />
+            </Link>
+        ) : key === "logout" ? (
+            <Link href={route} key={key} sx={{ textDecoration: "none" }} onClick={handleLogout}>
+              <SidenavItem color={color} name={name} active={key === itemName} />
+            </Link>
         ) : (
-          <Link href={route} key={key} sx={{ textDecoration: "none" }}>
-            <SidenavItem color={color} name={name} active={key === itemName} />
-          </Link>
+            <Link href={route} key={key} sx={{ textDecoration: "none" }}>
+              <SidenavItem color={color} name={name} active={key === itemName} />
+            </Link>
         );
       }
       return <SidenavList key={key}>{returnValue}</SidenavList>;

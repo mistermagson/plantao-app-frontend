@@ -30,7 +30,7 @@ const routes = [
       {
         name: "Logout",
         key: "logout",
-        route: "/authentication/sign-in/basic",
+        route: "/",
       },
     ],
   },
