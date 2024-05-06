@@ -11,24 +11,16 @@ import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import {Alert, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 import Button from "@mui/material/Button";
 import ReportProblemRoundedIcon from '@mui/icons-material/ReportProblemRounded';
-import {
-    DataGrid,
-    GridActionsCellItem, gridPageCountSelector,
-    GridPagination,
-    GridToolbar,
-    useGridApiContext,
-    useGridSelector
-} from "@mui/x-data-grid";
-import DeleteIcon from "@mui/icons-material/Delete";
-import MuiPagination from "@mui/material/Pagination";
+import {DataGrid, GridActionsCellItem} from "@mui/x-data-grid";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import MDBox from "../../../components/MDBox";
-import Link from "next/link";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
-import {fetchEscalas, passaPreferencia} from "../../../utils/escalaUtils";
+import {fetchEscalas, fetchEscalasDoJuiz} from "../../../utils/escalaUtils";
+import CancelIcon from '@mui/icons-material/Cancel';
+import {removePlantao} from "../../../utils/plantaoUtils";
+import MDTypography from "../../../components/MDTypography";
 
 function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData, passarEscolha}) {
 
@@ -64,23 +56,21 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
     const [abrir, setAbrir] = useState(false);
     const [salvar, setSalvar] = useState(false);
     const [aguarde, setAguarde] = useState(false);
+    const [deletarPlantao, setDeletarPlantao] = useState(false);
+
+
 
     const [accordion1Expanded, setAccordion1Expanded] = useState(false);
     const [accordion2Expanded, setAccordion2Expanded] = useState(false);
 
+    const [linhaSelecionada, setLinhaSelecionada] = useState([]);
     const[qtdEscolhida, setQtdEscolhida] = useState(0)
 
     useEffect(()=>{
-        console.log('a')
-        console.log('b')
-
         if(plantoes && plantoes.length > 0 && escala !== undefined && escala !== null && juiz !== null){
-
             setQtdEscolhida(plantoes?.filter(plantao => plantao?.plantonista?.data[0]?.id == juiz?.id).length);
-
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[eventos, escala])
+    },[eventos, escala, plantoes, juiz])
 
     if(plantoes && escala){
 
@@ -106,19 +96,6 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
             '6fiscalCG': '6ª vara fiscal de Campo Grande',
         };
         const dateArrays = [];
-
-
-        function contarPlantoesComuns(juiz, escala) {
-            // Criar um conjunto (Set) para armazenar os ids dos plantões da escala
-            const idsEscala = new Set(escala?.map((item) => item.id));
-
-            // Filtrar os plantões do juiz que também estão na escala
-            const plantoesComuns = juiz.filter((item) => idsEscala.has(item.id));
-
-            // Retornar o número de plantões comuns
-
-            return (plantoesComuns.length);
-        }
 
         // CRIA BACKGROUND EVENTS de cada vara--------------|v
         function createBgEvents(dateArrays) {
@@ -263,9 +240,10 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
         };
 
         const showJSON = () => {
-            console.log("showJson", juiz)
-            console.log("asdasd", plantoes)
-            console.log("xcvxcvvcv", plantoes.filter(plantao => plantao.plantonista?.data[0]?.id == juiz.id))
+            console.log("attevent", attEvent)
+            console.log("datearray", dateArrays)
+            console.log("plantaotabela", plantaoTabela)
+            console.log("plantao", plantoes)
         };
 
         const salvarAlteracoes = async () => {
@@ -298,6 +276,8 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
             setSalvar(false);
             setAguarde(false);
             setPassar(false);
+            setDeletarPlantao(false);
+
         };
 
         const handleAccordion1Change = (event, isExpanded) => {
@@ -306,6 +286,49 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
 
         const handleAccordion2Change = (event, isExpanded) => {
             setAccordion2Expanded(isExpanded);
+        };
+
+        const isDateInRange = (date, start, end) => {
+            return date >= start && date <= end;
+        };
+
+        const plantaoTabela = attEvent.map(item1 => {
+            const date1 = new Date(item1.date);
+
+            // Encontrando a vara para o objeto1
+            const vara = dateArrays.find(item2 => {
+                const start = new Date(item2.start);
+                const end = new Date(item2.end);
+
+                // Verificando se a data de objeto1 está dentro do intervalo de start e end de objeto2
+                return isDateInRange(date1, start, end);
+            });
+
+            // Criando um novo objeto com os atributos originais de objeto1 e a vara encontrada
+            return {
+                ...item1,
+                vara: vara ? vara.className : null // Adiciona a vara se encontrada, senão null
+            };
+        });
+
+        const deletePlantao = () =>{
+            try{
+                const idPlantao = linhaSelecionada.id
+                removePlantao(idPlantao,headers)
+                setLinhaSelecionada([]);
+                fetchEscalas();
+            }
+            catch (error) {
+                setError(error.message);
+            }
+        }
+        const formatDate = (params) => {
+            if(params){
+                const dateParts = params.split('-');
+                return `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+            }
+
+
         };
 
         return (
@@ -354,7 +377,8 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                         <DialogTitle>Sair do Plantão</DialogTitle>
                         <DialogContent>
                             <DialogContentText>
-                                Você tem certeza que deseja sair do plantão? Só poderá escolhê-lo novamente quando chegar a sua vez.
+                                Você tem certeza que deseja sair do plantão? Só poderá escolhê-lo novamente quando
+                                chegar a sua vez.
                             </DialogContentText>
                         </DialogContent>
                         <DialogActions>
@@ -395,6 +419,32 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                         </DialogActions>
                     </Dialog>
                 </div>
+                <div>
+                    <Dialog open={deletarPlantao} onClose={handleClose}>
+                        <DialogTitle>Sair do Plantao</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText>
+                                {escala ? (
+                                    <>Deseja sair do plantão do dia {' '}
+                                        <MDTypography component="span" variant="H5" style={{fontWeight: 'bold'}}>
+                                            {formatDate(linhaSelecionada.date)}
+                                        </MDTypography>{' ?'}
+                                    </>
+                                ) : (
+                                    'O plantão selecionada não está disponível.'
+                                )}
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <MDButton onClick={() => {
+                                limpaPlantao(linhaSelecionada.id);
+                                handleClose();
+                                fetchEscalasDoJuiz();
+                            }}>Sim</MDButton>
+                            <MDButton onClick={handleClose}>Não</MDButton>
+                        </DialogActions>
+                    </Dialog>
+                </div>
                 <Grid container spacing={1}>
                     <Grid item xs={12} xl={8} style={{height: "550px"}}>
                         {clickHabilitado ? (
@@ -402,7 +452,7 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                                 selectable="true"
                                 initialView="dayGridMonth"
                                 initialDate={plantoes?.[0]?.data}
-                                events={[...dateArrays, ...dateArrays, ...eventos, ...addEvent, ...remEvent]}
+                                events={[...dateArrays, ...dateArrays, ...eventos, ...addEvent, ...remEvent]}//2x dateArrays para que a cor ficasse mais contrastada
                                 editable="true"
                                 duration={{days: 4}}
                                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -413,31 +463,36 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                             <Calendar
                                 initialView="dayGridMonth"
                                 initialDate={plantoes?.[0]?.data}
-                                events={[...dateArrays, ...dateArrays, ...attEvent]}
+                                events={[...dateArrays, ...dateArrays, ...attEvent]} //2x dateArrays para que a cor ficasse mais contrastada
                                 duration={{days: 4}}
                                 plugins={[dayGridPlugin, timeGridPlugin]}
                                 locale="pt-br"
                             />
                         )}
                     </Grid>
-                    <Grid item xs={12} xl={2.5}>
+                    <Grid item xs={12} xl={3.5}>
                         <Card>
                             {juiz !== null && (
                                 <>
-                                    {/*<MDButton size="large" onClick={showJSON}>Exibir</MDButton>*/}
+                                    <MDButton size="large" onClick={showJSON}>Exibir</MDButton>
 
                                     <MDButton
                                         size="medium"
-                                        variant={escala?.preferencia.data.id === juiz?.id && !clickHabilitado || addEvent.length > 0 || remEvent.length > 0 ? 'gradient' : 'outlined'}
-                                        color={clickHabilitado ? 'success' : 'info'}
-                                        onClick={() => {toggleClick();salvarAlteracoes();}}
+                                        variant={escala?.preferencia.data.id === juiz?.id && !clickHabilitado || addEvent.length > 0 || remEvent.length > 0 ? 'gradient' : 'text'}
+                                        color={escala?.preferencia.data.id === juiz?.id ? (clickHabilitado ? 'success' : 'info') : "secondary"}
+                                        onClick={() => {
+                                            toggleClick();
+                                            salvarAlteracoes();
+                                        }}
                                     >
                                         {clickHabilitado ? 'Salvar' : 'Escolher Plantões'}
-                                        {clickHabilitado ? <SaveIcon style={{marginLeft: '8px'}}/> : <EditRoundedIcon style={{marginLeft: '8px'}}/>}
+                                        {clickHabilitado ? <SaveIcon style={{marginLeft: '8px'}}/> :
+                                            <EditRoundedIcon style={{marginLeft: '8px'}}/>}
                                     </MDButton>
 
                                     {juiz?.id === escala?.preferencia.data.id && (
-                                        <MDButton size="medium" variant="contained" onClick={() => setPassar(true)} color="warning">
+                                        <MDButton size="medium" variant="text" onClick={() => setPassar(true)}
+                                                  color="error">
                                             Passar a vez
                                         </MDButton>
                                     )}
@@ -449,26 +504,55 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                                         </AccordionSummary>
                                         <AccordionDetails>
                                             <DataGrid
-                                                style={{height: "275px"}}
+                                                style={{height: "300px"}}
                                                 editMode="row"
                                                 disableColumnMenu
                                                 sx={{fontSize: "16px", fontWeight: "regular", color: "dark", border: 0}}
                                                 pageSizeOptions={[5, 10, 20, 100]}
-                                                initialState={{pagination: {paginationModel: {pageSize: 100}}, sorting: {sortModel: [{ field: 'data', sort: 'asc' }],},}}
-                                                rows={plantoes?.filter(plantao => plantao?.plantonista?.data[0]?.id == juiz?.id)}
+                                                initialState={{
+                                                    pagination: {paginationModel: {pageSize: 100}},
+                                                    sorting: {sortModel: [{field: 'data', sort: 'asc'}],},
+                                                }}
+                                                rows={plantaoTabela?.filter(plantao => plantao?.plantonistaId == juiz?.id)}
                                                 columns=
-                                                {[{
-                                                    field: 'data',
-                                                    headerName: 'Datas',
-                                                    flex: 1,
-                                                    sortable: false,
-                                                    renderCell: (params) => {
-                                                        const dateParts = params.value.split('-');
-                                                        const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
-                                                        return <span>{formattedDate}</span>;
+                                                    {[{
+                                                        field: 'date',
+                                                        headerName: 'Data',
+                                                        width: 110,
+                                                        sortable: false,
+                                                        renderCell: (params) => {
+                                                            const dateParts = params.value.split('-');
+                                                            const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+                                                            return <span>{formattedDate}</span>;
+                                                        },
                                                     },
-                                                },
-                                                ]}
+                                                        {
+                                                            field: 'vara',
+                                                            headerName: 'Vara',
+                                                            flex: 1,
+                                                            sortable: false,
+                                                            renderCell: (params) => {
+                                                                return <span>{classLegend[params.value]}</span>
+
+                                                            },
+                                                        },
+                                                        {
+                                                            field: 'id',
+                                                            headerName: '',
+                                                            width: 110,
+                                                            align: "center",
+                                                            renderCell: (params) => (
+                                                                <GridActionsCellItem
+                                                                    icon={<CancelIcon color="error"/>}
+                                                                    label="Delete"
+                                                                    onClick={() => {
+                                                                        setLinhaSelecionada(params.row);
+                                                                        setDeletarPlantao(true)
+                                                                    }}
+                                                                />
+                                                            ),
+                                                        }
+                                                    ]}
                                                 disableColumnFilter
                                                 disableColumnSelector
                                                 disableDensitySelector
@@ -488,7 +572,8 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                                             </Alert>
                                         </AccordionDetails>
                                     </Accordion>
-                                    <Accordion style={{boxShadow: "none"}} expanded={accordion2Expanded} onChange={handleAccordion2Change}>
+                                    <Accordion style={{boxShadow: "none"}} expanded={accordion2Expanded}
+                                               onChange={handleAccordion2Change}>
                                         <AccordionSummary aria-controls="panel1a-content" id="panel1a-header">
                                             {accordion2Expanded ? <ExpandLessIcon/> : <ExpandMoreIcon/>}
                                             <h5 style={{color: "#344767"}}>Legenda do Calendário</h5>
@@ -518,8 +603,9 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                 </Grid>
             </>
         );
+    } else {
+        return <></>
     }
-    else{return <></>}
 }
 
 export default Calendario;
