@@ -5,7 +5,7 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import React, {useEffect, useState} from "react";
 import MDButton from "../../components/MDButton";
-import {fetchEscalas, passaPreferencia} from "../../utils/escalaUtils";
+import {fetchEscalas, fetchEscalasDoJuiz, passaPreferencia} from "../../utils/escalaUtils";
 import {removePlantonista, setPlantonista} from "../../utils/plantaoUtils";
 import CalendarioPlantao from "./calendarioPlantao";
 import MDBox from "/components/MDBox";
@@ -21,8 +21,7 @@ import {useCookies} from "react-cookie";
 import {parseCookies} from "nookies";
 
 //TODO DISPARO DE EMAIL PELO REGIONAL (ideia de que o juiz escolha os plantoes de todas as escalas de uma só vez)
-//TODO AGRUPAR DADOS DA MINUTA E EXPORTAR CONFORME MODELO PORTARIA https://www.jfms.jus.br/documentos-intranet/user_upload/SEI_10410081_Portaria_57.pdf e https://www.jfms.jus.br/documentos-intranet/user_upload/SEI_10410091_Portaria_58.pdf
-//TODO ATRIBUTO 'NOTIFICAR' E ATRIBUTO 'PLANTOES POR JUIZ' EM ESCALAS
+//TODO ATRIBUTO 'PLANTOES POR JUIZ' EM ESCALAS
 
 function Plantoes({cabecalho, format_escalas}) {
 
@@ -96,7 +95,7 @@ function Plantoes({cabecalho, format_escalas}) {
             console.error(error);
         }
 
-        const atualizaEscalas = await fetchEscalas(headers)
+        const atualizaEscalas = await fetchEscalasDoJuiz(cookies.user_email)
         await setEscalas(atualizaEscalas)
     };
 
@@ -127,7 +126,7 @@ function Plantoes({cabecalho, format_escalas}) {
         try {
             const idJuiz = juizSelecionado?.id;
             await removePlantonista(idJuiz, row, headers);
-            const escalasAtualizadas = await fetchEscalas(headers);
+            const escalasAtualizadas = await fetchEscalasDoJuiz(cookies.user_email);
             await setEscalas(escalasAtualizadas);
         } catch (error) {
             console.error(error);
@@ -141,7 +140,7 @@ function Plantoes({cabecalho, format_escalas}) {
         } catch (error) {
             console.error(error);
         }
-        const atualizaEscalas = await fetchEscalas(headers)
+        const atualizaEscalas = await fetchEscalasDoJuiz(cookies.user_email)
         await setEscalas(atualizaEscalas)
     }
 
@@ -186,7 +185,7 @@ function Plantoes({cabecalho, format_escalas}) {
                                             <Alert severity="error">Essa escala já foi fechada</Alert>
                                             : // ELSE
                                             (juizSelecionado !== null && juizSelecionado?.id === preferenciaJuizId && juizSelecionado !== "" ?  // IF
-                                                    <Alert severity="info">Escolha seus plantões</Alert>
+                                                    <Alert severity="info">Escolha até {escalaSelecionada?.plantoesPorJuiz} plantões</Alert>
                                                     : // ELSE
                                                     (juizSelecionado !== null && juizSelecionado?.id !== preferenciaJuizId ?  // IF
                                                             <Alert severity="error">Aguarde sua vez para escolher os
@@ -252,23 +251,25 @@ export async function getServerSideProps(ctx) {
         'Content-Type': 'application/json',
         //'Authorization': 'Bearer ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b'
     };
-    const res = await fetch(`http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes&populate[preferencia][populate][0]=juizs`, {
-        method: 'GET',
-        headers: h
-    })
+    // const res = await fetch(`http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes&populate[preferencia][populate][0]=juizs`, {
+    //     method: 'GET',
+    //     headers: h
+    // })
+    //
+    // function filtrarEscalasPorJuiz(juizEmail, escalas) {
+    //     const serverSide = escalas.data.map((item) => ({id: item.id, ...item.attributes,}))
+    //
+    //     //---- EXIBE APENAS AS ESCALAS QUE O JUIZ FAZ PARTE
+    //     const escalasFiltradas = serverSide.filter((escala) =>
+    //         escala.participantes.data.some((participante) => participante.attributes.email == juizEmail)
+    //     );
+    //     return escalasFiltradas;
+    // }
+    //
+    // const data = await res.json()
+    // const escala = filtrarEscalasPorJuiz(userData, data)
 
-    function filtrarEscalasPorJuiz(juizEmail, escalas) {
-        const serverSide = escalas.data.map((item) => ({id: item.id, ...item.attributes,}))
-
-        //---- EXIBE APENAS AS ESCALAS QUE O JUIZ FAZ PARTE
-        const escalasFiltradas = serverSide.filter((escala) =>
-            escala.participantes.data.some((participante) => participante.attributes.email == juizEmail)
-        );
-        return escalasFiltradas;
-    }
-
-    const data = await res.json()
-    const escala = filtrarEscalasPorJuiz(userData, data)
+    const escala = await fetchEscalasDoJuiz(userData);
     return { props: { cabecalho: h, format_escalas: escala} };
 }
 export default Plantoes;
