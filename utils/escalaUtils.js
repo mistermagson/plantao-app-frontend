@@ -3,6 +3,7 @@ import {useState} from "react";
 import {removePlantao} from "./plantaoUtils";
 import getHolidays from "../services/holidays";
 import {setCookie} from "nookies";
+import {fetchJuizes} from "./juizes";
 
 export const geraDatas = (start, end) => {
     const dateArray = [];
@@ -266,6 +267,12 @@ export const fetchEscalas = async () => {
     }
 };
 
+export const fetchEscalasDoJuiz = async (juizEmail) =>{
+    const data = await fetchEscalas();
+
+    return data.filter((escala) => escala.participantes.data.some((participante) => participante.attributes.email == juizEmail));
+}
+
 export const removeEscala = (idEscala,plantaoArray, headers ) => {
 
     const urlEscala =`http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/escalas/${idEscala}`
@@ -335,7 +342,8 @@ export const passaPreferencia = (escala,headers) => {
 
 
     setPreferencia(escala.id, proximoJuiz.id, headers);
-    enviarEmail(escala.preferencia.data.attributes,proximoJuiz.attributes)
+    //TODO HABILITAR ENVIO APÓS TESTES
+    //enviarEmail(escala.preferencia.data.attributes,proximoJuiz.attributes)
 };
 
 export const setDescricao = (descricao, idEscala,headers ) => {
@@ -386,7 +394,9 @@ export const enviarEmail = async (juizFinalizou, juizInicia) =>{
     console.log(juizFinalizou)
     console.log(juizInicia)
 
-    try {
+    console.log(`TESTE EMAILS --- O juiz  ${juizFinalizou.nome} finalizou a escolha de seus plantões. Agora é a vez do juiz  ${juizInicia.nome} realizar suas escolhas`)
+    return "ok";
+    /*try {
         const res = await fetch("/api/notifica", {
             method: "POST",
             headers: {
@@ -406,5 +416,5 @@ export const enviarEmail = async (juizFinalizou, juizInicia) =>{
         }
     } catch (error) {
         console.log("Erro ao enviar email:", error);
-    }
+    }*/
 }
