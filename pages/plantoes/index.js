@@ -21,7 +21,7 @@ import {useCookies} from "react-cookie";
 import {parseCookies} from "nookies";
 
 //TODO DISPARO DE EMAIL PELO REGIONAL (ideia de que o juiz escolha os plantoes de todas as escalas de uma só vez)
-//TODO ATRIBUTO 'PLANTOES POR JUIZ' EM ESCALAS
+
 
 function Plantoes({cabecalho, format_escalas}) {
 

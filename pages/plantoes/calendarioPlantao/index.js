@@ -56,6 +56,7 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
     const [abrir, setAbrir] = useState(false);
     const [salvar, setSalvar] = useState(false);
     const [aguarde, setAguarde] = useState(false);
+    const [cheio, setCheio] = useState(false);
     const [deletarPlantao, setDeletarPlantao] = useState(false);
 
 
@@ -86,14 +87,14 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
             '6fiscalCG': '#721808', // Amarelo mais transparente
         };
         const classLegend = {
-            '1jefCG': '1ª vara gabinete do JEF',
-            '2jefCG': '2ª vara gabinete do JEF',
-            '1civilCG': '1ª vara cível de Campo Grande',
-            '2civilCG': '2ª vara cível de Campo Grande',
-            '3crimeCG': '3ª vara criminal de Campo Grande',
-            '4civilCG': '4ª vara cível de Campo Grande',
-            '5crimeCG': '5ª vara criminal de Campo Grande',
-            '6fiscalCG': '6ª vara fiscal de Campo Grande',
+            '1jefCG': '1ª Vara Gabinete do JEF',
+            '2jefCG': '2ª Vara Gabinete do JEF',
+            '1civilCG': '1ª Vara Cível de Campo Grande',
+            '2civilCG': '2ª Vara Cível de Campo Grande',
+            '3crimeCG': '3ª Vara Criminal de Campo Grande',
+            '4civilCG': '4ª Vara Cível de Campo Grande',
+            '5crimeCG': '5ª Vara Criminal de Campo Grande',
+            '6fiscalCG': '6ª Vara Fiscal de Campo Grande',
         };
         const dateArrays = [];
 
@@ -240,31 +241,42 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
         };
 
         const showJSON = () => {
-            console.log("attevent", attEvent)
-            console.log("datearray", dateArrays)
-            console.log("plantaotabela", plantaoTabela)
-            console.log("plantao", plantoes)
+            console.log("addevent", escala)
+            console.log("remevent", checarLimite(plantaoTabela, addEvent, remEvent, escala.plantoesPorJuiz ))
+
         };
 
+        const checarLimite = (atuais, adicionar, remover, max) =>{
+            const total = atuais?.filter(plantao => plantao?.plantonistaId == juiz?.id).length + adicionar.length - remover.length;
+            console.log(atuais?.filter(plantao => plantao?.plantonistaId == juiz?.id),"-",adicionar,"-", remover,"-", max)
+            return total <= max;
+        }
         const salvarAlteracoes = async () => {
 
-            const extractDates = (events) => {
-                return events?.map(event => event.id);
-            };
+            if(checarLimite(plantaoTabela, addEvent, remEvent, escala.plantoesPorJuiz )){
+                const extractDates = (events) => {
+                    return events?.map(event => event.id);
+                };
 
-            if (addEvent.length > 0) {
-                const datesArray = extractDates(addEvent);
-                addPlantao(datesArray);
+                if (addEvent.length > 0) {
+                    const datesArray = extractDates(addEvent);
+                    addPlantao(datesArray);
+                    setAddEvent([])
+                }
+
+                if (remEvent.length > 0) {
+                    const remArray = extractDates(remEvent);
+                    limpaPlantao(remArray)
+                    console.warn('removendo...', remArray);
+                    setRemEvent([]);
+                }
+            }
+            else{
                 setAddEvent([])
-            }
-
-            if (remEvent.length > 0) {
-                const remArray = extractDates(remEvent);
-                limpaPlantao(remArray)
-                console.warn('removendo...', remArray);
                 setRemEvent([]);
+                console.log('LIMITE DE PLANTOES ATINGIDO')
+                setCheio(true);
             }
-
             fetchData();
             setEventos(attEvent)
         };
@@ -277,6 +289,7 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
             setAguarde(false);
             setPassar(false);
             setDeletarPlantao(false);
+            setCheio(false);
 
         };
 
@@ -340,6 +353,19 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                         </DialogTitle>
                         <DialogContent>
                             Selecione um magistrado
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleClose}>Ok</Button>
+                        </DialogActions>
+                    </Dialog>
+                </div>
+                <div>
+                    <Dialog open={cheio} onClose={handleClose}>
+                        <DialogTitle>
+                            <ReportProblemRoundedIcon/> Limite Atingido
+                        </DialogTitle>
+                        <DialogContent>
+                            Por favor, selecione no máximo até {escala.plantoesPorJuiz} plantões!
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={handleClose}>Ok</Button>
@@ -518,7 +544,7 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                                                     {[{
                                                         field: 'date',
                                                         headerName: 'Data',
-                                                        width: 110,
+                                                        width: 100,
                                                         sortable: false,
                                                         renderCell: (params) => {
                                                             const dateParts = params.value.split('-');
@@ -539,7 +565,7 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                                                         {
                                                             field: 'id',
                                                             headerName: '',
-                                                            width: 110,
+                                                            width: 40,
                                                             align: "center",
                                                             renderCell: (params) => (
                                                                 <GridActionsCellItem
