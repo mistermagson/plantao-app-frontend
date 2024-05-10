@@ -78,6 +78,45 @@ function MinutaPage({ plantoes }) {
             mergedRowsPorMes[key] = mergeRows(plantoesAgrupadosPorMes[key]);
         });
 
+        const copyTable = (tableId) => {
+            const table = document.getElementById(tableId);
+            if (!table) {
+                console.error(`Table with id '${tableId}' not found.`);
+                return;
+            }
+
+            const header = table.querySelector('thead tr');
+            const rows = table.querySelectorAll('tbody tr');
+
+            let copiedData = '';
+
+            // Add table header
+            for (const th of header.children) {
+                copiedData += th.innerText + '\t';
+            }
+            copiedData += '\n';
+
+            // Add table rows
+            for (const row of rows) {
+                for (const td of row.children) {
+                    copiedData += td.innerText + '\t';
+                }
+                copiedData += '\n';
+            }
+
+            // Copy the data to clipboard
+            copyToClipboard(copiedData);
+        };
+
+        const copyToClipboard = (data) => {
+            const textarea = document.createElement('textarea');
+            textarea.value = data;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+        };
+
         return (
             <div>
                 {Object.keys(mergedRowsPorMes).map((key) => {
