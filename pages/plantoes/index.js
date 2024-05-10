@@ -43,8 +43,6 @@ function Plantoes({cabecalho, format_escalas}) {
     useEffect(() => {
         if (!cookies.user_email) {
             router.push("/");
-        } else {
-            console.log(juizes.find(juiz => juiz.email === cookies.user_email));
         }
 
     }, [cookies, juizes, router]);
@@ -55,7 +53,6 @@ function Plantoes({cabecalho, format_escalas}) {
 
         if(escalaUrl!==null) {
             const escalaObj = escalas.find((escala) => escala.descricao === escalaUrl);
-            console.log('OBJETO', escalaObj);
 
             if (escalaObj) {
                 setEscalaSelecionada(escalaObj);
@@ -88,7 +85,6 @@ function Plantoes({cabecalho, format_escalas}) {
 
     const addPlantao =  async (idPlantoes) => {
         try {
-            console.log('handle submit param',juizSelecionado.id, idPlantoes, headers)
             await setPlantonista(juizSelecionado.id, idPlantoes, headers)
 
         } catch (error) {
@@ -153,11 +149,11 @@ function Plantoes({cabecalho, format_escalas}) {
     return (
         <DashboardLayout>
             <DashboardNavbar/>
-           <MDButton size="small" onClick={showJSON} lcolor="info">Exibir</MDButton>
+           {/*<MDButton size="small" onClick={showJSON} lcolor="info">Exibir</MDButton>*/}
             <MDBox p={2}>
                 <MDTypography variant="h2">Plantões</MDTypography>
             </MDBox>
-            <Card>
+            <Card >
                 <Grid container>
                     <Grid item xs={12} xl={12}>
                         <Grid container spacing={2} pl={3}>
@@ -201,13 +197,13 @@ function Plantoes({cabecalho, format_escalas}) {
                     </Grid>
                     <Grid item xs={12} xl={12} pb={4}>
                         {escalaSelecionada && (
-                            <MDBox px={4} mt={5}>
+                            <Grid px={4} mt={5}>
                                 <MDTypography variant="h6"> Calendário de Plantões:</MDTypography>
                                 <MDTypography variant="body2">
                                     {/* eslint-disable-next-line react/no-unescaped-entities */}
                                     Clique no botão "Escolher Plantões" e selecione no calendário as datas desejadas, salve as escolhas e quando houver finalizado passe a vez.
                                 </MDTypography>
-
+                                <Grid mb={7.3} mt={1}>
                                 {plantoes?.length > 0 ? (
                                     <CalendarioPlantao
                                         plantoes={plantoes}
@@ -232,7 +228,9 @@ function Plantoes({cabecalho, format_escalas}) {
                                     />
                                 )
                                 }
-                            </MDBox>
+                            </Grid>
+                            </Grid>
+
                         )}
                     </Grid>
                 </Grid>
@@ -251,23 +249,6 @@ export async function getServerSideProps(ctx) {
         'Content-Type': 'application/json',
         //'Authorization': 'Bearer ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b'
     };
-    // const res = await fetch(`http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/escalas?populate[plantaos][populate][0]=plantonista&populate[participantes][populate][0]=plantoes&populate[preferencia][populate][0]=juizs`, {
-    //     method: 'GET',
-    //     headers: h
-    // })
-    //
-    // function filtrarEscalasPorJuiz(juizEmail, escalas) {
-    //     const serverSide = escalas.data.map((item) => ({id: item.id, ...item.attributes,}))
-    //
-    //     //---- EXIBE APENAS AS ESCALAS QUE O JUIZ FAZ PARTE
-    //     const escalasFiltradas = serverSide.filter((escala) =>
-    //         escala.participantes.data.some((participante) => participante.attributes.email == juizEmail)
-    //     );
-    //     return escalasFiltradas;
-    // }
-    //
-    // const data = await res.json()
-    // const escala = filtrarEscalasPorJuiz(userData, data)
 
     const escala = await fetchEscalasDoJuiz(userData);
     return { props: { cabecalho: h, format_escalas: escala} };

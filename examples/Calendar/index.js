@@ -55,14 +55,11 @@ function Calendar({ header, ...rest }) {
   const events = rest.events
     ? rest.events.map((el) => ({
         ...el,
-        /*className: validClassNames.find((item) => item === el.className)
-          ? `event-${el.className}`
-          : "event-info",*/
       }))
     : [];
 
   return (
-    <Card sx={{ height: "100%" }}>
+    <Card >
       <MDBox pt={header.title || header.date ? 2 : 0} px={2} lineHeight={1}>
         {header.title ? (
           <MDTypography

@@ -21,6 +21,7 @@ import {fetchEscalas, fetchEscalasDoJuiz} from "../../../utils/escalaUtils";
 import CancelIcon from '@mui/icons-material/Cancel';
 import {removePlantao} from "../../../utils/plantaoUtils";
 import MDTypography from "../../../components/MDTypography";
+import Divider from "@mui/material/Divider";
 
 function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData, passarEscolha}) {
 
@@ -175,7 +176,6 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
 
                     setAddEvent((prevAddEvent) => [...prevAddEvent, customEvent]);
                     setEventos((prevEventos) => prevEventos.filter((evento) => evento.id != clickedEvent.id));
-                    console.log('preferencia: ', idJuiz, ' clickedEvent: ', clickedEvent.extendedProps)
 
 
                 } else if (clickedEvent.backgroundColor === '#4CAF50' && !remEvent.find((event) => event.id === clickedEvent.id)) {
@@ -241,16 +241,16 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
         };
 
         const showJSON = () => {
-            console.log("addevent", escala)
+            console.log("addevent", addEvent, "rem", remEvent)
             console.log("remevent", checarLimite(plantaoTabela, addEvent, remEvent, escala.plantoesPorJuiz ))
 
         };
 
         const checarLimite = (atuais, adicionar, remover, max) =>{
             const total = atuais?.filter(plantao => plantao?.plantonistaId == juiz?.id).length + adicionar.length - remover.length;
-            console.log(atuais?.filter(plantao => plantao?.plantonistaId == juiz?.id),"-",adicionar,"-", remover,"-", max)
             return total <= max;
         }
+
         const salvarAlteracoes = async () => {
 
             if(checarLimite(plantaoTabela, addEvent, remEvent, escala.plantoesPorJuiz )){
@@ -335,6 +335,7 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                 setError(error.message);
             }
         }
+
         const formatDate = (params) => {
             if(params){
                 const dateParts = params.split('-');
@@ -365,7 +366,7 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                             <ReportProblemRoundedIcon/> Limite Atingido
                         </DialogTitle>
                         <DialogContent>
-                            Por favor, selecione no máximo até {escala.plantoesPorJuiz} plantões!
+                            Por favor, escolha no máximo {escala.plantoesPorJuiz} plantões!
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={handleClose}>Ok</Button>
@@ -471,7 +472,7 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                         </DialogActions>
                     </Dialog>
                 </div>
-                <Grid container spacing={1}>
+                <Grid container spacing={2}>
                     <Grid item xs={12} xl={8} style={{height: "550px"}}>
                         {clickHabilitado ? (
                             <Calendar
@@ -496,12 +497,11 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                             />
                         )}
                     </Grid>
-                    <Grid item xs={12} xl={3.5}>
+                    <Grid item xs={12} xl={3.8}>
                         <Card>
                             {juiz !== null && (
                                 <>
-                                    <MDButton size="large" onClick={showJSON}>Exibir</MDButton>
-
+                                    {/*<MDButton size="large" onClick={showJSON}>Exibir</MDButton>*/}
                                     <MDButton
                                         size="medium"
                                         variant={escala?.preferencia.data.id === juiz?.id && !clickHabilitado || addEvent.length > 0 || remEvent.length > 0 ? 'gradient' : 'text'}
@@ -512,16 +512,15 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                                         }}
                                     >
                                         {clickHabilitado ? 'Salvar' : 'Escolher Plantões'}
-                                        {clickHabilitado ? <SaveIcon style={{marginLeft: '8px'}}/> :
-                                            <EditRoundedIcon style={{marginLeft: '8px'}}/>}
+                                        {clickHabilitado ? <SaveIcon style={{marginLeft: '8px'}}/> : <EditRoundedIcon style={{marginLeft: '8px'}}/>}
                                     </MDButton>
-
                                     {juiz?.id === escala?.preferencia.data.id && (
-                                        <MDButton size="medium" variant="text" onClick={() => setPassar(true)}
+                                        <MDButton size="medium" variant="text" onClick={() => checarLimite(plantaoTabela, addEvent, remEvent, escala.plantoesPorJuiz ) ? setPassar(true) : setCheio(true)}
                                                   color="error">
                                             Passar a vez
                                         </MDButton>
                                     )}
+                                    <Divider/>
                                     <Accordion style={{boxShadow: "none"}} expanded={accordion1Expanded}
                                                onChange={handleAccordion1Change}>
                                         <AccordionSummary aria-controls="panel1a-content" id="panel1a-header">
@@ -530,7 +529,8 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                                         </AccordionSummary>
                                         <AccordionDetails>
                                             <DataGrid
-                                                style={{height: "300px"}}
+                                                density="compact"
+
                                                 editMode="row"
                                                 disableColumnMenu
                                                 sx={{fontSize: "16px", fontWeight: "regular", color: "dark", border: 0}}

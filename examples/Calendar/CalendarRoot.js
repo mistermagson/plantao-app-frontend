@@ -37,7 +37,7 @@ export default styled(Box)(({ theme, ownerState }) => {
 
 
     "& .fc-media-screen": {
-      height: "80%",
+      height: "100%",
       color: dark.main,
     },
 
