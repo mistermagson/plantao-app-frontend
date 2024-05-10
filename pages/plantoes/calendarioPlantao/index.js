@@ -441,6 +441,7 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                             <Button onClick={() => {
                                 handleClose();
                                 passarEscolha();
+                                fetchData();
                             }}>Sim</Button>
                             <Button onClick={handleClose}>Não</Button>
                         </DialogActions>

@@ -213,7 +213,7 @@ function Plantoes({cabecalho, format_escalas}) {
                                         passarEscolha={passaEscolha}
                                         addPlantao={addPlantao}
                                         nPlantoes={juizes}
-                                        fetchData={showJSON}
+                                        fetchData={fetchEscalasDoJuiz}
                                     />
                                 ) : (
                                     <Calendar
