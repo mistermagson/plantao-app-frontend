@@ -8,7 +8,6 @@ import {fetchJuizes} from "./juizes";
 export const geraDatas = (start, end) => {
     const dateArray = [];
     let currentDate = new Date(start+ "T00:00:00.000-04:00");
-    console.log('GERA DATAS', currentDate)
 
 
     const formatDate = date => {
@@ -30,7 +29,6 @@ export const geraDatas = (start, end) => {
 export const geraWeekends = (start, end) => {
     const dateArray = [];
     let currentDate = new Date( start + "T00:00:00.000-04:00");
-    console.log('INICIO', currentDate)
 
     const formatDate = date => {
         const year = date.getFullYear();
@@ -92,7 +90,6 @@ export const setDatasEscala = (idEscala, dateArray, headers) => {
                 data: item,
                 escala: idEscala
             }
-            console.log(plantaos)
             const response = await fetch(`http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/plantoes`, {
                 method: 'POST',
                 headers,
@@ -113,7 +110,6 @@ export const setParticipantesEscala = (idEscala, juizesArray,headers) => {
     const participantes={
         participantes:{connect: juizesArray}
     }
-    console.log('setParticipantes',idEscala, participantes,headers)
     const setEscala = async () => {
         try {
             const response = await fetch(`http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/escalas/${idEscala}`, {
@@ -138,7 +134,6 @@ export const setVarasEscala = (idEscala, varasArray,headers) => {
     const varas={
         varas:{connect: varasArray}
     }
-    console.log(idEscala, varas,headers)
     const setEscala = async () => {
         try {
             const response = await fetch(`http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/escalas/${idEscala}`, {
@@ -340,12 +335,8 @@ export const passaPreferencia = (escala,headers) => {
         proximoJuiz = juizesOrdenados[indexPreferencia + 1];
     }
 
-    console.log(`A preferência foi alterada do juiz  ${escala.preferencia.data.attributes.nome} para o juiz com ID ${proximoJuiz.attributes.nome}`);
-
-
     setPreferencia(escala.id, proximoJuiz.id, headers);
-    //TODO HABILITAR ENVIO APÓS TESTES
-    //enviarEmail(escala.preferencia.data.attributes,proximoJuiz.attributes)
+    enviarEmail(escala.preferencia.data.attributes,proximoJuiz.attributes, escala);
 };
 
 export const setDescricao = (descricao, idEscala,headers ) => {
@@ -392,21 +383,18 @@ export const editaLink = (link, idEscala,headers ) => {
     setEscalaLink();
 };
 
-export const enviarEmail = async (juizFinalizou, juizInicia) =>{
-    console.log(juizFinalizou)
-    console.log(juizInicia)
+export const enviarEmail = async (juizFinalizou, juizInicia, escala) =>{
 
-    console.log(`TESTE EMAILS --- O juiz  ${juizFinalizou.nome} finalizou a escolha de seus plantões. Agora é a vez do juiz  ${juizInicia.nome} realizar suas escolhas`)
     return "ok";
-    /*try {
+    try {
         const res = await fetch("/api/notifica", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                email: "mmmagal@trf3.jus.br, omperei@trf3.jus.br",
-                message: `TESTE EMAILS --- O juiz  ${juizFinalizou.nome} finalizou a escolha de seus plantões. Agora é a vez do juiz  ${juizInicia.nome} realizar suas escolhas`
+                email: `${juizInicia.email}`,
+                message: `A escolha de data para os plantões da escala "${escala.descricao}" já está dispoível! Acesse ${window.location.href} para realizar suas escolhas.`
             })
         });
 
@@ -418,5 +406,5 @@ export const enviarEmail = async (juizFinalizou, juizInicia) =>{
         }
     } catch (error) {
         console.log("Erro ao enviar email:", error);
-    }*/
+    }
 }
