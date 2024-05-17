@@ -147,7 +147,7 @@ function Plantoes({cabecalho, format_escalas}) {
     };
 
     return (
-        <DashboardLayout>
+        <DashboardLayout >
             <DashboardNavbar/>
            {/*<MDButton size="small" onClick={showJSON} lcolor="info">Exibir</MDButton>*/}
             <MDBox p={2}>
@@ -244,6 +244,15 @@ export async function getServerSideProps(ctx) {
     const authToken = cookies.auth_token;
     const userData = cookies.user_email || '{}'; // Pega os dados do usuário ou retorna um objeto vazio
 
+    if (!authToken) {
+        // Redirecionar usuário não autenticado
+        return {
+            redirect: {
+                destination: '/authentication/login',
+                permanent: false,
+            },
+        };
+    }
 
     const h = {
         'Content-Type': 'application/json',

@@ -15,7 +15,8 @@ const AuthCheck = (props) => {
         }
     }, [cookies, router]);
 
-    return isLoggedIn ? props.children : null;
-}
+    return     isLoggedIn ? props.children : null;
+
+    }
 
 export default AuthCheck;

@@ -37,7 +37,7 @@ function DashboardLayout({ children }) {
   }, [dispatch, pathname]);
 
   return (
-      <AuthCheck>
+
       <MDBox
       sx={({ breakpoints, transitions, functions: { pxToRem } }) => ({
         p: 3,
@@ -54,7 +54,7 @@ function DashboardLayout({ children }) {
     >
       {children}
     </MDBox>
-      </AuthCheck>
+
   );
 
 }
