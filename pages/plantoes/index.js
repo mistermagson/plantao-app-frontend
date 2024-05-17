@@ -19,6 +19,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import {useRouter} from "next/router";
 import {useCookies} from "react-cookie";
 import {parseCookies} from "nookies";
+import {validateAuthToken} from "../../utils/sistemaUtils";
 
 //TODO DISPARO DE EMAIL PELO REGIONAL (ideia de que o juiz escolha os plantoes de todas as escalas de uma só vez)
 
@@ -240,18 +241,12 @@ function Plantoes({cabecalho, format_escalas}) {
 }
 
 export async function getServerSideProps(ctx) {
+    const validation = validateAuthToken(ctx);
     const cookies = parseCookies(ctx);
-    const authToken = cookies.auth_token;
-    const userData = cookies.user_email || '{}'; // Pega os dados do usuário ou retorna um objeto vazio
+    const userData = cookies.user_email || '{}';
 
-    if (!authToken) {
-        // Redirecionar usuário não autenticado
-        return {
-            redirect: {
-                destination: '/authentication/login',
-                permanent: false,
-            },
-        };
+    if (validation) {
+        return validation;
     }
 
     const h = {

@@ -18,6 +18,7 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import Tooltip from '@mui/material/Tooltip';
 import {removePlantonista} from "../../../utils/plantaoUtils";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import {validateAuthToken} from "../../../utils/sistemaUtils";
 
 const headers = {
     'Content-Type': 'application/json',
@@ -488,5 +489,13 @@ function Participantes() {
         </DashboardLayout>
     );
 }
+export async function getServerSideProps(ctx) {
+    const validation = validateAuthToken(ctx);
 
+    if (validation) {
+        return validation;
+    }
+
+    return { props: { validation: 'ok'} }
+}
 export default Participantes;

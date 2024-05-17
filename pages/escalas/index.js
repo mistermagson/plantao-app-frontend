@@ -52,6 +52,8 @@ import SaveIcon from '@mui/icons-material/Save';
 import {AccountCircle} from "@mui/icons-material";
 import MuiPagination from "@mui/material/Pagination";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
+import {foiAutenticado, validateAuthToken} from "../../utils/sistemaUtils";
+import {parseCookies} from "nookies";
 
 
 function EscalasPage({ data, h }) {
@@ -709,7 +711,13 @@ function EscalasPage({ data, h }) {
     );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(ctx) {
+    const validation = validateAuthToken(ctx);
+
+    if (validation) {
+        return validation;
+    }
+
     const h = {
         "Content-Type": "application/json",
        // Authorization:

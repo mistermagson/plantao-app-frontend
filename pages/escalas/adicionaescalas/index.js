@@ -19,6 +19,7 @@ import FileOpenIcon from '@mui/icons-material/FileOpen';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {useRouter} from "next/router";
 import Link from "next/link";
+import {validateAuthToken} from "../../../utils/sistemaUtils";
 
 const parseJSON = resp => (resp.json ? resp.json() : resp);
 
@@ -382,5 +383,13 @@ function AdicionaEscala() {
         </DashboardLayout>
     );
 }
+export async function getServerSideProps(ctx) {
+    const validation = validateAuthToken(ctx);
 
+    if (validation) {
+        return validation;
+    }
+
+    return { props: { validation: 'ok'} }
+}
 export default AdicionaEscala;

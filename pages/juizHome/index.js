@@ -23,6 +23,7 @@ import EventIcon from '@mui/icons-material/Event';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DefaultProjectCard from "../../examples/Cards/ProjectCards/DefaultProjectCard";
 import Calendar from "/examples/Calendar";
+import {validateAuthToken} from "../../utils/sistemaUtils";
 
 function Escalas({ h }) {
     const [escalaSelecionada, setEscalaSelecionada] = useState(null);
@@ -346,7 +347,12 @@ function Escalas({ h }) {
     );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(ctx) {
+    const validation = validateAuthToken(ctx);
+
+    if (validation) {
+        return validation;
+    }
     const h = {
         "Content-Type": "application/json",
         //Authorization:
