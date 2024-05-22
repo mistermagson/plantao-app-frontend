@@ -296,11 +296,9 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
         const handleAccordion1Change = (event, isExpanded) => {
             setAccordion1Expanded(isExpanded);
         };
-
         const handleAccordion2Change = (event, isExpanded) => {
             setAccordion2Expanded(isExpanded);
         };
-
         const isDateInRange = (date, start, end) => {
             return date >= start && date <= end;
         };
@@ -324,25 +322,12 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
             };
         });
 
-        const deletePlantao = () =>{
-            try{
-                const idPlantao = linhaSelecionada.id
-                removePlantao(idPlantao,headers)
-                setLinhaSelecionada([]);
-                fetchEscalas();
-            }
-            catch (error) {
-                setError(error.message);
-            }
-        }
 
         const formatDate = (params) => {
             if(params){
                 const dateParts = params.split('-');
                 return `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
             }
-
-
         };
 
         return (
@@ -400,23 +385,6 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                     </Dialog>
                 </div>
                 <div>
-                    <Dialog open={sair} onClose={handleClose}>
-                        <DialogTitle>Sair do Plantão</DialogTitle>
-                        <DialogContent>
-                            <DialogContentText>
-                                Você tem certeza que deseja sair do plantão? Só poderá escolhê-lo novamente quando
-                                chegar a sua vez.
-                            </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={() => {
-                                handleClose();
-                            }}>Sim</Button>
-                            <Button onClick={handleClose}>Não</Button>
-                        </DialogActions>
-                    </Dialog>
-                </div>
-                <div>
                     <Dialog open={salvar} onClose={handleClose}>
                         <DialogTitle>
                             <ReportProblemRoundedIcon/>
@@ -467,7 +435,7 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                             <MDButton onClick={() => {
                                 limpaPlantao(linhaSelecionada.id);
                                 handleClose();
-                                fetchEscalasDoJuiz();
+                                limpaPlantao(linhaSelecionada.id);
                             }}>Sim</MDButton>
                             <MDButton onClick={handleClose}>Não</MDButton>
                         </DialogActions>
