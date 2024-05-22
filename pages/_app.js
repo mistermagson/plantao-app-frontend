@@ -26,7 +26,7 @@ import themeDarkRTL from "/assets/theme-dark/theme-rtl";
 import rtlPlugin from "stylis-plugin-rtl";
 
 // NextJS Material Dashboard 2 PRO routes
-import routes from "/routes";
+import {adminRoutes, routes} from "/routes";
 
 // NextJS Material Dashboard 2 PRO Context Provider
 import {
@@ -42,6 +42,12 @@ import trf from "/assets/images/trf.png";
 import appleIcon from "/assets/images/apple-icon.png";
 import brandWhite from "/assets/images/logo-ct.png";
 import brandDark from "/assets/images/logo-ct-dark.png";
+import {validateAuthToken} from "../utils/sistemaUtils";
+import {parseCookies} from "nookies";
+import {fetchEscalasDoJuiz} from "../utils/escalaUtils";
+import MDTypography from "../components/MDTypography";
+import MDButton from "../components/MDButton";
+import jwt from "jsonwebtoken";
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createCache({ key: "css", prepend: true });
@@ -61,6 +67,14 @@ function Main({ Component, pageProps }) {
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useRouter();
+  const [tipoUser, setTipoUser] = useState();
+
+  useEffect((ctx) => {
+    const cookies = parseCookies(ctx);
+
+      setTipoUser(cookies.user_tipo); // Assuming the token contains the user type as 'tipo'
+
+  }, []);
 
   // Cache for the rtl
   useMemo(() => {
@@ -162,7 +176,7 @@ function Main({ Component, pageProps }) {
             color={sidenavColor}
             brand={brandIcon}
             brandName="Plantão Juízes App"
-            routes={routes}
+            routes={(tipoUser === "admin"  ? adminRoutes : routes)}
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
           />
