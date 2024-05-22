@@ -9,6 +9,10 @@ import MDInput from "/components/MDInput";
 import MDButton from "/components/MDButton";
 import BasicLayout from "/pagesComponents/authentication/components/BasicLayout";
 import bgImage from "/assets/images/bg-sign-in-basic.jpeg";
+import MDProgress from "../../../components/MDProgress";
+import LinearProgress from "@mui/material/LinearProgress";
+import Box from "@mui/material/Box";
+import {tipoUsuario} from "../../../utils/sistemaUtils";
 
 function LoginForm() {
     const router = useRouter();
@@ -18,12 +22,15 @@ function LoginForm() {
     });
     const [loginStatus, setLoginStatus] = useState("pendente");
 
-    useEffect(() => {
-        const { token } = parseCookies();
-        if (token) {
-            router.push("/plantoes"); // Redirecionar se já estiver autenticado
+    useEffect((ctx) => {
+        const token  = parseCookies(ctx);
+        if (token.tipo === "admin") {
+            router.push("/escalas"); // Redirecionar se já estiver autenticado
         }
-    }, [router]);
+        else{
+            router.push("/plantoes");
+        }
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -42,8 +49,8 @@ function LoginForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        setLoginStatus("pendente");
-
+        setLoginStatus("loading"); // Set loading state
+        //await new Promise((resolve) => setTimeout(resolve, 3000));
         try {
             const res = await fetch("/api/auth", {
                 method: "POST",
@@ -59,6 +66,8 @@ function LoginForm() {
             if (res.ok) {
                 const data = await res.json();
                 const time = 3600;
+                const tipo = await tipoUsuario(data.email);
+
                 setCookie(null, "auth_token", data.token, {
                     maxAge: time, // 30 minutos (tempo de expiração do token)
                     path: "/",
@@ -67,8 +76,13 @@ function LoginForm() {
                     maxAge: time, // 30 minutos (tempo de expiração do token)
                     path: "/",
                 });
+                setCookie(null, "user_tipo", (tipo), {
+                    maxAge: time, // 30 minutos (tempo de expiração do token)
+                    path: "/",
+                });
                 setLoginStatus("sucesso");
-                router.push("/plantoes"); // Redirecionar para a página principal após o login
+                if(tipo ==="admin"){router.push("/escalas/adicionaescalas");}
+                else {router.push("/plantoes");} // Redire}cionar para a página principal após o login
             } else {
                 setLoginStatus("erro");
                 console.log("Erro ao autenticar:", res.statusText);
@@ -82,7 +96,7 @@ function LoginForm() {
     const renderError = () => {
         if (loginStatus === "erro") {
             return (
-                <MDBox mt={2} mb={1}>
+                <MDBox mt={2} ml={1}>
                     <MDTypography variant="caption" color="error" fontWeight="medium">
                         Email ou senha incorretos. Tente novamente.
                     </MDTypography>
@@ -91,6 +105,20 @@ function LoginForm() {
         }
         return null;
     };
+
+    const renderLoading = () => {
+        if (loginStatus === "loading") {
+            return (
+                <MDBox mt={2} ml={1}>
+                    <MDTypography variant="caption" color="info" fontWeight="medium">
+                        Aguarde, processando...
+                    </MDTypography>
+                </MDBox>
+            );
+        }
+        return null;
+    };
+
     return (
         <BasicLayout >
             <Card>
@@ -111,7 +139,7 @@ function LoginForm() {
                 </MDBox>
                 <MDBox pt={4} pb={3} px={3}>
                     <MDBox component="form" role="form" onKeyPress={handleKeyPress}>
-                        <MDBox mb={2}>
+                        <MDBox mb={3}>
                             <MDInput
                                 type="email"
                                 value={formData.email}
@@ -128,7 +156,7 @@ function LoginForm() {
                                 } // Display error message for missing email
                             />
                         </MDBox>
-                        <MDBox mb={2}>
+                        <MDBox >
                             <MDInput
                                 type="password"
                                 value={formData.password}
@@ -146,7 +174,8 @@ function LoginForm() {
                             />
                         </MDBox>
                         {renderError()} {/* Display error message for invalid credentials */}
-                        <MDBox mt={4} mb={1}>
+                        {renderLoading()} {/* Display loading indicator */}
+                        <MDBox mt={3} mb={1}>
                             <MDButton variant="gradient" color="dark" fullWidth onClick={handleSubmit}>
                                 LOGIN
                             </MDButton>
