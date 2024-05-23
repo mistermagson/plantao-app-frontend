@@ -631,7 +631,7 @@ function EscalasPage({ data, h }) {
                                                     slotProps={{ toolbar: { showQuickFilter: true}}}
                                                     sortModel={[{field: 'data', sort: 'asc',}]}
                                                     hideExport={true}
-                                                    //hideFooterPagination={true}
+                                                    hideFooterPagination={true}
                                                     hideFooterRowCount={true}
                                                     hideFooterSelectedRowCount={true}
                                                 />
