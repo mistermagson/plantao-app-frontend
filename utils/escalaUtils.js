@@ -361,6 +361,28 @@ export const setDescricao = (descricao, idEscala,headers ) => {
     setEscalaDescricao();
 };
 
+export const editaPlantoesPorJuiz = (quantidade, idEscala,headers ) => {
+
+    const urlEscala =`http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/escalas/${idEscala}`
+    const setPlantoesPorJuiz = async () => {
+        try {
+            const response = await fetch(urlEscala, {
+                method: 'PUT',
+                headers,
+                body: JSON.stringify({ data: {"plantoesPorJuiz": `${quantidade}`} }),
+            })
+            if (response.ok) {
+                console.log('plantoesPorJuiz atualizada com sucesso:', response);
+            }
+        } catch (error) {
+            console.error('Erro ao atualizar plantoesPorJuiz:', error);
+        }
+    };
+
+    setPlantoesPorJuiz();
+};
+
+
 export const editaLink = (link, idEscala,headers ) => {
 
     const urlEscala =`http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/escalas/${idEscala}`

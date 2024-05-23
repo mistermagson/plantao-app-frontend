@@ -22,7 +22,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
 import Tooltip from "@mui/material/Tooltip";
 import { GridActionsCellItem } from "@mui/x-data-grid";
-import {editaLink, fetchEscalas, removeEscala, setDescricao} from "../../utils/escalaUtils";
+import {editaLink, editaPlantoesPorJuiz, fetchEscalas, removeEscala, setDescricao} from "../../utils/escalaUtils";
 import MinutaPage from "./minuta";
 import Calendario from "./calendario";
 import Switch from "@mui/material/Switch";
@@ -72,26 +72,34 @@ function EscalasPage({ data, h }) {
     const [dataPlantao, setDataPlantao] = useState('');
     const [block, setBlock] = useState(null);
     const router = useRouter()
+
     const [redirectPlantonistas, setRedirectPlantonistas] = useState("/plantoes")
     const [redirectParticipantes, setRedirectParticipantes] = useState("/escalas/participantes")
+
     const [accordion1Expanded, setAccordion1Expanded] = useState(true);
     const [accordion2Expanded, setAccordion2Expanded] = useState(true);
     const [accordion3Expanded, setAccordion3Expanded] = useState(true);
-    const [link, setLink] = useState(escalaSelecionada?.link || '');
+
+
+
     const [valorEditavel, setValorEditavel] = useState(escalaSelecionada ? escalaSelecionada.descricao : "");
     const [editando, setEditando] = useState(false);
+
+    const [link, setLink] = useState(escalaSelecionada?.link || '');
     const [linkEditavel, setLinkEditavel] = useState(link);
     const [editandoLink, setEditandoLink] = useState(false);
+
+    const [numPlantoes, setNumPlantoes]= useState(escalaSelecionada?.plantoesPorJuiz || '');
+    const [numPlantoesEditavel, setNumPlantoesEditavel]= useState(numPlantoes);
+    const [editandoNumPlantoes, setEditandoNumPlantoes] = useState(false);
 
     const handleEditarLink = () => {
         setLinkEditavel(escalaSelecionada.link);
         setEditandoLink(!editandoLink);
     };
-
     const handleChangeLink = (event) => {
         setLinkEditavel(event.target.value);
     };
-
     const handleSalvarLink = () => {
         editaLink(linkEditavel, escalaSelecionada.id, h)
         setEditandoLink(false);
@@ -102,16 +110,27 @@ function EscalasPage({ data, h }) {
         setValorEditavel(escalaSelecionada.descricao);
         setEditando(!editando);
     };
-
     const handleChange = (event) => {
         setValorEditavel(event.target.value);
     };
-
     const handleSalvarDescricao = () => {
         setDescricao(valorEditavel, escalaSelecionada.id, h);
         setEditando(false);
         setTimeout(fetchEscalas, 1000);
 
+    };
+
+    const handleEditarNumPlantoes = () => {
+        setNumPlantoes(escalaSelecionada.numPlantoes);
+        setEditandoNumPlantoes(!editandoNumPlantoes);
+    };
+    const handleChangeNumPlantoes = (event) => {
+        setNumPlantoesEditavel(event.target.value);
+    };
+    const handleSalvarNumPlantoes = () => {
+        editaPlantoesPorJuiz(numPlantoesEditavel, escalaSelecionada.id, h)
+        setEditandoNumPlantoes(false);
+        setTimeout(fetchEscalas, 1000);
     };
 
     const handleAccordion1Change = (event, isExpanded) => {
@@ -330,7 +349,6 @@ function EscalasPage({ data, h }) {
 
     return (
         <DashboardLayout>
-            <MDButton size="small" onClick={showJSON} lcolor="info">Exibir</MDButton>
 
             <DashboardNavbar />
             <div>
@@ -456,7 +474,7 @@ function EscalasPage({ data, h }) {
                                              // Desabilita o TextField quando não estiver editando
                                         />
                                     </Grid>
-                                    <Grid item xs={12} xl={5}>
+                                    <Grid item xs={12} xl={2}>
                                         <h5 style={{ color: "#344767" }}>Tipo da escala</h5>
                                         <TextField
                                             fullWidth
@@ -465,6 +483,27 @@ function EscalasPage({ data, h }) {
                                             InputProps={{readOnly: true }}
                                             variant="standard"
                                             style={{ flex: 1, marginRight: "8px" }}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} xl={2}>
+                                        <h5 style={{ color: "#344767" }}>Plantões por Juiz</h5>
+                                        <TextField
+                                            fullWidth
+                                            id="outlined-tipo-input"
+                                            value={editandoNumPlantoes ? numPlantoesEditavel : (escalaSelecionada ? escalaSelecionada.plantoesPorJuiz : "")}
+                                            onChange={handleChangeNumPlantoes}
+                                            variant="standard"
+                                            style={{ flex: 1, marginRight: "8px" }}
+                                            InputProps={{
+                                                endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        <IconButton aria-label="toggle edicao" onClick={editandoNumPlantoes ? handleSalvarNumPlantoes : handleEditarNumPlantoes} fontSize="small">
+                                                            {editandoNumPlantoes ? <SaveIcon fontSize="small"  /> : <EditIcon fontSize="small" />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                ),
+                                                readOnly: !editandoNumPlantoes
+                                            }}
                                         />
                                     </Grid>
                                 </Grid>
