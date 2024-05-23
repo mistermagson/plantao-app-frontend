@@ -121,7 +121,7 @@ function EscalasPage({ data, h }) {
     };
 
     const handleEditarNumPlantoes = () => {
-        setNumPlantoes(escalaSelecionada.numPlantoes);
+        setNumPlantoesEditavel(escalaSelecionada.numPlantoes);
         setEditandoNumPlantoes(!editandoNumPlantoes);
     };
     const handleChangeNumPlantoes = (event) => {
@@ -469,7 +469,6 @@ function EscalasPage({ data, h }) {
                                                         </IconButton>
                                                     </InputAdornment>
                                                 ),
-                                                readOnly: !editando
                                             }}
                                              // Desabilita o TextField quando não estiver editando
                                         />
@@ -489,7 +488,7 @@ function EscalasPage({ data, h }) {
                                         <h5 style={{ color: "#344767" }}>Plantões por Juiz</h5>
                                         <TextField
                                             fullWidth
-                                            id="outlined-tipo-input"
+                                            id="outlined-num-plantoes"
                                             value={editandoNumPlantoes ? numPlantoesEditavel : (escalaSelecionada ? escalaSelecionada.plantoesPorJuiz : "")}
                                             onChange={handleChangeNumPlantoes}
                                             variant="standard"
@@ -502,7 +501,7 @@ function EscalasPage({ data, h }) {
                                                         </IconButton>
                                                     </InputAdornment>
                                                 ),
-                                                readOnly: !editandoNumPlantoes
+
                                             }}
                                         />
                                     </Grid>
@@ -547,7 +546,6 @@ function EscalasPage({ data, h }) {
                                                         </IconButton>
                                                     </InputAdornment>
                                                 ),
-                                                readOnly: !editandoLink
                                             }}
                                             color="warning"
                                         />
