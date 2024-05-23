@@ -132,6 +132,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
         destroyCookie(null, 'auth_token', { path: '/' });
         // Opcionalmente, destruir outros cookies se necessário
         destroyCookie(null, 'user_email', { path: '/' });
+        destroyCookie(null, 'user_tipo', { path: '/' });
         //window.location.href = '/authentication/login';
       }
       let returnValue;

@@ -37,17 +37,17 @@ export const routes = [
   //{ type: "divider", key: "divider-2" },
   //{ type: "title", title: "Área do Magistrado", key: "area-magistrado" },
 
-  { type: "title", title: "Área do Admin", key: "area-admin" },
+  { type: "title", title: "Opções", key: "area-admin" },
   {
     type: "collapse",
     name: "Plantões Magistrados",
     key: "gestao",
     icon: <Icon fontSize="medium">dashboard</Icon>,
     collapse: [
-     {
-            name: "Escalas",
-            key: "profile",
-            collapse: [
+     // {
+     //        name: "Escalas",
+     //        key: "profile",
+     //        collapse: [
               // {
               //   name: "Adicionar Escala",
               //   key: "participantes",
@@ -104,8 +104,8 @@ export const routes = [
         key: "feriados",
         route: "/applications/calendar",
       },*/
-    ],
-  },
+  //   ],
+  // },
   /*
   { type: "divider", key: "divider-3" },
   {
@@ -185,7 +185,7 @@ export const adminRoutes = [
       {
         name: "Editar Plantões",
         key: "datas",
-        route: "/plantoes",
+        route: "/plantoes/adm",
       },
 
     ],
