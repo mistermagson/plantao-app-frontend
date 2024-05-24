@@ -20,6 +20,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import {useRouter} from "next/router";
 import Link from "next/link";
 import {validateAuthToken} from "../../../utils/sistemaUtils";
+import {parseCookies} from "nookies";
 
 const parseJSON = resp => (resp.json ? resp.json() : resp);
 
@@ -389,6 +390,19 @@ export async function getServerSideProps(ctx) {
     if (validation) {
         return validation;
     }
+
+    const cookies = parseCookies(ctx);
+
+    if (cookies.user_tipo !== 'admin') {
+        return {
+            redirect: {
+                permanent: false,
+                destination: '/plantoes',
+            },
+        };
+    }
+
+
 
     return { props: { validation: 'ok'} }
 }

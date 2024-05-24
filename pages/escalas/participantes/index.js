@@ -19,6 +19,7 @@ import Tooltip from '@mui/material/Tooltip';
 import {removePlantonista} from "../../../utils/plantaoUtils";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import {validateAuthToken} from "../../../utils/sistemaUtils";
+import {parseCookies} from "nookies";
 
 const headers = {
     'Content-Type': 'application/json',
@@ -494,6 +495,17 @@ export async function getServerSideProps(ctx) {
 
     if (validation) {
         return validation;
+    }
+
+    const cookies = parseCookies(ctx);
+
+    if (cookies.user_tipo !== 'admin') {
+        return {
+            redirect: {
+                permanent: false,
+                destination: '/plantoes',
+            },
+        };
     }
 
     return { props: { validation: 'ok'} }

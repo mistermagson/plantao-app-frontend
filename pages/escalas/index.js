@@ -73,7 +73,7 @@ function EscalasPage({ data, h }) {
     const [block, setBlock] = useState(null);
     const router = useRouter()
 
-    const [redirectPlantonistas, setRedirectPlantonistas] = useState("/plantoes")
+    const [redirectPlantonistas, setRedirectPlantonistas] = useState("/plantoes/adm")
     const [redirectParticipantes, setRedirectParticipantes] = useState("/escalas/participantes")
 
     const [accordion1Expanded, setAccordion1Expanded] = useState(true);
@@ -185,7 +185,7 @@ function EscalasPage({ data, h }) {
                 })));
 
                 setRedirectParticipantes(`/escalas/participantes?escala=${encodeURIComponent(escalaSelecionada.id)}`)
-                setRedirectPlantonistas(`/plantoes?escala=${encodeURIComponent(escalaSelecionada.id)}`)
+                setRedirectPlantonistas(`/plantoes/adm?escala=${encodeURIComponent(escalaSelecionada.id)}`)
             }
         }
         if(block === null){
@@ -750,6 +750,7 @@ function EscalasPage({ data, h }) {
 
 export async function getServerSideProps(ctx) {
     const validation = validateAuthToken(ctx);
+    const cookies = parseCookies(ctx);
 
     if (validation) {
         return validation;
@@ -767,7 +768,16 @@ export async function getServerSideProps(ctx) {
           //  headers: h,
         }
     );
-    //const data = await res.json();
+
+    if (cookies.user_tipo !== 'admin') {
+        return {
+            redirect: {
+                permanent: false,
+                destination: '/plantoes',
+            },
+        };
+    }
+
     const responseEscala = await res.json();
     const data = responseEscala.data.map((item) => ({ id: item.id, ...item.attributes }));
 
