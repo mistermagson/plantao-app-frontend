@@ -12,12 +12,13 @@ import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import {Alert} from "@mui/material";
 import TextField from "@mui/material/TextField";
-import Calendar from "react-calendar";
 import {fetchEscalas, fetchEscalasDoJuiz} from "../../../utils/escalaUtils";
 import {tipoUsuario, validateAuthToken} from "../../../utils/sistemaUtils";
 import Autocomplete from "@mui/material/Autocomplete";
 import CalendarioAdm from "../calendarioPlantaoAdm";
 import {removePlantonista, setPlantonista} from "../../../utils/plantaoUtils";
+import MDButton from "../../../components/MDButton";
+import Calendar from "../../../examples/Calendar";
 
 //TODO DISPARO DE EMAIL PELO REGIONAL (ideia de que o juiz escolha os plantoes de todas as escalas de uma só vez)
 
@@ -43,14 +44,11 @@ function Plantoes({cabecalho, format_escalas}) {
         if (!cookies.user_email) {
             router.push("/");
         }
-
-
     }, [cookies, juizes, router]);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const escalaUrl = params.get('escala');
-        console.log(escalaUrl, escalas, escalas.find((escala) => escala.id == escalaUrl))
 
         if(escalaUrl!==null) {
             const escalaObj = escalas.find((escala) => escala.id == escalaUrl);
@@ -58,11 +56,8 @@ function Plantoes({cabecalho, format_escalas}) {
             if (escalaObj) {
                 setEscalaSelecionada(escalaObj);
                 onChangeEscala(escalaObj);
-
             }
         }
-
-
     }, [cookies.user_email, escalas]);
 
     useEffect(() => {
@@ -84,13 +79,10 @@ function Plantoes({cabecalho, format_escalas}) {
                         setJuizSelecionado(juizEncontrado);
                     }
                 }
-
                 if(escalaSelecionada.preferencia.data){
                     setPreferenciaJuizId(escalaSelecionada.preferencia.data.id);
                 }
             }
-
-
         }
     }, [plantoes, cookies.user_email, escalaSelecionada, escalas, juizes, juizSelecionado]);
 
@@ -98,7 +90,6 @@ function Plantoes({cabecalho, format_escalas}) {
 
         try {
             await setPlantonista(juizSelecionado.id, idPlantoes, headers)
-
         } catch (error) {
             console.error(error);
         }
@@ -141,19 +132,9 @@ function Plantoes({cabecalho, format_escalas}) {
         }
     };
 
-    const passaEscolha = async()=>{
-        const antigo =  escalaSelecionada?.preferencia?.data;
-        try{
-            passaPreferencia(escalaSelecionada,headers);
-        } catch (error) {
-            console.error(error);
-        }
-        const atualizaEscalas = await fetchEscalasDoJuiz(cookies.user_email)
-        await setEscalas(atualizaEscalas)
-    }
 
     const showJSON = async () => {
-        console.log("juiz selecionado",juizSelecionado )
+        console.log("juiz selecionado",format_escalas )
         console.log("cookies",cookies.user_email)
         console.log("setJuiz",juizes.find((juiz) => juiz.email === cookies.user_email))
     };
@@ -212,11 +193,7 @@ function Plantoes({cabecalho, format_escalas}) {
                                 />
                             </Grid>
                             <Grid item xs={11} xl={4} style={{display: 'flex', alignItems: 'flex-end'}}>
-                                {escalaSelecionada === null ? // IF
-                                    <Alert severity="warning">Escolha uma escala</Alert>
-                                    : // ELSE
-                                    <></>
-                                }
+                                {escalaSelecionada === null ? <Alert severity="warning">Escolha uma escala</Alert> : <></>}
                             </Grid>
                         </Grid>
                     </Grid>
@@ -235,7 +212,6 @@ function Plantoes({cabecalho, format_escalas}) {
                                             escala={escalaSelecionada}
                                             juiz={juizSelecionado}
                                             limpaPlantao={handleLimparPlantonista}
-                                            passarEscolha={passaEscolha}
                                             addPlantao={addPlantao}
                                             nPlantoes={juizes}
                                             fetchData={fetchEscalasDoJuiz}
