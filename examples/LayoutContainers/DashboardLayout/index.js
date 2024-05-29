@@ -26,18 +26,31 @@ import MDBox from "/components/MDBox";
 // NextJS Material Dashboard 2 PRO context
 import { useMaterialUIController, setLayout } from "/context";
 import AuthCheck from "../../../context/AuthCheck";
+import Sidenav from "../../Sidenav";
+import brandDark from "../../../assets/images/logo-ct-dark.png";
+import brandWhite from "/assets/images/logo-ct.png";
+
+import {adminRoutes, routes} from "../../../routes";
+import {useCookies} from "react-cookie";
 
 function DashboardLayout({ children }) {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav } = controller;
   const { pathname } = useRouter();
+  const [cookies, setCookies] = useCookies(["user_tipo"]);
+
 
   useEffect(() => {
     setLayout(dispatch, "dashboard");
   }, [dispatch, pathname]);
 
   return (
-
+<>
+    <Sidenav
+    brand={brandWhite}
+    brandName="Plantao Juizes App"
+    routes={cookies.user_tipo === 'admin'? adminRoutes : routes}
+    />
       <MDBox
       sx={({ breakpoints, transitions, functions: { pxToRem } }) => ({
         p: 3,
@@ -54,7 +67,7 @@ function DashboardLayout({ children }) {
     >
       {children}
     </MDBox>
-
+</>
   );
 
 }

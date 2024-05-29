@@ -67,14 +67,6 @@ function Main({ Component, pageProps }) {
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useRouter();
-  const [tipoUser, setTipoUser] = useState();
-
-  useEffect((ctx) => {
-    const cookies = parseCookies(ctx);
-
-      setTipoUser(cookies.user_tipo); // Assuming the token contains the user type as 'tipo'
-
-  }, []);
 
   // Cache for the rtl
   useMemo(() => {
@@ -120,29 +112,6 @@ function Main({ Component, pageProps }) {
   const brandIcon =
     (transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite;
 
-  const configsButton = (
-    <MDBox
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      width="3.25rem"
-      height="3.25rem"
-      bgColor="white"
-      shadow="sm"
-      borderRadius="50%"
-      position="fixed"
-      right="2rem"
-      bottom="2rem"
-      zIndex={99}
-      color="dark"
-      sx={{ cursor: "pointer" }}
-      onClick={handleConfiguratorOpen}
-    >
-      <Icon fontSize="small" color="inherit">
-        settings
-      </Icon>
-    </MDBox>
-  );
 
   return direction === "rtl" ? (
     <CacheProvider value={rtlCache}>
@@ -151,14 +120,14 @@ function Main({ Component, pageProps }) {
         <Component {...pageProps} />
         {layout === "dashboard" && (
           <>
-            <Sidenav
-              color={sidenavColor}
-              brand={brandIcon}
-              brandName="Plantao Juizes App"
-              routes={routes}
-              onMouseEnter={handleOnMouseEnter}
-              onMouseLeave={handleOnMouseLeave}
-            />
+            {/*<Sidenav*/}
+            {/*  color={sidenavColor}*/}
+            {/*  brand={brandIcon}*/}
+            {/*  brandName="Plantao Juizes App"*/}
+            {/*  routes={routes}*/}
+            {/*  onMouseEnter={handleOnMouseEnter}*/}
+            {/*  onMouseLeave={handleOnMouseLeave}*/}
+            {/*/>*/}
             {/*<Configurator />*/}
             {/*configsButton*/}
           </>
@@ -172,14 +141,14 @@ function Main({ Component, pageProps }) {
       <Component {...pageProps} />
       {layout === "dashboard" && (
         <>
-          <Sidenav
-            color={sidenavColor}
-            brand={brandIcon}
-            brandName="Plantão Juízes App"
-            routes={(tipoUser === "admin"  ? adminRoutes : routes)}
-            onMouseEnter={handleOnMouseEnter}
-            onMouseLeave={handleOnMouseLeave}
-          />
+          {/*<Sidenav*/}
+          {/*  color={sidenavColor}*/}
+          {/*  brand={brandIcon}*/}
+          {/*  brandName="Plantão Juízes App"*/}
+          {/*  routes={(tipoUser === "admin"  ? adminRoutes : routes)}*/}
+          {/*  onMouseEnter={handleOnMouseEnter}*/}
+          {/*  onMouseLeave={handleOnMouseLeave}*/}
+          {/*/>*/}
           {/*<Configurator />*/}
           {/*configsButton*/}
         </>
