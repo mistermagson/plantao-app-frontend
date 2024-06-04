@@ -30,7 +30,7 @@ import Sidenav from "../../Sidenav";
 import brandDark from "../../../assets/images/logo-ct-dark.png";
 import brandWhite from "/assets/images/logo-ct.png";
 
-import {adminRoutes, routes} from "../../../routes";
+import {adminRoutes, allRoutes, routes} from "../../../routes";
 import {useCookies} from "react-cookie";
 import MDButton from "../../../components/MDButton";
 
@@ -48,7 +48,7 @@ function DashboardLayout({ children, userTipo }) {
       <Sidenav
       brand={brandWhite}
       brandName="Plantao Juizes App"
-      routes={userTipo === 'admin'? adminRoutes : routes}
+      routes={allRoutes}
       />
         <MDBox
         sx={({ breakpoints, transitions, functions: { pxToRem } }) => ({
