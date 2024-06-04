@@ -20,12 +20,13 @@ import {removePlantonista} from "../../../utils/plantaoUtils";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import {validateAuthToken} from "../../../utils/sistemaUtils";
 import {parseCookies} from "nookies";
+import MDButton from "../../../components/MDButton";
 
 const headers = {
     'Content-Type': 'application/json',
    // 'Authorization': 'Bearer ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b'
 };
-function Participantes() {
+function Participantes(tipo) {
 
     //------- CONSTANTES PARA O DATAGRID----------------------------------------
     const [opcaoSelecionada, setOpcaoSelecionada] = useState(null);
@@ -134,6 +135,7 @@ function Participantes() {
         fetchJuizes()
         fetchVaras()
     }, []);
+
 
     useEffect( () => {
 
@@ -302,7 +304,7 @@ function Participantes() {
     };
 
     return (
-        <DashboardLayout>
+        <DashboardLayout userTipo={tipo.tipo}>
             <DashboardNavbar/>
             <MDBox p={2}>
                 <h1>Lista de Participantes</h1>
@@ -508,6 +510,6 @@ export async function getServerSideProps(ctx) {
         };
     }
 
-    return { props: { validation: 'ok'} }
+    return { props: { validation: 'ok', tipo: cookies.user_tipo} }
 }
 export default Participantes;

@@ -19,12 +19,12 @@ import interactionPlugin from "@fullcalendar/interaction";
 import {useRouter} from "next/router";
 import {useCookies} from "react-cookie";
 import {parseCookies} from "nookies";
-import {validateAuthToken} from "../../utils/sistemaUtils";
+import {tipoUsuario, validateAuthToken} from "../../utils/sistemaUtils";
 
 //TODO DISPARO DE EMAIL PELO REGIONAL (ideia de que o juiz escolha os plantoes de todas as escalas de uma só vez)
 
 
-function Plantoes({cabecalho, format_escalas}) {
+function Plantoes({cabecalho, format_escalas, tipo}) {
 
     const [headers, setHeaders] = useState(cabecalho);
     const [escalas, setEscalas] = useState(format_escalas);
@@ -148,7 +148,7 @@ function Plantoes({cabecalho, format_escalas}) {
     };
 
     return (
-        <DashboardLayout >
+        <DashboardLayout userTipo={tipo}>
             <DashboardNavbar/>
            {/*<MDButton size="small" onClick={showJSON} lcolor="info">Exibir</MDButton>*/}
             <MDBox p={2}>
@@ -265,6 +265,6 @@ export async function getServerSideProps(ctx) {
     };
 
     const escala = await fetchEscalasDoJuiz(userData);
-    return { props: { cabecalho: h, format_escalas: escala} };
+    return { props: { cabecalho: h, format_escalas: escala, tipo: cookies.user_tipo} };
 }
 export default Plantoes;

@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 
 import { useRouter } from "next/router";
 
@@ -32,42 +32,40 @@ import brandWhite from "/assets/images/logo-ct.png";
 
 import {adminRoutes, routes} from "../../../routes";
 import {useCookies} from "react-cookie";
+import MDButton from "../../../components/MDButton";
 
-function DashboardLayout({ children }) {
+function DashboardLayout({ children, userTipo }) {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav } = controller;
   const { pathname } = useRouter();
-  const [cookies, setCookies] = useCookies(["user_tipo"]);
-
 
   useEffect(() => {
     setLayout(dispatch, "dashboard");
   }, [dispatch, pathname]);
 
   return (
-<>
-    <Sidenav
-    brand={brandWhite}
-    brandName="Plantao Juizes App"
-    routes={cookies.user_tipo === 'admin'? adminRoutes : routes}
-    />
-      <MDBox
-      sx={({ breakpoints, transitions, functions: { pxToRem } }) => ({
-        p: 3,
-        position: "relative",
-
-        [breakpoints.up("xl")]: {
-          marginLeft: miniSidenav ? pxToRem(120) : pxToRem(274),
-          transition: transitions.create(["margin-left", "margin-right"], {
-            easing: transitions.easing.easeInOut,
-            duration: transitions.duration.standard,
-          }),
-        },
-      })}
-    >
-      {children}
-    </MDBox>
-</>
+    <>
+      <Sidenav
+      brand={brandWhite}
+      brandName="Plantao Juizes App"
+      routes={userTipo === 'admin'? adminRoutes : routes}
+      />
+        <MDBox
+        sx={({ breakpoints, transitions, functions: { pxToRem } }) => ({
+          p: 3,
+          position: "relative",
+          [breakpoints.up("xl")]: {
+            marginLeft: miniSidenav ? pxToRem(120) : pxToRem(274),
+            transition: transitions.create(["margin-left", "margin-right"], {
+              easing: transitions.easing.easeInOut,
+              duration: transitions.duration.standard,
+            }),
+          },
+        })}
+      >
+        {children}
+      </MDBox>
+    </>
   );
 
 }

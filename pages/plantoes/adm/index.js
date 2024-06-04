@@ -22,7 +22,7 @@ import Calendar from "../../../examples/Calendar";
 
 //TODO DISPARO DE EMAIL PELO REGIONAL (ideia de que o juiz escolha os plantoes de todas as escalas de uma só vez)
 
-function Plantoes({cabecalho, format_escalas}) {
+function Plantoes({cabecalho, format_escalas, tipo}) {
 
     const [headers, setHeaders] = useState(cabecalho);
 
@@ -140,7 +140,7 @@ function Plantoes({cabecalho, format_escalas}) {
     };
 
     return (
-        <DashboardLayout >
+        <DashboardLayout userTipo={tipo}>
             {/*<MDButton size="small" onClick={showJSON} lcolor="info">Exibir</MDButton>*/}
             <MDBox p={2}>
                 <MDTypography variant="h2">Gerenciar Plantões</MDTypography>
@@ -263,6 +263,6 @@ export async function getServerSideProps(ctx) {
     };
 
     const dados = await fetchEscalas();
-    return { props: { cabecalho: h, format_escalas: dados } };
+    return { props: { cabecalho: h, format_escalas: dados, tipo: cookies.user_tipo } };
 }
 export default Plantoes;

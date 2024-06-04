@@ -56,7 +56,7 @@ import {foiAutenticado, validateAuthToken} from "../../utils/sistemaUtils";
 import {parseCookies} from "nookies";
 
 
-function EscalasPage({ data, h }) {
+function EscalasPage({ data, h, tipo }) {
 
     const [escalaSelecionada, setEscalaSelecionada] = useState(null);
     const [linhaSelecionada, setLinhaSelecionada] = useState([]);
@@ -348,7 +348,7 @@ function EscalasPage({ data, h }) {
     }
 
     return (
-        <DashboardLayout>
+        <DashboardLayout userTipo={tipo}>
 
             <DashboardNavbar />
             <div>
@@ -780,8 +780,8 @@ export async function getServerSideProps(ctx) {
 
     const responseEscala = await res.json();
     const data = responseEscala.data.map((item) => ({ id: item.id, ...item.attributes }));
-
-    return { props: { data, h } };
+    const tipo =  cookies.user_tipo
+    return { props: { data, h , tipo} };
 }
 
 export default EscalasPage;

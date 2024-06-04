@@ -49,7 +49,7 @@ const valorInicial = {
     fechada: false,
 }
 
-function AdicionaEscala() {
+function AdicionaEscala(tipo) {
 
     //------- CONSTANTES PARA O DATAGRID----------------------------------------
     const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
@@ -201,8 +201,7 @@ function AdicionaEscala() {
 
 
     return (
-        <DashboardLayout>
-            <DashboardNavbar/>
+        <DashboardLayout userTipo={tipo?.tipo}>
             {/*caixa dialogo escala adicionada*/}
             <div>
                 <Dialog open={salvar} onClose={handleClose}>
@@ -404,6 +403,6 @@ export async function getServerSideProps(ctx) {
 
 
 
-    return { props: { validation: 'ok'} }
+    return { props: { validation: 'ok', tipo: cookies.user_tipo} }
 }
 export default AdicionaEscala;
