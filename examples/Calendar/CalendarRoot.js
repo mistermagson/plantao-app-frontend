@@ -77,7 +77,8 @@ export default styled(Box)(({ theme, ownerState }) => {
 
 
     "& .fc .fc-bg-event": {
-        border: 'none'
+        border: 'none',
+      opacity: 0.6
     },
 
     "& .fc .fc-daygrid-day": {
