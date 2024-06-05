@@ -19,7 +19,7 @@ import FileOpenIcon from '@mui/icons-material/FileOpen';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {useRouter} from "next/router";
 import Link from "next/link";
-import {validateAuthToken} from "../../../utils/sistemaUtils";
+import {validateAdmin, validateAuthToken} from "../../../utils/sistemaUtils";
 import {parseCookies} from "nookies";
 
 const parseJSON = resp => (resp.json ? resp.json() : resp);
@@ -391,17 +391,17 @@ export async function getServerSideProps(ctx) {
     }
 
     const cookies = parseCookies(ctx);
-
-    if (cookies.user_tipo !== 'admin') {
+    /*if (cookies.user_tipo !== 'admin') {
         return {
             redirect: {
                 permanent: false,
                 destination: '/plantoes',
             },
         };
-    }
+    }*/
 
-
+    const admin = validateAdmin(ctx);
+    if (admin) {return admin;}
 
     return { props: { validation: 'ok', tipo: cookies.user_tipo} }
 }

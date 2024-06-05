@@ -52,7 +52,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import {AccountCircle} from "@mui/icons-material";
 import MuiPagination from "@mui/material/Pagination";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
-import {foiAutenticado, validateAuthToken} from "../../utils/sistemaUtils";
+import {foiAutenticado, validateAdmin, validateAuthToken} from "../../utils/sistemaUtils";
 import {parseCookies} from "nookies";
 
 
@@ -769,14 +769,17 @@ export async function getServerSideProps(ctx) {
         }
     );
 
-    if (cookies.user_tipo !== 'admin') {
-        return {
-            redirect: {
-                permanent: false,
-                destination: '/plantoes',
-            },
-        };
-    }
+    /*if (cookies.user_tipo !== 'admin') {
+            return {
+                redirect: {
+                    permanent: false,
+                    destination: '/plantoes',
+                },
+            };
+        }*/
+
+    const admin = validateAdmin(ctx);
+    if (admin) {return admin;}
 
     const responseEscala = await res.json();
     const data = responseEscala.data.map((item) => ({ id: item.id, ...item.attributes }));

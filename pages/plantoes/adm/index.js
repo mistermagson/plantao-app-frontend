@@ -13,7 +13,7 @@ import Grid from "@mui/material/Grid";
 import {Alert} from "@mui/material";
 import TextField from "@mui/material/TextField";
 import {fetchEscalas, fetchEscalasDoJuiz} from "../../../utils/escalaUtils";
-import {tipoUsuario, validateAuthToken} from "../../../utils/sistemaUtils";
+import {tipoUsuario, validateAdmin, validateAuthToken} from "../../../utils/sistemaUtils";
 import Autocomplete from "@mui/material/Autocomplete";
 import CalendarioAdm from "../calendarioPlantaoAdm";
 import {removePlantonista, setPlantonista} from "../../../utils/plantaoUtils";
@@ -248,14 +248,8 @@ export async function getServerSideProps(ctx) {
         return validation;
     }
 
-    if (cookies.user_tipo !== 'admin') {
-        return {
-            redirect: {
-                permanent: false,
-                destination: '/plantoes',
-            },
-        };
-    }
+    const admin = validateAdmin(ctx);
+    if (admin) {return admin;}
 
     const h = {
         'Content-Type': 'application/json',

@@ -18,7 +18,7 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import Tooltip from '@mui/material/Tooltip';
 import {removePlantonista} from "../../../utils/plantaoUtils";
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import {validateAuthToken} from "../../../utils/sistemaUtils";
+import {validateAdmin, validateAuthToken} from "../../../utils/sistemaUtils";
 import {parseCookies} from "nookies";
 import MDButton from "../../../components/MDButton";
 
@@ -501,14 +501,17 @@ export async function getServerSideProps(ctx) {
 
     const cookies = parseCookies(ctx);
 
-    if (cookies.user_tipo !== 'admin') {
+    /*if (cookies.user_tipo !== 'admin') {
         return {
             redirect: {
                 permanent: false,
                 destination: '/plantoes',
             },
         };
-    }
+    }*/
+
+    const admin = validateAdmin(ctx);
+    if (admin) {return admin;}
 
     return { props: { validation: 'ok', tipo: cookies.user_tipo} }
 }

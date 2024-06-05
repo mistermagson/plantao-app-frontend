@@ -150,7 +150,7 @@ function Plantoes({cabecalho, format_escalas, tipo}) {
     return (
         <DashboardLayout userTipo={tipo}>
             <DashboardNavbar/>
-           <MDButton size="small" onClick={console.log(tipo)} lcolor="info">Exibir</MDButton>
+           {/*<MDButton size="small" onClick={console.log(tipo)} lcolor="info">Exibir</MDButton>*/}
             <MDBox p={2}>
                 <MDTypography variant="h2">Plantões</MDTypography>
             </MDBox>

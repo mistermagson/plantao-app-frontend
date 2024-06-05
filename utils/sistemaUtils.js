@@ -17,6 +17,25 @@ export function validateAuthToken(ctx) {
     return null; // ou um objeto vazio, dependendo do seu caso de uso
 }
 
+export function validateAdmin(ctx) {
+    const cookies = parseCookies(ctx);
+    const email = cookies.user_email;
+
+    const allowedEmails = ["cmsantan@trf3.jus.br", "mmmagal@trf3.jus.br", "omperei@trf3.jus.br"];
+
+    if (email && !allowedEmails.includes(email)) {
+        // Redirecionar usuário não autenticado
+        return {
+            redirect: {
+                destination: '/plantoes',
+                permanent: false,
+            },
+        };
+    }
+
+    return null; // ou um objeto vazio, dependendo do seu caso de uso
+}
+
 export async function tipoUsuario(email) {
 
     try {
