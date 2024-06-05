@@ -204,7 +204,7 @@ export const allRoutes = [
   },
   {
     type: "collapse",
-    name: "Configuraçãos",
+    name: "Configurações",
     key: "gestao2",
     icon: <Icon fontSize="medium">tune</Icon>,
     collapse: [

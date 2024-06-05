@@ -22,7 +22,7 @@ function LoginForm() {
     });
     const [loginStatus, setLoginStatus] = useState("pendente");
 
-    useEffect((ctx) => {
+    /*useEffect((ctx) => {
         const token  = parseCookies(ctx);
         if (token.tipo === "admin") {
             router.push("/escalas"); // Redirecionar se já estiver autenticado
@@ -31,7 +31,7 @@ function LoginForm() {
             router.push("/plantoes");
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, []);*/
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -47,7 +47,7 @@ function LoginForm() {
         }
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e, ctx) => {
         e.preventDefault();
 
         setLoginStatus("loading"); // Set loading state
@@ -82,8 +82,19 @@ function LoginForm() {
                     path: "/",
                 });
                 setLoginStatus("sucesso");
-                if(tipo ==="admin"){router.push("/escalas/adicionaescalas");}
-                else {router.push("/plantoes");} // Redire}cionar para a página principal após o login
+
+                /*if(tipo ==="admin"){router.push("/escalas/adicionaescalas");}
+                else {router.push("/plantoes");} // Redire}cionar para a página principal após o login*/
+
+                const allowedEmails = ["cmsantan@trf3.jus.br", "mmmagal@trf3.jus.br", "omperei@trf3.jus.br"];
+                if (formData.email && !allowedEmails.includes(formData.email)) {
+                    router.push("/plantoes");
+                }
+                else{
+                    router.push("/escalas/adicionaescalas");
+                }
+
+
             } else {
                 setLoginStatus("erro");
                 console.log("Erro ao autenticar:", res.statusText);
