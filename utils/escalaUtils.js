@@ -265,8 +265,11 @@ export const fetchEscalas = async () => {
 export const fetchEscalasDoJuiz = async (juizEmail) =>{
     const data = await fetchEscalas();
     if(data){
-        return data.filter((escala) => escala.participantes.data.some((participante) => participante.attributes.email == juizEmail));
-
+        return data.filter(
+            (escala) =>
+                escala.fechada === false &&
+                escala.participantes.data.some((participante) => participante.attributes.email === juizEmail)
+        );
     }
 }
 
