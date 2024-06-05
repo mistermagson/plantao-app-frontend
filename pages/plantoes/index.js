@@ -249,7 +249,7 @@ export async function getServerSideProps(ctx) {
         return validation;
     }
 
-    if (cookies.user_tipo === 'admin') {
+   /* if (cookies.user_tipo === 'admin') {
         return {
             redirect: {
                 permanent: false,
@@ -257,7 +257,7 @@ export async function getServerSideProps(ctx) {
             },
         };
     }
-
+*/
 
     const h = {
         'Content-Type': 'application/json',
