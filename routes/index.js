@@ -195,10 +195,19 @@ export const allRoutes = [
       //   route: "/escalas/participantes",
       // },
       {
-        name: "Plantões Juizes",
+        name: "Escolher Plantões",
         key: "datas",
         route: "/plantoes",
       },
+
+    ],
+  },
+  {
+    type: "collapse",
+    name: "Configuraçãos",
+    key: "gestao2",
+    icon: <Icon fontSize="medium">tune</Icon>,
+    collapse: [
       {
 
         name: "Adicionar Escala",
@@ -222,7 +231,6 @@ export const allRoutes = [
       },
     ],
   },
-
   /*{
     name: "Portarias",
     key: "portarias",
