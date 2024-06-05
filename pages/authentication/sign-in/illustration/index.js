@@ -27,7 +27,7 @@ import MDInput from "/components/MDInput";
 import MDButton from "/components/MDButton";
 
 // Authentication layout components
-import IllustrationLayout from "/pagesComponents/authentication/components/IllustrationLayout";
+import IllustrationLayout from "/components/pagesComponents/authentication/components/IllustrationLayout";
 
 // Image
 import bgImage from "/assets/images/illustrations/illustration-reset.jpg";

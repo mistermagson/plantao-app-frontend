@@ -28,7 +28,7 @@ import MDInput from "/components/MDInput";
 import MDButton from "/components/MDButton";
 
 // Authentication layout components
-import CoverLayout from "/pagesComponents/authentication/components/CoverLayout";
+import CoverLayout from "/components/pagesComponents/authentication/components/CoverLayout";
 
 // Images
 import bgImage from "/assets/images/bg-sign-in-cover.jpeg";

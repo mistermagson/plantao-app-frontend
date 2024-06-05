@@ -27,7 +27,7 @@ import Footer from "/components/examples/Footer";
 import DataTable from "/components/examples/Tables/DataTable";
 
 // Data
-import dataTableData from "/pagesComponents/applications/data-tables/data/dataTableData";
+import dataTableData from "/components/pagesComponents/applications/data-tables/data/dataTableData";
 
 function DataTables() {
   return (

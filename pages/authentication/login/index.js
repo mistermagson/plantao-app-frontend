@@ -7,7 +7,7 @@ import MDBox from "/components/MDBox";
 import MDTypography from "/components/MDTypography";
 import MDInput from "/components/MDInput";
 import MDButton from "/components/MDButton";
-import BasicLayout from "/pagesComponents/authentication/components/BasicLayout";
+import BasicLayout from "/components/pagesComponents/authentication/components/BasicLayout";
 import bgImage from "/assets/images/bg-sign-in-basic.jpeg";
 import MDProgress from "../../../components/MDProgress";
 import LinearProgress from "@mui/material/LinearProgress";

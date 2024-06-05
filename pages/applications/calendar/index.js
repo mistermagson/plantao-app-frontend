@@ -30,12 +30,12 @@ import Footer from "/components/examples/Footer";
 import EventCalendar from "/components/examples/Calendar";
 
 // Calendar application components
-import Header from "/pagesComponents/applications/calendar/components/Header";
-import NextEvents from "/pagesComponents/applications/calendar/components/NextEvents";
-import ProductivityChart from "/pagesComponents/applications/calendar/components/ProductivityChart";
+import Header from "/components/pagesComponents/applications/calendar/components/Header";
+import NextEvents from "/components/pagesComponents/applications/calendar/components/NextEvents";
+import ProductivityChart from "/components/pagesComponents/applications/calendar/components/ProductivityChart";
 
 // Data
-import calendarEventsData from "/pagesComponents/applications/calendar/data/calendarEventsData";
+import calendarEventsData from "/components/pagesComponents/applications/calendar/data/calendarEventsData";
 
 function Calendar() {
   return (

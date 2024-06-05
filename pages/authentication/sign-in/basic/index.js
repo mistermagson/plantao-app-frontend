@@ -35,7 +35,7 @@ import MDInput from "/components/MDInput";
 import MDButton from "/components/MDButton";
 
 // Authentication layout components
-import BasicLayout from "/pagesComponents/authentication/components/BasicLayout";
+import BasicLayout from "/components/pagesComponents/authentication/components/BasicLayout";
 
 // Images
 import bgImage from "/assets/images/bg-sign-in-basic.jpeg";

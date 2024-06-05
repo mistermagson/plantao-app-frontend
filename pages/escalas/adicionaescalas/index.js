@@ -6,7 +6,7 @@ import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import MDTypography from "/components/MDTypography";
 import MDDatePicker from "/components/MDDatePicker";
-import FormField from "/pagesComponents/pages/account/components/FormField";
+import FormField from "/components/pagesComponents/pages/account/components/FormField";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import {Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel} from "@mui/material";
