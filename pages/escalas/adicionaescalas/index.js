@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
+import DashboardLayout from "/components/examples/LayoutContainers/DashboardLayout";
+import DashboardNavbar from "/components/examples/Navbars/DashboardNavbar";
 import MDBox from "/components/MDBox";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";

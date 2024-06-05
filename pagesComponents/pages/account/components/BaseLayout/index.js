@@ -31,9 +31,9 @@ import MDBox from "/components/MDBox";
 import breakpoints from "/assets/theme/base/breakpoints";
 
 // NextJS Material Dashboard 2 PRO examples
-import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
-import Footer from "/examples/Footer";
+import DashboardLayout from "/components/examples/LayoutContainers/DashboardLayout";
+import DashboardNavbar from "/components/examples/Navbars/DashboardNavbar";
+import Footer from "/components/examples/Footer";
 
 function BaseLayout({ stickyNavbar, children }) {
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");

@@ -24,10 +24,10 @@ import Grid from "@mui/material/Grid";
 import MDBox from "/components/MDBox";
 
 // NextJS Material Dashboard 2 PRO examples
-import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
-import Footer from "/examples/Footer";
-import EventCalendar from "/examples/Calendar";
+import DashboardLayout from "/components/examples/LayoutContainers/DashboardLayout";
+import DashboardNavbar from "/components/examples/Navbars/DashboardNavbar";
+import Footer from "/components/examples/Footer";
+import EventCalendar from "/components/examples/Calendar";
 
 // Calendar application components
 import Header from "/pagesComponents/applications/calendar/components/Header";

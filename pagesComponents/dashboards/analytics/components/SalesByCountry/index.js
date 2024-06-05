@@ -25,7 +25,7 @@ import MDBox from "/components/MDBox";
 import MDTypography from "/components/MDTypography";
 
 // NextJS Material Dashboard 2 PRO examples
-import SalesTable from "/examples/Tables/SalesTable";
+import SalesTable from "/components/examples/Tables/SalesTable";
 
 // Data
 import salesTableData from "/pagesComponents/dashboards/analytics/components/SalesByCountry/data/salesTableData";

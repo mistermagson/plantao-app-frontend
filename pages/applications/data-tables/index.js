@@ -21,10 +21,10 @@ import MDBox from "/components/MDBox";
 import MDTypography from "/components/MDTypography";
 
 // NextJS Material Dashboard 2 PRO examples
-import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
-import Footer from "/examples/Footer";
-import DataTable from "/examples/Tables/DataTable";
+import DashboardLayout from "/components/examples/LayoutContainers/DashboardLayout";
+import DashboardNavbar from "/components/examples/Navbars/DashboardNavbar";
+import Footer from "/components/examples/Footer";
+import DataTable from "/components/examples/Tables/DataTable";
 
 // Data
 import dataTableData from "/pagesComponents/applications/data-tables/data/dataTableData";

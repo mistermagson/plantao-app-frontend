@@ -11,8 +11,8 @@ import Icon from "@mui/material/Icon";
 import MDBox from "/components/MDBox";
 
 // NextJS Material Dashboard 2 PRO examples
-import Sidenav from "/examples/Sidenav";
-import Configurator from "/examples/Configurator";
+import Sidenav from "/components/examples/Sidenav";
+import Configurator from "/components/examples/Configurator";
 
 // NextJS Material Dashboard 2 PRO themes
 import theme from "/assets/theme";

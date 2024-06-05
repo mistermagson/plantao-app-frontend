@@ -22,7 +22,7 @@ import MDBox from "/components/MDBox";
 import MDTypography from "/components/MDTypography";
 
 // NextJS Material Dashboard 2 PRO examples
-import TimelineItem from "/examples/Timeline/TimelineItem";
+import TimelineItem from "/components/examples/Timeline/TimelineItem";
 
 function OrdersOverview() {
   return (

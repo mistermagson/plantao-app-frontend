@@ -1,6 +1,6 @@
 // Vincula Datas a um juiz
 // dateArrays é um array dos id´s das datas
-import {item} from "../examples/Sidenav/styles/sidenavItem";
+import {item} from "../components/examples/Sidenav/styles/sidenavItem";
 
 export const setPlantonista = (idJuiz, plantaoArray,headers ) => {
 

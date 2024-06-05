@@ -21,7 +21,7 @@ import MDBox from "/components/MDBox";
 import MDTypography from "/components/MDTypography";
 
 // NextJS Material Dashboard 2 PRO examples
-import DefaultItem from "/examples/Items/DefaultItem";
+import DefaultItem from "/components/examples/Items/DefaultItem";
 
 function UpcomingEvents() {
   return (

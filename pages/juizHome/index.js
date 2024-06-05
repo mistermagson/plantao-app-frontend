@@ -2,8 +2,8 @@ import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import MDBox from "/components/MDBox";
 import MDTypography from "/components/MDTypography";
-import DashboardLayout from "/examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "/examples/Navbars/DashboardNavbar";
+import DashboardLayout from "/components/examples/LayoutContainers/DashboardLayout";
+import DashboardNavbar from "/components/examples/Navbars/DashboardNavbar";
 import {DataGrid, GridActionsCellItem, GridToolbar} from "@mui/x-data-grid";
 import React, {useEffect, useState} from "react";
 import Button from "@mui/material/Button";
@@ -21,8 +21,8 @@ import HowToRegIcon from "@mui/icons-material/HowToReg";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import EventIcon from '@mui/icons-material/Event';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import DefaultProjectCard from "../../examples/Cards/ProjectCards/DefaultProjectCard";
-import Calendar from "/examples/Calendar";
+import DefaultProjectCard from "../../components/examples/Cards/ProjectCards/DefaultProjectCard";
+import Calendar from "/components/examples/Calendar";
 import {validateAuthToken} from "../../utils/sistemaUtils";
 
 function Escalas({ h }) {

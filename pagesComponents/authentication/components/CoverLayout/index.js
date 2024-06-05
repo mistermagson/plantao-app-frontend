@@ -24,8 +24,8 @@ import MDBox from "/components/MDBox";
 // import MDTypography from "/components/MDTypography";
 
 // NextJS Material Dashboard 2 PRO examples
-import DefaultNavbar from "/examples/Navbars/DefaultNavbar";
-import PageLayout from "/examples/LayoutContainers/PageLayout";
+import DefaultNavbar from "/components/examples/Navbars/DefaultNavbar";
+import PageLayout from "/components/examples/LayoutContainers/PageLayout";
 
 // Authentication layout components
 import Footer from "/pagesComponents/authentication/components/Footer";

@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import Calendar from "/examples/Calendar";
+import Calendar from "/components/examples/Calendar";
 import MDBadgeDot from "../../../components/MDBadgeDot"; // needed for dayClick
 import FullCalendar from "@fullcalendar/react";
 import interactionPlugin from "@fullcalendar/interaction";

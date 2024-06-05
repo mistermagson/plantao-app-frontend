@@ -5,7 +5,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import {useRouter} from "next/router";
 import {useCookies} from "react-cookie";
 import {parseCookies} from "nookies";
-import DashboardLayout from "../../../examples/LayoutContainers/DashboardLayout";
+import DashboardLayout from "../../../components/examples/LayoutContainers/DashboardLayout";
 import MDBox from "../../../components/MDBox";
 import MDTypography from "../../../components/MDTypography";
 import Card from "@mui/material/Card";
@@ -18,7 +18,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import CalendarioAdm from "../calendarioPlantaoAdm";
 import {removePlantonista, setPlantonista} from "../../../utils/plantaoUtils";
 import MDButton from "../../../components/MDButton";
-import Calendar from "../../../examples/Calendar";
+import Calendar from "../../../components/examples/Calendar";
 
 //TODO DISPARO DE EMAIL PELO REGIONAL (ideia de que o juiz escolha os plantoes de todas as escalas de uma só vez)
 

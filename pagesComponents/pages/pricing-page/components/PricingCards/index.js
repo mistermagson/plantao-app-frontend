@@ -23,7 +23,7 @@ import Grid from "@mui/material/Grid";
 import MDBox from "/components/MDBox";
 
 // NextJS Material Dashboard 2 PRO examples
-import DefaultPricingCard from "/examples/Cards/PricingCards/DefaultPricingCard";
+import DefaultPricingCard from "/components/examples/Cards/PricingCards/DefaultPricingCard";
 
 // NextJS Material Dashboard 2 PRO context
 import { useMaterialUIController } from "/context";

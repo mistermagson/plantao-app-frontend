@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Calendar from "/examples/Calendar";
+import Calendar from "/components/examples/Calendar";
 import MDTypography from "../../../components/MDTypography";
 import MDBox from "../../../components/MDBox";
 import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!

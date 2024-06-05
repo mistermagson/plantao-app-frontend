@@ -10,7 +10,7 @@ import MDBox from "/components/MDBox";
 
 // NextJS Material Dashboard 2 PRO examples
 
-import PageLayout from "/examples/LayoutContainers/PageLayout";
+import PageLayout from "/components/examples/LayoutContainers/PageLayout";
 
 function BasicLayout({  children }) {
 
