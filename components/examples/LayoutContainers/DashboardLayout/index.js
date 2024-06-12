@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import React, {useEffect, useState} from "react";
+import React, { useEffect } from "react";
 
 import { useRouter } from "next/router";
 
@@ -24,7 +24,7 @@ import PropTypes from "prop-types";
 import MDBox from "/components/MDBox";
 
 // NextJS Material Dashboard 2 PRO context
-import {useMaterialUIController, setLayout, setMiniSidenav} from "/context";
+import { useMaterialUIController, setLayout } from "/context";
 import AuthCheck from "../../../../context/AuthCheck";
 import Sidenav from "../../Sidenav";
 import brandDark from "../../../../assets/images/logo-ct-dark.png";
@@ -36,8 +36,6 @@ import MDButton from "../../../MDButton";
 
 function DashboardLayout({ children, userTipo }) {
   const [controller, dispatch] = useMaterialUIController();
-  const [onMouseEnter, setOnMouseEnter] = useState(false);
-
   const { miniSidenav } = controller;
   const { pathname } = useRouter();
 
@@ -45,31 +43,12 @@ function DashboardLayout({ children, userTipo }) {
     setLayout(dispatch, "dashboard");
   }, [dispatch, pathname]);
 
-  // Open sidenav when mouse enter on mini sidenav
-  const handleOnMouseEnter = () => {
-    if (miniSidenav && !onMouseEnter) {
-      setMiniSidenav(dispatch, false);
-      setOnMouseEnter(true);
-    }
-  };
-
-  // Close sidenav when mouse leave mini sidenav
-  const handleOnMouseLeave = () => {
-    if (onMouseEnter) {
-      setMiniSidenav(dispatch, true);
-      setOnMouseEnter(false);
-    }
-  };
-
   return (
     <>
-
       <Sidenav
       brand={brandWhite}
       brandName="Plantao Juizes App"
       routes={allRoutes}
-      onMouseEnter={handleOnMouseEnter}
-      onMouseLeave={handleOnMouseLeave}
       />
         <MDBox
         sx={({ breakpoints, transitions, functions: { pxToRem } }) => ({

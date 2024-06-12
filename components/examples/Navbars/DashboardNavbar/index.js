@@ -68,7 +68,34 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const [openMenu, setOpenMenu] = useState(false);
   const route = useRouter().pathname.split("/").slice(1);
 
+  useEffect(() => {
+    // Setting the navbar type
+    if (fixedNavbar) {
+      setNavbarType("sticky");
+    } else {
+      setNavbarType("static");
+    }
 
+    // A function that sets the transparent state of the navbar.
+    function handleTransparentNavbar() {
+      setTransparentNavbar(
+        dispatch,
+        (fixedNavbar && window.scrollY === 0) || !fixedNavbar,
+      );
+    }
+
+    /** 
+     The event listener that's calling the handleTransparentNavbar function when 
+     scrolling the window.
+    */
+    window.addEventListener("scroll", handleTransparentNavbar);
+
+    // Call the handleTransparentNavbar function to set the state with the initial value.
+    handleTransparentNavbar();
+
+    // Remove event listener on cleanup
+    return () => window.removeEventListener("scroll", handleTransparentNavbar);
+  }, [dispatch, fixedNavbar]);
 
   const handleMiniSidenav = () => setMiniSidenav(dispatch, !miniSidenav);
   const handleConfiguratorOpen = () =>
@@ -78,7 +105,20 @@ function DashboardNavbar({ absolute, light, isMini }) {
 
   // Render the notifications menu
   const renderMenu = () => (
-<></>
+    <Menu
+      anchorEl={openMenu}
+      anchorReference={null}
+      anchorOrigin={{
+        vertical: "bottom",
+        horizontal: "left",
+      }}
+      open={Boolean(openMenu)}
+      onClose={handleCloseMenu}
+      sx={{ mt: 2 }}
+    >
+      <NotificationItem icon={<Icon>email</Icon>} title="Check new messages" />
+
+    </Menu>
   );
 
   // Styles for the navbar icons
@@ -99,51 +139,8 @@ function DashboardNavbar({ absolute, light, isMini }) {
 
   return (
 
-      <AppBar
-          position="relative"
-          color="inherit"
-          sx={(theme) =>
-              navbar(theme, { transparentNavbar})
-          }
-      >
-
-          <MDBox
-              color="inherit"
-
-          >
-            <MDBox  >
-              <IconButton
-                  sx={navbarDesktopMenu}
-                  onClick={handleMiniSidenav}
-                  size="small"
-
-              >
-                <Icon fontSize="MEDIUM" >
-                  {miniSidenav ? "menu":"menu_open" }
-                </Icon>
-              </IconButton>
-            </MDBox>
-
-          </MDBox>
-          {isMini ? null : (
-              <MDBox >
-                <MDBox color={light ? "white" : "inherit"}>
-
-                  <IconButton
-                      size="large"
-
-                      color="inherit"
-                      sx={navbarMobileMenu}
-                      onClick={handleMiniSidenav}
-                  >
-                    <Icon sx={iconsStyle} fontSize="medium">
-                      {miniSidenav ? "menu_open" : "menu"}
-                    </Icon>
-                  </IconButton>
-                </MDBox>
-              </MDBox>
-          )}
-      </AppBar>  );
+    <></>
+  );
 }
 
 // Setting default values for the props of DashboardNavbar
