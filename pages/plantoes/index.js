@@ -42,6 +42,13 @@ function Plantoes({cabecalho, format_escalas, tipo}) {
     const [cookies, setCookies] = useCookies(["user_email"]);
 
     useEffect(() => {
+        if (!cookies.user_email) {
+            router.push("/");
+        }
+
+    }, [cookies, juizes, router]);
+
+    useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const escalaUrl = params.get('escala');
 
@@ -142,100 +149,95 @@ function Plantoes({cabecalho, format_escalas, tipo}) {
 
     return (
         <DashboardLayout userTipo={tipo}>
-            <div>
-                <DashboardNavbar/>
-                {/*<MDButton size="small" onClick={console.log(tipo)} lcolor="info">Exibir</MDButton>*/}
-                <MDBox >
-                    <MDTypography variant="h2">Plantões</MDTypography>
-                </MDBox>
-            </div>
-                <Card>
-                    <Grid container>
-                        <Grid item xs={12} xl={12}>
-                            <Grid container spacing={2} pl={3}>
-                                <Grid item xs={11} xl={3.5}>
-                                    <MDBox my={2}>
-                                        <h5>Selecione a escala:</h5>
-                                    </MDBox>
-                                    <Autocomplete
-                                        options={escalas}
-                                        isOptionEqualToValue={(option, value) => option.id === value.id}
-                                        getOptionLabel={escala => escala.descricao}
-                                        value={escalaSelecionada}
-                                        onChange={(event, newValue) => {
-                                            setEscalaSelecionada(newValue);
-                                            onChangeEscala(newValue);
-                                        }}
-                                        renderInput={(params) => <TextField {...params} label="Escala"/>}
-                                    />
-                                </Grid>
-                                <Grid item xs={11} xl={4} style={{display: 'flex', alignItems: 'flex-end'}}>
-                                    {escalaSelecionada === null ? // IF
-                                        <Alert severity="warning">Selecione uma escala</Alert>
-                                        : // ELSE
-                                        (escalaSelecionada.fechada ? // IF
-                                                <Alert severity="error">Essa escala já foi fechada</Alert>
-                                                : // ELSE
-                                                (juizSelecionado !== null && juizSelecionado?.id === preferenciaJuizId && juizSelecionado !== "" ?  // IF
-                                                        <Alert severity="info">Escolha
-                                                            até {escalaSelecionada?.plantoesPorJuiz} plantões</Alert>
-                                                        : // ELSE
-                                                        (juizSelecionado !== null && juizSelecionado?.id !== preferenciaJuizId ?  // IF
-                                                                <Alert severity="error">Aguarde sua vez para escolher os
-                                                                    plantões</Alert>
-                                                                : // ELSE
-                                                                <Alert severity="warning">Selecione um
-                                                                    magistrado</Alert>
-                                                        )
-                                                )
-                                        )
-                                    }
-                                </Grid>
+            <DashboardNavbar/>
+           {/*<MDButton size="small" onClick={console.log(tipo)} lcolor="info">Exibir</MDButton>*/}
+            <MDBox p={2}>
+                <MDTypography variant="h2">Plantões</MDTypography>
+            </MDBox>
+            <Card >
+                <Grid container>
+                    <Grid item xs={12} xl={12}>
+                        <Grid container spacing={2} pl={3}>
+                            <Grid item xs={11} xl={3.5}>
+                                <MDBox my={2}>
+                                    <h5>Selecione a escala:</h5>
+                                </MDBox>
+                                <Autocomplete
+                                    options={escalas}
+                                    isOptionEqualToValue={(option, value) => option.id === value.id}
+                                    getOptionLabel={escala => escala.descricao}
+                                    value={escalaSelecionada}
+                                    onChange={(event, newValue) => {
+                                        setEscalaSelecionada(newValue);
+                                        onChangeEscala(newValue);
+                                    }}
+                                    renderInput={(params) => <TextField {...params} label="Escala"/>}
+                                />
+                            </Grid>
+                            <Grid item xs={11} xl={4} style={{display: 'flex', alignItems: 'flex-end'}}>
+                                {escalaSelecionada === null ? // IF
+                                    <Alert severity="warning">Selecione uma escala</Alert>
+                                    : // ELSE
+                                    (escalaSelecionada.fechada ? // IF
+                                            <Alert severity="error">Essa escala já foi fechada</Alert>
+                                            : // ELSE
+                                            (juizSelecionado !== null && juizSelecionado?.id === preferenciaJuizId && juizSelecionado !== "" ?  // IF
+                                                    <Alert severity="info">Escolha até {escalaSelecionada?.plantoesPorJuiz} plantões</Alert>
+                                                    : // ELSE
+                                                    (juizSelecionado !== null && juizSelecionado?.id !== preferenciaJuizId ?  // IF
+                                                            <Alert severity="error">Aguarde sua vez para escolher os
+                                                                plantões</Alert>
+                                                            : // ELSE
+                                                            <Alert severity="warning">Selecione um magistrado</Alert>
+                                                    )
+                                            )
+                                    )
+                                }
                             </Grid>
                         </Grid>
-                        <Grid item xs={12} xl={12} pb={4}>
-                            {escalaSelecionada && (
-                                <Grid px={4} mt={5}>
-                                    <MDTypography variant="h6"> Calendário de Plantões:</MDTypography>
-                                    <MDTypography variant="body2">
-                                        {/* eslint-disable-next-line react/no-unescaped-entities */}
-                                        Clique no botão "Escolher Plantões" e selecione no calendário as datas
-                                        desejadas, salve as escolhas e quando houver finalizado passe a vez.
-                                    </MDTypography>
-                                    <Grid mb={7.3} mt={1}>
-                                        {plantoes?.length > 0 ? (
-                                            <CalendarioPlantao
-                                                plantoes={plantoes}
-                                                escala={escalaSelecionada}
-                                                juiz={juizSelecionado}
-                                                limpaPlantao={handleLimparPlantonista}
-                                                passarEscolha={passaEscolha}
-                                                addPlantao={addPlantao}
-                                                nPlantoes={juizes}
-                                                fetchData={fetchEscalasDoJuiz}
-                                            />
-                                        ) : (
-                                            <Calendar
-                                                selectable="true"
-                                                initialView="dayGridMonth"
-                                                editable="true"
-                                                fixedWeekCount="false"
-                                                showNonCurrentDates={"false"}
-                                                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-                                                locale="pt-br"
-                                                events={[]}
-                                            />
-                                        )
-                                        }
-                                    </Grid>
-                                </Grid>
-
-                            )}
-                        </Grid>
                     </Grid>
-                </Card>
+                    <Grid item xs={12} xl={12} pb={4}>
+                        {escalaSelecionada && (
+                            <Grid px={4} mt={5}>
+                                <MDTypography variant="h6"> Calendário de Plantões:</MDTypography>
+                                <MDTypography variant="body2">
+                                    {/* eslint-disable-next-line react/no-unescaped-entities */}
+                                    Clique no botão "Escolher Plantões" e selecione no calendário as datas desejadas, salve as escolhas e quando houver finalizado passe a vez.
+                                </MDTypography>
+                                <Grid mb={7.3} mt={1}>
+                                {plantoes?.length > 0 ? (
+                                    <CalendarioPlantao
+                                        plantoes={plantoes}
+                                        escala={escalaSelecionada}
+                                        juiz={juizSelecionado}
+                                        limpaPlantao={handleLimparPlantonista}
+                                        passarEscolha={passaEscolha}
+                                        addPlantao={addPlantao}
+                                        nPlantoes={juizes}
+                                        fetchData={fetchEscalasDoJuiz}
+                                    />
+                                ) : (
+                                    <Calendar
+                                        selectable="true"
+                                        initialView="dayGridMonth"
+                                        editable="true"
+                                        fixedWeekCount="false"
+                                        showNonCurrentDates={"false"}
+                                        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                                        locale="pt-br"
+                                        events={[]}
+                                    />
+                                )
+                                }
+                            </Grid>
+                            </Grid>
+
+                        )}
+                    </Grid>
+                </Grid>
+            </Card>
         </DashboardLayout>
-);
+    );
 }
 
 export async function getServerSideProps(ctx) {
@@ -247,7 +249,7 @@ export async function getServerSideProps(ctx) {
         return validation;
     }
 
-    if (cookies.user_tipo === 'admin') {
+   /* if (cookies.user_tipo === 'admin') {
         return {
             redirect: {
                 permanent: false,
@@ -255,6 +257,7 @@ export async function getServerSideProps(ctx) {
             },
         };
     }
+*/
 
     const h = {
         'Content-Type': 'application/json',
