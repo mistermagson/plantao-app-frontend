@@ -387,10 +387,10 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                 <div>
                     <Dialog open={salvar} onClose={handleClose}>
                         <DialogTitle>
-                            <ReportProblemRoundedIcon/>
+                            Confirmar Escolhas
                         </DialogTitle>
                         <DialogContent>
-                            O plantão já pertencente a outro magistrado
+                            Deseja confirmar os plantões escolhidos e passar sua vez?
                         </DialogContent>
                         <DialogActions>
                             <Button onClick={handleClose}>Ok</Button>
@@ -478,13 +478,16 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                                         onClick={() => {
                                             toggleClick();
                                             salvarAlteracoes();
+                                            setPassar(true);
                                         }}
                                     >
                                         {clickHabilitado ? 'Salvar' : 'Escolher Plantões'}
-                                        {clickHabilitado ? <SaveIcon style={{marginLeft: '8px'}}/> : <EditRoundedIcon style={{marginLeft: '8px'}}/>}
+                                        {clickHabilitado ? <SaveIcon style={{marginLeft: '8px'}}/> :
+                                            <EditRoundedIcon style={{marginLeft: '8px'}}/>}
                                     </MDButton>
                                     {juiz?.id === escala?.preferencia.data.id && (
-                                        <MDButton size="medium" variant="text" onClick={() => checarLimite(plantaoTabela, addEvent, remEvent, escala.plantoesPorJuiz ) ? setPassar(true) : setCheio(true)}
+                                        <MDButton size="medium" variant="gradient"
+                                                  onClick={() => checarLimite(plantaoTabela, addEvent, remEvent, escala.plantoesPorJuiz) ? setPassar(true) : setCheio(true)}
                                                   color="error">
                                             Passar a vez
                                         </MDButton>
