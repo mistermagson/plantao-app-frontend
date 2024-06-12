@@ -202,8 +202,6 @@ function AdicionaEscala(tipo) {
 
     return (
         <DashboardLayout userTipo={tipo?.tipo}>
-            <DashboardNavbar/>
-
             {/*caixa dialogo escala adicionada*/}
             <div>
                 <Dialog open={salvar} onClose={handleClose}>
