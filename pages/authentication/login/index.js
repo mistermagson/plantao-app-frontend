@@ -8,105 +8,82 @@ import MDTypography from "/components/MDTypography";
 import MDInput from "/components/MDInput";
 import MDButton from "/components/MDButton";
 import BasicLayout from "/components/pagesComponents/authentication/components/BasicLayout";
-import bgImage from "/assets/images/bg-sign-in-basic.jpeg";
-import MDProgress from "../../../components/MDProgress";
-import LinearProgress from "@mui/material/LinearProgress";
-import Box from "@mui/material/Box";
-import {tipoUsuario} from "../../../utils/sistemaUtils";
+import { tipoUsuario } from "../../../utils/sistemaUtils";
 
-function LoginForm() {
+function LoginForm({cookies, authToken}) {
     const router = useRouter();
-    const [formData, setFormData] = useState({
+    const [loginCredentials, setLoginCredentials] = useState({
         email: "",
         password: "",
     });
-    const [loginStatus, setLoginStatus] = useState("pendente");
+    const [authenticationStatus, setAuthenticationStatus] = useState("pending");
 
-    /*useEffect((ctx) => {
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+        setLoginCredentials({...loginCredentials, [name]: value });
+    };
+
+    const handleKeyPress = (event) => {
+        if (event.key === "Enter" && loginCredentials.email && loginCredentials.password) {
+            handleSubmit(event);
+        }
+    };
+
+    useEffect((ctx) => {
         const token  = parseCookies(ctx);
         if (token.tipo === "admin") {
-            router.push("/escalas"); // Redirecionar se já estiver autenticado
+            router.push("/escalas");
         }
         else{
             router.push("/plantoes");
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);*/
+    }, []);
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
-    };
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        setAuthenticationStatus("loading");
 
-    const handleKeyPress = (event) => {
-        if (event.key === "Enter" && formData.email && formData.password) {
-            handleSubmit(event); // Submit the form if Enter is pressed and both fields are filled
-        }
-    };
-
-    const handleSubmit = async (e, ctx) => {
-        e.preventDefault();
-
-        setLoginStatus("loading"); // Set loading state
-        //await new Promise((resolve) => setTimeout(resolve, 3000));
         try {
-            const res = await fetch("/api/auth", {
+            const response = await fetch("/api/auth", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email: formData.email,
-                    password: formData.password,
-                }),
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({ username: loginCredentials.email, password: loginCredentials.password }),
             });
 
-            if (res.ok) {
-                const data = await res.json();
-                const time = 3600;
+            if (response.ok) {
+                setAuthenticationStatus("success");
+                const data = await response.json();
                 const tipo = await tipoUsuario(data.email);
 
-                setCookie(null, "auth_token", data.token, {
-                    maxAge: time, // 30 minutos (tempo de expiração do token)
-                    path: "/",
-                });
-                setCookie(null, "user_email", (data.email), {
-                    maxAge: time, // 30 minutos (tempo de expiração do token)
-                    path: "/",
-                });
-                setCookie(null, "user_tipo", (tipo), {
-                    maxAge: time, // 30 minutos (tempo de expiração do token)
-                    path: "/",
-                });
-                setLoginStatus("sucesso");
+                const cookieOptions = {
+                    maxAge: 1 * 60 * 60,
+                    path: '/',
+                    secure: process.env.NODE_ENV!== 'development',
+                };
 
-                /*if(tipo ==="admin"){router.push("/escalas/adicionaescalas");}
-                else {router.push("/plantoes");} // Redire}cionar para a página principal após o login*/
+                setCookie(null, "auth_token", data.token, cookieOptions);
+                setCookie(null, "user_email", data.email, cookieOptions);
+                setCookie(null, "user_tipo", tipo, cookieOptions);
 
-                const allowedEmails = ["cmsantan@trf3.jus.br", "mmmagal@trf3.jus.br", "omperei@trf3.jus.br"];
-                if (formData.email && !allowedEmails.includes(formData.email)) {
+                if (tipo === "admin") {
+                    router.push("/escalas/adicionaescalas");
+                } else {
                     router.push("/plantoes");
                 }
-                else{
-                    router.push("/escalas/adicionaescalas");
-                }
-
-
             } else {
-                setLoginStatus("erro");
-                console.log("Erro ao autenticar:", res.statusText);
+                setAuthenticationStatus("error");
+                alert("Login failed!");
+                console.log(response);
             }
         } catch (error) {
-            setLoginStatus("erro");
-            console.error("Erro ao enviar solicitação:", error);
+            setAuthenticationStatus("error");
+            console.error("Error sending request:", error);
         }
     };
 
     const renderError = () => {
-        if (loginStatus === "erro") {
+        if (authenticationStatus === "error") {
             return (
                 <MDBox mt={2} ml={1}>
                     <MDTypography variant="caption" color="error" fontWeight="medium">
@@ -119,7 +96,7 @@ function LoginForm() {
     };
 
     const renderLoading = () => {
-        if (loginStatus === "loading") {
+        if (authenticationStatus === "loading") {
             return (
                 <MDBox mt={2} ml={1}>
                     <MDTypography variant="caption" color="info" fontWeight="medium">
@@ -132,7 +109,7 @@ function LoginForm() {
     };
 
     return (
-        <BasicLayout >
+        <BasicLayout>
             <Card>
                 <MDBox
                     variant="gradient"
@@ -154,39 +131,39 @@ function LoginForm() {
                         <MDBox mb={3}>
                             <MDInput
                                 type="email"
-                                value={formData.email}
+                                value={loginCredentials.email}
                                 id="email"
                                 name="email"
-                                label="Email"
+                                label="Usuário"
                                 fullWidth
-                                onChange={handleChange}
-                                error={loginStatus === "erro" && !formData.email} // Set error state for missing email
+                                onChange={handleInputChange}
+                                error={authenticationStatus === "error" &&!loginCredentials.email}
                                 helperText={
-                                    loginStatus === "erro" && !formData.email
+                                    authenticationStatus === "error" &&!loginCredentials.email
                                         ? "Informe seu endereço de email"
                                         : null
-                                } // Display error message for missing email
+                                }
                             />
                         </MDBox>
-                        <MDBox >
+                        <MDBox>
                             <MDInput
                                 type="password"
-                                value={formData.password}
+                                value={loginCredentials.password}
                                 id="password"
                                 name="password"
-                                label="Password"
+                                label="Senha"
                                 fullWidth
-                                onChange={handleChange}
-                                error={loginStatus === "erro" && !formData.password} // Set error state for missing password
+                                onChange={handleInputChange}
+                                error={authenticationStatus === "error" &&!loginCredentials.password}
                                 helperText={
-                                    loginStatus === "erro" && !formData.password
+                                    authenticationStatus === "error" &&!loginCredentials.password
                                         ? "Informe sua senha"
                                         : null
-                                } // Display error message for missing password
+                                }
                             />
                         </MDBox>
-                        {renderError()} {/* Display error message for invalid credentials */}
-                        {renderLoading()} {/* Display loading indicator */}
+                        {renderError()}
+                        {renderLoading()}
                         <MDBox mt={3} mb={1}>
                             <MDButton variant="gradient" color="dark" fullWidth onClick={handleSubmit}>
                                 LOGIN
@@ -197,7 +174,6 @@ function LoginForm() {
             </Card>
         </BasicLayout>
     );
-
 }
 
 export default LoginForm;
