@@ -410,7 +410,6 @@ export const editaLink = (link, idEscala,headers ) => {
 
 export const enviarEmail = async (juizFinalizou, juizInicia, escala) =>{
 
-    return "ok";
     try {
         const res = await fetch("/api/notifica", {
             method: "POST",
