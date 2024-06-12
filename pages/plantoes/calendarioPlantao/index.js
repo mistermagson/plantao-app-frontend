@@ -402,7 +402,7 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                         <DialogTitle>Passar a Vez</DialogTitle>
                         <DialogContent>
                             <DialogContentText>
-                                Você tem certeza que deseja encerrar sua escolha?
+                                Deseja confirmar os plantões escolhidos e passar sua vez?
                             </DialogContentText>
                         </DialogContent>
                         <DialogActions>
@@ -478,7 +478,9 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                                         onClick={() => {
                                             toggleClick();
                                             salvarAlteracoes();
-                                            setPassar(true);
+                                            if(clickHabilitado) {
+                                                setPassar(true);
+                                            }
                                         }}
                                     >
                                         {clickHabilitado ? 'Salvar' : 'Escolher Plantões'}
