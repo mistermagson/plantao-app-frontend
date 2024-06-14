@@ -477,6 +477,11 @@ function CalendarioAdm({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchD
                                         {clickHabilitado ? 'Salvar' : 'Escolher Plantões'}
                                         {clickHabilitado ? <SaveIcon style={{marginLeft: '8px'}}/> : <EditRoundedIcon style={{marginLeft: '8px'}}/>}
                                     </MDButton>
+                                    <MDButton size="medium" variant="gradient"
+                                              onClick={() => checarLimite(plantaoTabela, addEvent, remEvent, escala.plantoesPorJuiz) ? setPassar(true) : setCheio(true)}
+                                              color="error">
+                                        Passar a vez
+                                    </MDButton>
                                     <Divider/>
                                     <Accordion style={{boxShadow: "none"}} expanded={accordion1Expanded}
                                                onChange={handleAccordion1Change}>
