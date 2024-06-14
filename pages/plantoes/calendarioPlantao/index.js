@@ -59,11 +59,8 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
     const [aguarde, setAguarde] = useState(false);
     const [cheio, setCheio] = useState(false);
     const [deletarPlantao, setDeletarPlantao] = useState(false);
-
-
-
-    const [accordion1Expanded, setAccordion1Expanded] = useState(false);
-    const [accordion2Expanded, setAccordion2Expanded] = useState(false);
+    const [accordion1Expanded, setAccordion1Expanded] = useState(true);
+    const [accordion2Expanded, setAccordion2Expanded] = useState(true);
 
     const [linhaSelecionada, setLinhaSelecionada] = useState([]);
     const[qtdEscolhida, setQtdEscolhida] = useState(0)
@@ -299,6 +296,7 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
         const handleAccordion2Change = (event, isExpanded) => {
             setAccordion2Expanded(isExpanded);
         };
+
         const isDateInRange = (date, start, end) => {
             return date >= start && date <= end;
         };
@@ -387,13 +385,13 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                 <div>
                     <Dialog open={salvar} onClose={handleClose}>
                         <DialogTitle>
-                            Confirmar Escolhas
+                            Escolhas Salvas
                         </DialogTitle>
                         <DialogContent>
-                            Deseja confirmar os plantões escolhidos e passar sua vez?
+                            Os plantões escolhidos foram salvos com sucesso.
                         </DialogContent>
                         <DialogActions>
-                            <Button onClick={handleClose}>Ok</Button>
+                            <Button onClick={() => { handleClose();setPassar(true);}}>Ok</Button>
                         </DialogActions>
                     </Dialog>
                 </div>
@@ -402,7 +400,7 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                         <DialogTitle>Passar a Vez</DialogTitle>
                         <DialogContent>
                             <DialogContentText>
-                                Deseja confirmar os plantões escolhidos e passar sua vez?
+                                Deseja encerrar suas escolhas e passar a vez?
                             </DialogContentText>
                         </DialogContent>
                         <DialogActions>
@@ -479,7 +477,7 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                                             toggleClick();
                                             salvarAlteracoes();
                                             if(clickHabilitado) {
-                                                setPassar(true);
+                                                setSalvar(true);
                                             }
                                         }}
                                     >
