@@ -12,7 +12,7 @@ import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import {Alert} from "@mui/material";
 import TextField from "@mui/material/TextField";
-import {fetchEscalas, fetchEscalasDoJuiz} from "../../../utils/escalaUtils";
+import {fetchEscalas, fetchEscalasDoJuiz, passaPreferencia} from "../../../utils/escalaUtils";
 import {tipoUsuario, validateAdmin, validateAuthToken} from "../../../utils/sistemaUtils";
 import Autocomplete from "@mui/material/Autocomplete";
 import CalendarioAdm from "../calendarioPlantaoAdm";
@@ -40,6 +40,13 @@ function Plantoes({cabecalho, format_escalas, tipo}) {
 
     const router = useRouter();
     const [cookies, setCookies] = useCookies(["user_email"]);
+
+    const fetchEscalasAbertas = async () =>{
+        const atualizaEscalas = await fetchEscalas()
+        const dados = atualizaEscalas.filter( (escala) =>escala.fechada === false);
+        await setEscalas(dados)
+    }
+
 
     useEffect(() => {
         if (!cookies.user_email) {
@@ -95,8 +102,7 @@ function Plantoes({cabecalho, format_escalas, tipo}) {
             console.error(error);
         }
 
-        const atualizaEscalas = await fetchEscalasDoJuiz(cookies.user_email)
-        await setEscalas(atualizaEscalas)
+        fetchEscalasAbertas();
     };
 
     const onChangeEscala = (selected)=>{
@@ -126,19 +132,30 @@ function Plantoes({cabecalho, format_escalas, tipo}) {
         try {
             const idJuiz = juizSelecionado?.id;
             await removePlantonista(idJuiz, row, headers);
-            const escalasAtualizadas = await fetchEscalasDoJuiz(cookies.user_email);
-            await setEscalas(escalasAtualizadas);
+            await fetchEscalasAbertas();
+
         } catch (error) {
             console.error(error);
         }
     };
 
+    const passaEscolha = async()=>{
+        try{
+            passaPreferencia(escalaSelecionada,headers);
+        } catch (error) {
+            console.error(error);
+        }
+        await fetchEscalasAbertas();
+
+    }
 
     const showJSON = async () => {
         console.log("juiz selecionado",format_escalas )
         console.log("cookies",cookies.user_email)
         console.log("setJuiz",juizes.find((juiz) => juiz.email === cookies.user_email))
     };
+
+
 
     return (
         <DashboardLayout userTipo={tipo}>
@@ -216,7 +233,8 @@ function Plantoes({cabecalho, format_escalas, tipo}) {
                                             limpaPlantao={handleLimparPlantonista}
                                             addPlantao={addPlantao}
                                             nPlantoes={juizes}
-                                            fetchData={fetchEscalasDoJuiz}
+                                            fetchData={fetchEscalasAbertas}
+                                            passarEscolha={passaEscolha}
                                         />
                                     ) : (
                                         <Calendar
@@ -258,7 +276,8 @@ export async function getServerSideProps(ctx) {
         //'Authorization': 'Bearer ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b'
     };
 
-    const dados = await fetchEscalas();
+    const todasEscalas = await fetchEscalas()
+    const dados = todasEscalas.filter( (escala) =>escala.fechada === false);
     return { props: { cabecalho: h, format_escalas: dados, tipo: cookies.user_tipo } };
 }
 export default Plantoes;
