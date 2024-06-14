@@ -106,7 +106,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
               navbar(theme, { transparentNavbar})
           }
       >
-
+        <Toolbar >
           <MDBox
               color="inherit"
 
@@ -137,12 +137,13 @@ function DashboardNavbar({ absolute, light, isMini }) {
                       onClick={handleMiniSidenav}
                   >
                     <Icon sx={iconsStyle} fontSize="medium">
-                      {miniSidenav ? "menu_open" : "menu"}
+                      {!miniSidenav ? "menu_open" : "menu"}
                     </Icon>
                   </IconButton>
                 </MDBox>
               </MDBox>
           )}
+        </Toolbar>
       </AppBar>  );
 }
 

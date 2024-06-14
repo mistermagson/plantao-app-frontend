@@ -142,7 +142,7 @@ function Configurator() {
   });
 
   return (
-    <ConfiguratorRoot variant="permanent" ownerState={{ openConfigurator }}>
+   /* <ConfiguratorRoot variant="permanent" ownerState={{ openConfigurator }}>
       <MDBox
         display="flex"
         justifyContent="space-between"
@@ -391,7 +391,8 @@ function Configurator() {
           </MDBox>
         </MDBox>
       </MDBox>
-    </ConfiguratorRoot>
+    </ConfiguratorRoot>*/
+      <></>
   );
 }
 
