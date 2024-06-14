@@ -19,6 +19,7 @@ import CalendarioAdm from "../calendarioPlantaoAdm";
 import {removePlantonista, setPlantonista} from "../../../utils/plantaoUtils";
 import MDButton from "../../../components/MDButton";
 import Calendar from "../../../components/examples/Calendar";
+import DashboardNavbar from "../../../components/examples/Navbars/DashboardNavbar";
 
 //TODO DISPARO DE EMAIL PELO REGIONAL (ideia de que o juiz escolha os plantoes de todas as escalas de uma só vez)
 
@@ -142,6 +143,7 @@ function Plantoes({cabecalho, format_escalas, tipo}) {
     return (
         <DashboardLayout userTipo={tipo}>
             {/*<MDButton size="small" onClick={showJSON} lcolor="info">Exibir</MDButton>*/}
+            <DashboardNavbar/>
             <MDBox p={2}>
                 <MDTypography variant="h2">Gerenciar Plantões</MDTypography>
             </MDBox>
