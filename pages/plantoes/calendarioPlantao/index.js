@@ -30,7 +30,7 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
         const plantonista = plantao.plantonista;
         const color = plantonista && plantonista.data.length > 0 ? (juiz?.id == plantao?.plantonista?.data[0]?.id ? "#4CAF50" : "#1A73E8") : "#7B809A";
         const title = plantonista && plantonista.data.length > 0 && plantonista.data[0].attributes.nome
-            ? plantonista.data[0].attributes.nome : "Vazio";
+            ? plantonista.data[0].attributes.nome.split(' ')[0] : "Vazio";
 
         return {
             title,
