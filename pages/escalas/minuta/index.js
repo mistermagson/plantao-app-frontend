@@ -62,10 +62,10 @@ function MinutaPage({ plantoes }) {
 
         // Agrupe os plantões por mês
         const plantoesAgrupadosPorMes = {};
+
         plantoesOrdenados.forEach((plantao) => {
-            const month = new Date(plantao.data).getMonth() + 1;
-            const year = new Date(plantao.data).getFullYear();
-            const key = `${year}-${month}`;
+            const dateParts = plantao.data.split('-');
+            const key = `${dateParts[0]}-${String(dateParts[1]).padStart(2, '0')}`; // Padronize o mês para ter 2 dígitos
             if (!plantoesAgrupadosPorMes[key]) {
                 plantoesAgrupadosPorMes[key] = [];
             }
@@ -78,47 +78,9 @@ function MinutaPage({ plantoes }) {
             mergedRowsPorMes[key] = mergeRows(plantoesAgrupadosPorMes[key]);
         });
 
-        const copyTable = (tableId) => {
-            const table = document.getElementById(tableId);
-            if (!table) {
-                console.error(`Table with id '${tableId}' not found.`);
-                return;
-            }
-
-            const header = table.querySelector('thead tr');
-            const rows = table.querySelectorAll('tbody tr');
-
-            let copiedData = '';
-
-            // Add table header
-            for (const th of header.children) {
-                copiedData += th.innerText + '\t';
-            }
-            copiedData += '\n';
-
-            // Add table rows
-            for (const row of rows) {
-                for (const td of row.children) {
-                    copiedData += td.innerText + '\t';
-                }
-                copiedData += '\n';
-            }
-
-            // Copy the data to clipboard
-            copyToClipboard(copiedData);
-        };
-
-        const copyToClipboard = (data) => {
-            const textarea = document.createElement('textarea');
-            textarea.value = data;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-        };
-
         return (
             <div>
+                <button onClick={()=>{console.log(plantoes)}}> teste</button>
                 {Object.keys(mergedRowsPorMes).map((key) => {
                     const [year, month] = key.split('-');
                     const mes = new Date(parseInt(year), parseInt(month) - 1).toLocaleString('default', { month: 'long' });
@@ -170,6 +132,8 @@ function MinutaPage({ plantoes }) {
             </div>
         );
     }
+
+    return null;
 }
 
 export default MinutaPage;
