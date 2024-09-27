@@ -22,6 +22,7 @@ import {validateAdmin, validateAuthToken} from "../../../utils/sistemaUtils";
 import {parseCookies} from "nookies";
 import MDButton from "../../../components/MDButton";
 import NovoJuizForm from "../novoJuizForm";
+import {AddRounded, CloseRounded} from "@mui/icons-material";
 
 const headers = {
     'Content-Type': 'application/json',
@@ -360,28 +361,28 @@ function Participantes() {
                                                                     handleAlterarPreferencia(params.row)
                                                                 }
                                                             }}
-                                                            color={isJuizPreferencial(params.row.id) ? 'error' : 'default'}
+                                                            color={isJuizPreferencial(params.row.id) ? 'info' : 'default'}
                                                         />
                                                     </Tooltip>
                                                     {isJuizAdicionado(params.row.id) ? (
-                                                        <Tooltip title="">
+                                                        <Tooltip title="Remover Juiz">
                                                             <GridActionsCellItem
-                                                                icon={<RemoveCircleOutlineIcon />}
+                                                                icon={<CloseRounded />}
                                                                 label="Remover Juiz"
                                                                 onClick={() => handleLimparParticipante(params.row.id)}
-                                                                color="inherit"
+                                                                color="error"
                                                             />
                                                         </Tooltip>
                                                     ) : (
                                                         <Tooltip title="Adicionar Juiz">
                                                             <GridActionsCellItem
-                                                                icon={<AddCircleOutlineIcon />}
+                                                                icon={<AddRounded />}
                                                                 label="Adicionar Juiz"
                                                                 onClick={() => {
                                                                     console.log('ADD',params.row)
                                                                     handleSubmit(params.row.id)
                                                                 }} // Chame a função para adicionar juiz aqui
-                                                                color="inherit" // Use 'primary' para destacar a opção de adicionar
+                                                                color="success" // Use 'primary' para destacar a opção de adicionar
                                                             />
                                                         </Tooltip>
                                                     )}
