@@ -261,15 +261,19 @@ function Plantoes({cabecalho, format_escalas, tipo}) {
 }
 
 export async function getServerSideProps(ctx) {
-    const validation = validateAuthToken(ctx);
-    const cookies = parseCookies(ctx);
+    const validate = await validateAuthToken(ctx,'adm');
 
-    if (validation) {
-        return validation;
+    if(validate){
+        return validate;
     }
 
-    const admin = validateAdmin(ctx);
-    if (admin) {return admin;}
+    const tipoUser = await validateAdmin(ctx);
+
+    if(tipoUser){
+        return validateAdmin(tipoUser);
+    }
+
+    const cookies = parseCookies(ctx);
 
     const h = {
         'Content-Type': 'application/json',

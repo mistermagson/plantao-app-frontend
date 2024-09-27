@@ -236,7 +236,7 @@ function AdicionaEscala(tipo) {
             <Grid container spacing={2}>
                 <Grid item xs={12} md={8} xl={8}>
                     <MDBox p={2}>
-                        <MDTypography variant="h2">Escalas Criadas</MDTypography>
+                        <MDTypography variant="h2">Escalas Criadas {JSON.stringify(tipo)}</MDTypography>
                     </MDBox>
                     <Card id="escalas" sx={{overflow: "visible"}}>
                         <MDBox mb={3}>
@@ -385,25 +385,18 @@ function AdicionaEscala(tipo) {
     );
 }
 export async function getServerSideProps(ctx) {
-    const validation = validateAuthToken(ctx);
+    const validate = await validateAuthToken(ctx,'adm');
 
-    if (validation) {
-        return validation;
+    if(validate){
+        return validate;
     }
 
-    const cookies = parseCookies(ctx);
-    /*if (cookies.user_tipo !== 'admin') {
-        return {
-            redirect: {
-                permanent: false,
-                destination: '/plantoes',
-            },
-        };
-    }*/
+    const tipoUser = await validateAdmin(ctx);
 
-    const admin = validateAdmin(ctx);
-    if (admin) {return admin;}
+    if(tipoUser){
+        return validateAdmin(tipoUser);
+    }
 
-    return { props: { validation: 'ok', tipo: cookies.user_tipo} }
+    return { props: { validation: 'ok', tipo: ''} }
 }
 export default AdicionaEscala;

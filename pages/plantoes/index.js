@@ -19,12 +19,12 @@ import interactionPlugin from "@fullcalendar/interaction";
 import {useRouter} from "next/router";
 import {useCookies} from "react-cookie";
 import {parseCookies} from "nookies";
-import {tipoUsuario, validateAuthToken} from "../../utils/sistemaUtils";
+import {tipoUsuario, validateAdmin, validateAuthToken} from "../../utils/sistemaUtils";
 
 //TODO DISPARO DE EMAIL PELO REGIONAL (ideia de que o juiz escolha os plantoes de todas as escalas de uma só vez)
 
 
-function Plantoes({cabecalho, format_escalas, tipo}) {
+function Plantoes({cabecalho, format_escalas}) {
 
     const [headers, setHeaders] = useState(cabecalho);
     const [escalas, setEscalas] = useState(format_escalas);
@@ -148,7 +148,7 @@ function Plantoes({cabecalho, format_escalas, tipo}) {
     };
 
     return (
-        <DashboardLayout userTipo={tipo}>
+        <DashboardLayout >
             <DashboardNavbar />
            {/*<MDButton size="small" onClick={console.log(tipo)} lcolor="info">Exibir</MDButton>*/}
             <MDBox pl={2}>
@@ -241,30 +241,22 @@ function Plantoes({cabecalho, format_escalas, tipo}) {
 }
 
 export async function getServerSideProps(ctx) {
-    const validation = validateAuthToken(ctx);
+    const validate = await validateAuthToken(ctx,'todos');
+
+    if(validate){
+        return validate;
+    }
+
     const cookies = parseCookies(ctx);
     const userData = cookies.user_email || '{}';
-
-    if (validation) {
-        return validation;
-    }
-
-   /* if (cookies.user_tipo === 'admin') {
-        return {
-            redirect: {
-                permanent: false,
-                destination: '/plantoes/adm',
-            },
-        };
-    }
-*/
+    const escala = await fetchEscalasDoJuiz(userData);
 
     const h = {
         'Content-Type': 'application/json',
         //'Authorization': 'Bearer ceeb0dd52060307ab38137799d4f61d249602fb52e52b4c2f9343a743eaec40cffa447c0537093ff02c26a362bcfddf9cf196206f082ae2e7ceaaa2afea35c1c7c1b7ab527076ccc0b06f80428b5304723b6e77e0c460a24043e33d762585d75c0d1dcb7554598490b0edf6a1a41ce79381486a10281a42c245c80e4d1bfd54b'
     };
 
-    const escala = await fetchEscalasDoJuiz(userData);
-    return { props: { cabecalho: h, format_escalas: escala, tipo: cookies.user_tipo} };
+
+    return { props: { cabecalho: h, format_escalas: escala} };
 }
 export default Plantoes;

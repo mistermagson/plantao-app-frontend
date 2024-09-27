@@ -348,7 +348,7 @@ function Escalas({ h }) {
 }
 
 export async function getServerSideProps(ctx) {
-    const validation = validateAuthToken(ctx);
+    const validation = validateAuthToken(ctx,'todos');
 
     if (validation) {
         return validation;

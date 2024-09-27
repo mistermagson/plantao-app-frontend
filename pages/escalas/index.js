@@ -749,12 +749,18 @@ function EscalasPage({ data, h, tipo }) {
 }
 
 export async function getServerSideProps(ctx) {
-    const validation = validateAuthToken(ctx);
-    const cookies = parseCookies(ctx);
+    const validate = await validateAuthToken(ctx,'adm');
 
-    if (validation) {
-        return validation;
+    if(validate){
+        return validate;
     }
+
+    const tipoUser = await validateAdmin(ctx);
+
+    if(tipoUser){
+        return validateAdmin(tipoUser);
+    }
+
 
     const h = {
         "Content-Type": "application/json",
@@ -769,21 +775,11 @@ export async function getServerSideProps(ctx) {
         }
     );
 
-    /*if (cookies.user_tipo !== 'admin') {
-            return {
-                redirect: {
-                    permanent: false,
-                    destination: '/plantoes',
-                },
-            };
-        }*/
-
-    const admin = validateAdmin(ctx);
-    if (admin) {return admin;}
 
     const responseEscala = await res.json();
     const data = responseEscala.data.map((item) => ({ id: item.id, ...item.attributes }));
-    const tipo =  cookies.user_tipo
+    const tipo =  'vazio'
+
     return { props: { data, h , tipo} };
 }
 

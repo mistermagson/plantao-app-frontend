@@ -450,25 +450,17 @@ function Participantes() {
     );
 }
 export async function getServerSideProps(ctx) {
-    const validation = validateAuthToken(ctx);
+    const validate = await validateAuthToken(ctx,'adm');
 
-    if (validation) {
-        return validation;
+    if(validate){
+        return validate;
     }
 
-    const cookies = parseCookies(ctx);
+    const tipoUser = await validateAdmin(ctx);
 
-    /*if (cookies.user_tipo !== 'admin') {
-        return {
-            redirect: {
-                permanent: false,
-                destination: '/plantoes',
-            },
-        };
-    }*/
-
-    const admin = validateAdmin(ctx)
-    if (admin) {return admin;}
+    if(tipoUser){
+        return validateAdmin(tipoUser);
+    }
 
     const escalas = "teste"
 
