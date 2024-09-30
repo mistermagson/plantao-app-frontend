@@ -236,7 +236,7 @@ function AdicionaEscala(tipo) {
             <Grid container spacing={2}>
                 <Grid item xs={12} md={8} xl={8}>
                     <MDBox p={2}>
-                        <MDTypography variant="h2">Escalas Criadas {JSON.stringify(tipo)}</MDTypography>
+                        <MDTypography variant="h2">Escalas Criadas </MDTypography>
                     </MDBox>
                     <Card id="escalas" sx={{overflow: "visible"}}>
                         <MDBox mb={3}>
