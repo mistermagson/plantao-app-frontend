@@ -46,13 +46,13 @@ function navbar(theme, ownerState) {
 
       return color;
     },
-    top: absolute ? 0 : pxToRem(12),
-    minHeight: pxToRem(75),
+    top: absolute ? 0 : pxToRem(0),
+    minHeight: pxToRem(8),
     display: "grid",
     alignItems: "center",
     borderRadius: borderRadius.xl,
-    paddingTop: pxToRem(8),
-    paddingBottom: pxToRem(8),
+    paddingTop: pxToRem(0),
+    paddingBottom: pxToRem(0),
     paddingRight: absolute ? pxToRem(8) : 0,
     paddingLeft: absolute ? pxToRem(16) : 0,
 

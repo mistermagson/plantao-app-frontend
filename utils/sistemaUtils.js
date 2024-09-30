@@ -1,30 +1,39 @@
 import {parseCookies} from "nookies";
 
-export function validateAuthToken(ctx) {
+export const validateAuthToken = async (ctx, tipo) => {
     const cookies = parseCookies(ctx);
-    const authToken = cookies.auth_token;
+    const { user_email, user_tipo } = cookies;
 
-    if (!authToken) {
-        // Redirecionar usuário não autenticado
+    if (!user_email) {
         return {
             redirect: {
-                destination: '/authentication/login',
+                destination: '/authentication/login', // Redireciona para a tela de login se não houver cookies
                 permanent: false,
             },
         };
     }
+    console.log('|||||||||||| -------- TIPO DO USUARIO: ',tipo)
 
     return null; // ou um objeto vazio, dependendo do seu caso de uso
 }
 
-export function validateAdmin(ctx) {
+export const validateAdmin = async (ctx)=> {
     const cookies = parseCookies(ctx);
-    const email = cookies.user_email;
+    const { user_email, user_tipo } = cookies;
 
-    const allowedEmails = ["cmsantan@trf3.jus.br", "mmmagal@trf3.jus.br", "omperei@trf3.jus.br"];
+    // const allowedEmails = ["cmsantan@trf3.jus.br", "mmmagal@trf3.jus.br", "omperei@trf3.jus.br"];
+    //
+    // if (email && !allowedEmails.includes(email)) {
+    //     // Redirecionar usuário não autenticado
+    //     return {
+    //         redirect: {
+    //             destination: '/plantoes',
+    //             permanent: false,
+    //         },
+    //     };
+    // }
 
-    if (email && !allowedEmails.includes(email)) {
-        // Redirecionar usuário não autenticado
+    if (user_tipo !== 'admi') {
         return {
             redirect: {
                 destination: '/plantoes',
@@ -33,7 +42,7 @@ export function validateAdmin(ctx) {
         };
     }
 
-    return null; // ou um objeto vazio, dependendo do seu caso de uso
+    return null;
 }
 
 export async function tipoUsuario(email) {

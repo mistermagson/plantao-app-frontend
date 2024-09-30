@@ -102,21 +102,15 @@ function DashboardNavbar({ absolute, light, isMini }) {
       <AppBar
           position="relative"
           color="inherit"
-          sx={(theme) =>
-              navbar(theme, { transparentNavbar})
-          }
+          sx={(theme) => navbar(theme, { transparentNavbar})}
       >
         <Toolbar >
-          <MDBox
-              color="inherit"
-
-          >
+          <MDBox color="inherit">
             <MDBox  >
               <IconButton
                   sx={navbarDesktopMenu}
                   onClick={handleMiniSidenav}
                   size="small"
-
               >
                 <Icon fontSize="MEDIUM" >
                   {miniSidenav ? "menu":"menu_open" }

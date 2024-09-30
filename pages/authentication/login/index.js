@@ -157,7 +157,7 @@ function LoginForm() {
                                 value={formData.email}
                                 id="email"
                                 name="email"
-                                label="Email"
+                                label="Email ou nome de usuário"
                                 fullWidth
                                 onChange={handleChange}
                                 error={loginStatus === "erro" && !formData.email} // Set error state for missing email
@@ -174,7 +174,7 @@ function LoginForm() {
                                 value={formData.password}
                                 id="password"
                                 name="password"
-                                label="Password"
+                                label="Senha"
                                 fullWidth
                                 onChange={handleChange}
                                 error={loginStatus === "erro" && !formData.password} // Set error state for missing password

@@ -93,7 +93,7 @@ function Calendario({ plantoes, escala }) {
             const plantonista = plantao.plantonista;
 
             const title = plantonista && plantonista.data.length > 0 && plantonista.data[0].attributes.nome
-                ? plantonista.data[0].attributes.nome
+                ? plantonista.data[0].attributes.nome.split(' ')[0]
                 : "Vazio";
 
             const color = plantonista && plantonista.data.length > 0 ? "#1A73E8" : "gray";
