@@ -33,7 +33,7 @@ export const validateAdmin = async (ctx)=> {
     //     };
     // }
 
-    if (user_tipo !== 'admi') {
+    if (user_tipo !== 'admin') {
         return {
             redirect: {
                 destination: '/plantoes',
