@@ -15,6 +15,7 @@ import MDTypography from '@mui/material/Typography';
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import MDButton from "../../../components/MDButton";
+import {checarEmail, checarRf} from "../../../utils/sistemaUtils";
 
 
 const NovoJuizForm = ({ varas }) => {
@@ -44,7 +45,19 @@ const NovoJuizForm = ({ varas }) => {
                     connect: [juiz.varaId],      // ID da vara selecionada
                 },
             }
-            console.log(JSON.stringify(dados))
+
+            const existeEmail = await checarEmail(dados.email)
+            if (existeEmail) {
+                console.error('Erro ao criar juiz:');
+                return { success: false, message: 'O email inserido já pertence a outro juiz.' };
+            }
+
+            const existeRF = await checarRf(dados.rf)
+
+            if (existeRF) {
+                console.error('Erro ao criar juiz:');
+                return { success: false, message: 'O RF inserido já pertence a outro juiz.' };
+            }
 
             const response = await fetch('http://localhost:1337/api/juizs', {
                 method: 'POST',

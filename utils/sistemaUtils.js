@@ -70,3 +70,40 @@ export async function tipoUsuario(email) {
         return null;
     }
 }
+
+export async function checarEmail(email) {
+
+    try {
+        const response = await fetch(`http://localhost:1337/api/juizs?filters[email][$eq]=${email}`, {
+            method: 'GET',
+        });
+
+        const data = await response.json();
+        const juizData = data.data;
+
+
+        return juizData.length > 0;
+    } catch (error) {
+        console.error('Erro ao buscar Email:', error);
+        return null;
+    }
+}
+
+export async function checarRf(rf) {
+
+    try {
+        const response = await fetch(`http://localhost:1337/api/juizs?filters[rf][$eq]=${rf}`, {
+            method: 'GET',
+        });
+
+        const data = await response.json();
+        const juizData = data.data;
+
+        return juizData.length > 0;
+    } catch (error) {
+        console.error('Erro ao buscar RF:', error);
+        return null;
+    }
+}
+
+
