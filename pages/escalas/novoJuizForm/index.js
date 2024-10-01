@@ -28,7 +28,6 @@ const NovoJuizForm = ({ varas }) => {
     const [openDialog, setOpenDialog] = useState(false);
     const [dialogMessage, setDialogMessage] = useState('');
 
-    // Função para fechar o Dialog
     const handleCloseDialog = () => {
         setOpenDialog(false);
     };
@@ -36,13 +35,13 @@ const NovoJuizForm = ({ varas }) => {
     const criarJuiz = async (juiz) => {
         try {
             const dados = {
-                nome: juiz.nomeCompleto,         // Nome completo do juiz
-                email: juiz.email,               // Email do juiz
-                rf: juiz.rf,                     // RF do juiz
-                antiguidade: parseInt(juiz.antiguidade), // Antiguidade convertida para número
-                cargo: juiz.cargo,               // Cargo do juiz
+                nome: juiz.nomeCompleto,
+                email: juiz.email,
+                rf: juiz.rf,
+                antiguidade: parseInt(juiz.antiguidade),
+                cargo: juiz.cargo,
                 lotacao: {
-                    connect: [juiz.varaId],      // ID da vara selecionada
+                    connect: [juiz.varaId],
                 },
             }
 
