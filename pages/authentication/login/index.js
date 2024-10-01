@@ -50,16 +50,23 @@ function LoginForm() {
     const handleSubmit = async (e, ctx) => {
         e.preventDefault();
 
-        setLoginStatus("loading"); // Set loading state
-        //await new Promise((resolve) => setTimeout(resolve, 3000));
+        setLoginStatus("loading"); // Define estado de loading
+
         try {
+            // Validação do e-mail: adiciona "@trf3.jus.br" se não estiver presente
+            let email = formData.email;
+
+            if (!email.endsWith('@trf3.jus.br')) {
+                email = `${email}@trf3.jus.br`;
+            }
+
             const res = await fetch("/api/auth", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    email: formData.email,
+                    email: email,
                     password: formData.password,
                 }),
             });
@@ -67,13 +74,13 @@ function LoginForm() {
             if (res.ok) {
                 const data = await res.json();
                 const time = 3600;
-                const tipo = await tipoUsuario(data.email);
+                const tipo = await tipoUsuario(email);
 
                 setCookie(null, "auth_token", data.token, {
                     maxAge: time, // 30 minutos (tempo de expiração do token)
                     path: "/",
                 });
-                setCookie(null, "user_email", (data.email), {
+                setCookie(null, "user_email", (email), {
                     maxAge: time, // 30 minutos (tempo de expiração do token)
                     path: "/",
                 });
@@ -87,7 +94,7 @@ function LoginForm() {
                 else {router.push("/plantoes");} // Redire}cionar para a página principal após o login*/
 
                 const allowedEmails = ["cmsantan@trf3.jus.br", "mmmagal@trf3.jus.br", "omperei@trf3.jus.br"];
-                if (formData.email && !allowedEmails.includes(formData.email)) {
+                if (formData.email && !allowedEmails.includes(email)) {
                     router.push("/plantoes");
                 }
                 else{

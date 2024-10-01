@@ -5,9 +5,6 @@ import ActiveDirectory from "activedirectory2";
 export default async function solicitaLogIn(request, response){
     let { email, password } = request.body;
 
-    if (!email.endsWith('@trf3.jus.br')) {
-        email = `${email}@trf3.jus.br`;
-    }
 
     let config = {
         url: process.env.LDAP_SERVER, // Endereço do Servidor LDAP / AD
