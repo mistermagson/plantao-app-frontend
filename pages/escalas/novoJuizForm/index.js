@@ -59,7 +59,7 @@ const NovoJuizForm = ({ varas }) => {
                 return { success: false, message: 'O RF inserido já pertence a outro juiz.' };
             }
 
-            const response = await fetch('http://localhost:1337/api/juizs', {
+            const response = await fetch(`http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/juizs`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

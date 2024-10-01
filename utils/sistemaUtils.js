@@ -48,7 +48,7 @@ export const validateAdmin = async (ctx)=> {
 export async function tipoUsuario(email) {
 
     try {
-        const response = await fetch(`http://localhost:1337/api/juizs?filters[email][$eq]=${email}`, {
+        const response = await fetch(`http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/juizs?filters[email][$eq]=${email}`, {
             method: 'GET',
         });
 
@@ -74,7 +74,7 @@ export async function tipoUsuario(email) {
 export async function checarEmail(email) {
 
     try {
-        const response = await fetch(`http://localhost:1337/api/juizs?filters[email][$eq]=${email}`, {
+        const response = await fetch(`http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/juizs?filters[email][$eq]=${email}`, {
             method: 'GET',
         });
 
@@ -92,7 +92,7 @@ export async function checarEmail(email) {
 export async function checarRf(rf) {
 
     try {
-        const response = await fetch(`http://localhost:1337/api/juizs?filters[rf][$eq]=${rf}`, {
+        const response = await fetch(`http://${process.env.NEXT_PUBLIC_STRAPI_HOST}:1337/api/juizs?filters[rf][$eq]=${rf}`, {
             method: 'GET',
         });
 
