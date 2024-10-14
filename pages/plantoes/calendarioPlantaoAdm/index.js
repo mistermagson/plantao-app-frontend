@@ -22,6 +22,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import {removePlantao} from "../../../utils/plantaoUtils";
 import MDTypography from "../../../components/MDTypography";
 import Divider from "@mui/material/Divider";
+import data from "../../../components/pagesComponents/dashboards/sales/components/ChannelsChart/data";
 
 function CalendarioAdm({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData, passarEscolha}) {
 
@@ -96,42 +97,101 @@ function CalendarioAdm({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchD
             '6fiscalCG': '6ª Vara Fiscal de Campo Grande',
         };
         const dateArrays = [];
+        const datasRecesso = [
+            {
+                start: '2024-12-20',
+                end: '2024-12-22',
+                display: 'background',
+                className: '2civilCG',
+                color: '#f77001'
+            },
+            {
+                start: '2024-12-22',
+                end: '2024-12-24',
+                display: 'background',
+                className: '3crimeCG',
+                color: '#7f05ad'
+            },
+            {
+                start: '2024-12-24',
+                end: '2024-12-26',
+                display: 'background',
+                className: '4civilCG',
+                color: '#13bb0f'
+            },
+            {
+                start: '2024-12-26',
+                end: '2024-12-28',
+                display: 'background',
+                className: '5crimeCG',
+                color: '#fff304'
+            },
+            {
+                start: '2024-12-28',
+                end: '2024-12-30',
+                display: 'background',
+                className: '6fiscalCG',
+                color: '#721808'
+            },
+            {
+                start: '2024-12-30',
+                end: '2025-01-01',
+                display: 'background',
+                className: '1jefCG',
+                color: '#73e8e8'
+            },
+            {
+                start: '2025-01-01',
+                end: '2025-01-04',
+                display: 'background',
+                className: '2jefCG',
+                color: '#f31c0d'
+            },
+            {
+                start: '2025-01-04',
+                end: '2025-01-07',
+                display: 'background',
+                className: '1civilCG',
+                color: '#0e4cc2'
+            },
+
+        ]
 
         // CRIA BACKGROUND EVENTS de cada vara--------------|v
+
+        function createDateArray(dataInicio, endDate, className, startingVara, intervaloDias) {
+
+            let dataFim = new Date(dataInicio);
+            // Aplique o intervalo de dias apenas no primeiro array
+            if (intervaloDias && dateArrays.length === 0) {
+                dataFim.setDate(dataFim.getDate() + intervaloDias);
+            } else {
+                dataFim.setDate(dataFim.getDate() + 14);
+            }
+
+            // Se a data de término ultrapassar a endDate, ajuste-a para coincidir com a endDate
+            if (dataFim > endDate) {
+                dataFim = endDate;
+            }
+
+            return {
+                start: dataInicio.toISOString().split('T')[0],
+                end: dataFim.toISOString().split('T')[0],
+                display: 'background',
+                color: classColors[className],
+                className: className,
+            };
+        }
+
         function createBgEvents(dateArrays) {
 
             const startDate = new Date('2024-01-07');
-            const endDate = new Date('2024-12-20'); // Data de término em 31 de dezembro de 2023
+            const endDate = new Date('2024-12-20'); //data de inicio do recesso
             const startingVara = '2civilCG';
 
             let currentDate = startDate;
             let startingVaraIndex = classNames.indexOf(startingVara);
             let intervaloDias;  // Defina intervaloDias no escopo exterior
-
-
-            function createDateArray(dataInicio, className, startingVara, intervaloDias) {
-
-                let dataFim = new Date(dataInicio);
-                // Aplique o intervalo de dias apenas no primeiro array
-                if (intervaloDias && dateArrays.length === 0) {
-                    dataFim.setDate(dataFim.getDate() + intervaloDias);
-                } else {
-                    dataFim.setDate(dataFim.getDate() + 14);
-                }
-
-                // Se a data de término ultrapassar a endDate, ajuste-a para coincidir com a endDate
-                if (dataFim > endDate) {
-                    dataFim = endDate;
-                }
-
-                return {
-                    start: dataInicio.toISOString().split('T')[0],
-                    end: dataFim.toISOString().split('T')[0],
-                    display: 'background',
-                    color: classColors[className],
-                    className: className,
-                };
-            }
 
 
             while (currentDate < endDate) {
@@ -140,7 +200,7 @@ function CalendarioAdm({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchD
                     if (currentDate < endDate) {
                         // Aplique o intervalo de dias apenas no primeiro array
                         intervaloDias = dateArrays.length === 0 ? 6 : undefined;
-                        dateArrays.push(createDateArray(currentDate, className, startingVara, intervaloDias));
+                        dateArrays.push(createDateArray(currentDate, endDate, className, startingVara, intervaloDias));
                     }
                     // Ajuste currentDate para o final do intervalo de dias
                     currentDate = new Date(currentDate);
@@ -153,6 +213,7 @@ function CalendarioAdm({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchD
         }
 
         createBgEvents(dateArrays);
+
         //--------------------------------------------------|^
 
         const handleEventClick = (info) => {
@@ -292,8 +353,9 @@ function CalendarioAdm({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchD
         const handleAccordion2Change = (event, isExpanded) => {
             setAccordion2Expanded(isExpanded);
         };
+
         const isDateInRange = (date, start, end) => {
-            return date >= start && date <= end;
+            return date >= start && date < end;
         };
 
         const plantaoTabela = attEvent.map(item1 => {
@@ -308,13 +370,28 @@ function CalendarioAdm({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchD
                 return isDateInRange(date1, start, end);
             });
 
+            if(vara == null){
+
+                const vara = datasRecesso.find(item2 => {
+                    const start = new Date(item2.start);
+                    const end = new Date(item2.end);
+
+                    // Verificando se a data de objeto1 está dentro do intervalo de start e end de objeto2
+                    return isDateInRange(date1, start, end);
+                });
+
+                return {
+                    ...item1,
+                    vara: vara ? vara.className : null // Adiciona a vara se encontrada, senão null
+                };
+            }
+
             // Criando um novo objeto com os atributos originais de objeto1 e a vara encontrada
             return {
                 ...item1,
                 vara: vara ? vara.className : null // Adiciona a vara se encontrada, senão null
             };
         });
-
 
         const formatDate = (params) => {
             if(params){
@@ -326,123 +403,130 @@ function CalendarioAdm({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchD
         return (
             <>
                 <div>
-                    <Dialog open={alerta} onClose={handleClose}>
-                        <DialogTitle>
-                            <ReportProblemRoundedIcon/>
-                        </DialogTitle>
-                        <DialogContent>
-                            Selecione um magistrado
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={handleClose}>Ok</Button>
-                        </DialogActions>
-                    </Dialog>
+                    <div>
+                        <Dialog open={alerta} onClose={handleClose}>
+                            <DialogTitle>
+                                <ReportProblemRoundedIcon/>
+                            </DialogTitle>
+                            <DialogContent>
+                                Selecione um magistrado
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleClose}>Ok</Button>
+                            </DialogActions>
+                        </Dialog>
+                    </div>
+                    <div>
+                        <Dialog open={cheio} onClose={handleClose}>
+                            <DialogTitle>
+                                <ReportProblemRoundedIcon/> Limite Atingido
+                            </DialogTitle>
+                            <DialogContent>
+                                Por favor, escolha no máximo {escala.plantoesPorJuiz} plantões!
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleClose}>Ok</Button>
+                            </DialogActions>
+                        </Dialog>
+                    </div>
+                    <div>
+                        <Dialog open={aguarde} onClose={handleClose}>
+                            <DialogTitle>
+                                <ReportProblemRoundedIcon/>
+                            </DialogTitle>
+                            <DialogContent>
+                                Aguarde sua vez para escolher os plantões
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleClose}>Ok</Button>
+                            </DialogActions>
+                        </Dialog>
+                    </div>
+                    <div>
+                        <Dialog open={abrir} onClose={handleClose}>
+                            <DialogTitle>
+                                <ReportProblemRoundedIcon/>
+                            </DialogTitle>
+                            <DialogContent>
+                                O plantão já pertencente a outro magistrado
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleClose}>Ok</Button>
+                            </DialogActions>
+                        </Dialog>
+                    </div>
+                    <div>
+                        <Dialog open={salvar} onClose={handleClose}>
+                            <DialogTitle>
+                                <ReportProblemRoundedIcon/>
+                            </DialogTitle>
+                            <DialogContent>
+                                O plantão já pertencente a outro magistrado
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleClose}>Ok</Button>
+                            </DialogActions>
+                        </Dialog>
+                    </div>
+                    <div>
+                        <Dialog open={passar} onClose={handleClose}>
+                            <DialogTitle>Passar a Vez</DialogTitle>
+                            <DialogContent>
+                                <DialogContentText>
+                                    Você tem certeza que deseja encerrar sua escolha?
+                                </DialogContentText>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={() => {
+                                    handleClose();
+                                    passarEscolha();
+                                    fetchData();
+                                }}>Sim</Button>
+                                <Button onClick={handleClose}>Não</Button>
+                            </DialogActions>
+                        </Dialog>
+                    </div>
+                    <div>
+                        <Dialog open={deletarPlantao} onClose={handleClose}>
+                            <DialogTitle>Sair do Plantao</DialogTitle>
+                            <DialogContent>
+                                <DialogContentText>
+                                    {escala ? (
+                                        <>Deseja sair do plantão do dia {' '}
+                                            <MDTypography component="span" variant="H5" style={{fontWeight: 'bold'}}>
+                                                {formatDate(linhaSelecionada.date)}
+                                            </MDTypography>{' ?'}
+                                        </>
+                                    ) : (
+                                        'O plantão selecionada não está disponível.'
+                                    )}
+                                </DialogContentText>
+                            </DialogContent>
+                            <DialogActions>
+                                <MDButton onClick={() => {
+                                    limpaPlantao(linhaSelecionada.id);
+                                    handleClose();
+                                    limpaPlantao(linhaSelecionada.id);
+                                }}>Sim</MDButton>
+                                <MDButton onClick={handleClose}>Não</MDButton>
+                            </DialogActions>
+                        </Dialog>
+                    </div>
                 </div>
-                <div>
-                    <Dialog open={cheio} onClose={handleClose}>
-                        <DialogTitle>
-                            <ReportProblemRoundedIcon/> Limite Atingido
-                        </DialogTitle>
-                        <DialogContent>
-                            Por favor, escolha no máximo {escala.plantoesPorJuiz} plantões!
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={handleClose}>Ok</Button>
-                        </DialogActions>
-                    </Dialog>
-                </div>
-                <div>
-                    <Dialog open={aguarde} onClose={handleClose}>
-                        <DialogTitle>
-                            <ReportProblemRoundedIcon/>
-                        </DialogTitle>
-                        <DialogContent>
-                            Aguarde sua vez para escolher os plantões
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={handleClose}>Ok</Button>
-                        </DialogActions>
-                    </Dialog>
-                </div>
-                <div>
-                    <Dialog open={abrir} onClose={handleClose}>
-                        <DialogTitle>
-                            <ReportProblemRoundedIcon/>
-                        </DialogTitle>
-                        <DialogContent>
-                            O plantão já pertencente a outro magistrado
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={handleClose}>Ok</Button>
-                        </DialogActions>
-                    </Dialog>
-                </div>
-                <div>
-                    <Dialog open={salvar} onClose={handleClose}>
-                        <DialogTitle>
-                            <ReportProblemRoundedIcon/>
-                        </DialogTitle>
-                        <DialogContent>
-                            O plantão já pertencente a outro magistrado
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={handleClose}>Ok</Button>
-                        </DialogActions>
-                    </Dialog>
-                </div>
-                <div>
-                    <Dialog open={passar} onClose={handleClose}>
-                        <DialogTitle>Passar a Vez</DialogTitle>
-                        <DialogContent>
-                            <DialogContentText>
-                                Você tem certeza que deseja encerrar sua escolha?
-                            </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={() => {
-                                handleClose();
-                                passarEscolha();
-                                fetchData();
-                            }}>Sim</Button>
-                            <Button onClick={handleClose}>Não</Button>
-                        </DialogActions>
-                    </Dialog>
-                </div>
-                <div>
-                    <Dialog open={deletarPlantao} onClose={handleClose}>
-                        <DialogTitle>Sair do Plantao</DialogTitle>
-                        <DialogContent>
-                            <DialogContentText>
-                                {escala ? (
-                                    <>Deseja sair do plantão do dia {' '}
-                                        <MDTypography component="span" variant="H5" style={{fontWeight: 'bold'}}>
-                                            {formatDate(linhaSelecionada.date)}
-                                        </MDTypography>{' ?'}
-                                    </>
-                                ) : (
-                                    'O plantão selecionada não está disponível.'
-                                )}
-                            </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                            <MDButton onClick={() => {
-                                limpaPlantao(linhaSelecionada.id);
-                                handleClose();
-                                limpaPlantao(linhaSelecionada.id);
-                            }}>Sim</MDButton>
-                            <MDButton onClick={handleClose}>Não</MDButton>
-                        </DialogActions>
-                    </Dialog>
-                </div>
-
+                <MDButton
+                    size="medium"
+                    variant="gradient"
+                    color='info'
+                    onClick={() => console.log(attEvent[121], plantaoTabela)}>CONSOLE.LOG</MDButton>
                 <Grid container spacing={2}>
+
                     <Grid item xs={12} xl={8} style={{height: "550px"}}>
                         {clickHabilitado ? (
                             <Calendar
                                 selectable="true"
                                 initialView="dayGridMonth"
                                 initialDate={plantoes?.[0]?.data}
-                                events={[...dateArrays, ...dateArrays, ...eventos, ...addEvent, ...remEvent]}//2x dateArrays para que a cor ficasse mais contrastada
+                                events={[...dateArrays, ...dateArrays, ...eventos, ...addEvent, ...remEvent, ...datasRecesso, ...datasRecesso]}//2x dateArrays para que a cor ficasse mais contrastada
                                 editable="true"
                                 duration={{days: 4}}
                                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -453,7 +537,7 @@ function CalendarioAdm({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchD
                             <Calendar
                                 initialView="dayGridMonth"
                                 initialDate={plantoes?.[0]?.data}
-                                events={[...dateArrays, ...dateArrays, ...attEvent]} //2x dateArrays para que a cor ficasse mais contrastada
+                                events={[...dateArrays, ...dateArrays, ...attEvent, ...datasRecesso, ...datasRecesso]} //2x dateArrays para que a cor ficasse mais contrastada
                                 duration={{days: 4}}
                                 plugins={[dayGridPlugin, timeGridPlugin]}
                                 locale="pt-br"
@@ -467,20 +551,20 @@ function CalendarioAdm({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchD
                                     {/*<MDButton size="large" onClick={showJSON}>Exibir</MDButton>*/}
                                     <MDButton
                                         size="medium"
-                                        variant={ !clickHabilitado || addEvent.length > 0 || remEvent.length > 0 ? 'gradient' : 'text'}
+                                        variant={!clickHabilitado || addEvent.length > 0 || remEvent.length > 0 ? 'gradient' : 'text'}
                                         color={clickHabilitado ? 'success' : 'info'}
-                                        onClick={() => {
-                                            toggleClick();
-                                            salvarAlteracoes();
-                                        }}
+                                        onClick={() => {toggleClick(); salvarAlteracoes();}}
                                     >
                                         {clickHabilitado ? 'Salvar' : 'Escolher Plantões'}
-                                        {clickHabilitado ? <SaveIcon style={{marginLeft: '8px'}}/> : <EditRoundedIcon style={{marginLeft: '8px'}}/>}
+                                        {clickHabilitado ? <SaveIcon style={{marginLeft: '8px'}}/> :
+                                            <EditRoundedIcon style={{marginLeft: '8px'}}/>}
                                     </MDButton>
-                                    <MDButton size="medium" variant="gradient"
-                                              onClick={() => checarLimite(plantaoTabela, addEvent, remEvent, escala.plantoesPorJuiz) ? setPassar(true) : setCheio(true)}
-                                              color="error">
-                                        Passar a vez
+                                    <MDButton
+                                        size="medium"
+                                        variant="gradient"
+                                        onClick={() => checarLimite(plantaoTabela, addEvent, remEvent, escala.plantoesPorJuiz) ? setPassar(true) : setCheio(true)}
+                                        color="error">
+                                            Passar a vez
                                     </MDButton>
                                     <Divider/>
                                     <Accordion style={{boxShadow: "none"}} expanded={accordion1Expanded}
@@ -492,7 +576,6 @@ function CalendarioAdm({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchD
                                         <AccordionDetails>
                                             <DataGrid
                                                 density="compact"
-
                                                 editMode="row"
                                                 disableColumnMenu
                                                 sx={{fontSize: "16px", fontWeight: "regular", color: "dark", border: 0}}
