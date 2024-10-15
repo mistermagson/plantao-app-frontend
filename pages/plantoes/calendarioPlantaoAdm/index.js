@@ -23,6 +23,7 @@ import {removePlantao} from "../../../utils/plantaoUtils";
 import MDTypography from "../../../components/MDTypography";
 import Divider from "@mui/material/Divider";
 import data from "../../../components/pagesComponents/dashboards/sales/components/ChannelsChart/data";
+import {da} from "date-fns/locale";
 
 function CalendarioAdm({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData, passarEscolha}) {
 
@@ -96,7 +97,8 @@ function CalendarioAdm({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchD
             '5crimeCG': '5ª Vara Criminal de Campo Grande',
             '6fiscalCG': '6ª Vara Fiscal de Campo Grande',
         };
-        const dateArrays = [];
+        const dateArrays2024 = [];
+        const dateArrays2025 = [];
         const datasRecesso = [
             {
                 start: '2024-12-20',
@@ -159,60 +161,71 @@ function CalendarioAdm({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchD
 
         // CRIA BACKGROUND EVENTS de cada vara--------------|v
 
-        function createDateArray(dataInicio, endDate, className, startingVara, intervaloDias) {
+        function criarEvento(dataAtual, fimEscala, nomeVara, startingVara, duracaoEscala) {
 
-            let dataFim = new Date(dataInicio);
+            let dataFim = new Date(dataAtual);
             // Aplique o intervalo de dias apenas no primeiro array
-            if (intervaloDias && dateArrays.length === 0) {
-                dataFim.setDate(dataFim.getDate() + intervaloDias);
-            } else {
-                dataFim.setDate(dataFim.getDate() + 14);
-            }
+            dataFim.setDate(dataFim.getDate() + duracaoEscala);
 
             // Se a data de término ultrapassar a endDate, ajuste-a para coincidir com a endDate
-            if (dataFim > endDate) {
-                dataFim = endDate;
+            if (dataFim > fimEscala) {
+                dataFim = fimEscala;
             }
 
             return {
-                start: dataInicio.toISOString().split('T')[0],
+                start: dataAtual.toISOString().split('T')[0],
                 end: dataFim.toISOString().split('T')[0],
                 display: 'background',
-                color: classColors[className],
-                className: className,
+                color: classColors[nomeVara],
+                className: nomeVara,
             };
         }
 
-        function createBgEvents(dateArrays) {
+        function criarArrayEventos(arrayEventos, inicioEscalaData, fimEscalaData, varaInicial, plantoesRestantes) {
 
-            const startDate = new Date('2024-01-07');
-            const endDate = new Date('2024-12-20'); //data de inicio do recesso
-            const startingVara = '2civilCG';
-
-            let currentDate = startDate;
-            let startingVaraIndex = classNames.indexOf(startingVara);
-            let intervaloDias;  // Defina intervaloDias no escopo exterior
+            let dataAtual = inicioEscalaData;
+            let indexVaraInicial = classNames.indexOf(varaInicial);
+            let duracaoEscala;
 
 
-            while (currentDate < endDate) {
-                for (let i = startingVaraIndex; i < classNames.length; i++) {
-                    const className = classNames[i];
-                    if (currentDate < endDate) {
+            while (dataAtual < fimEscalaData) {
+
+                //repete o loop para cada vara
+                for (let i = indexVaraInicial; i < classNames.length; i++) {
+
+                    const nomeVara = classNames[i];
+
+                    if (dataAtual < fimEscalaData) {
                         // Aplique o intervalo de dias apenas no primeiro array
-                        intervaloDias = dateArrays.length === 0 ? 6 : undefined;
-                        dateArrays.push(createDateArray(currentDate, endDate, className, startingVara, intervaloDias));
+                        duracaoEscala = arrayEventos.length === 0 ? plantoesRestantes : 14;
+                        arrayEventos.push(criarEvento(dataAtual, fimEscalaData, nomeVara, varaInicial, duracaoEscala));
                     }
-                    // Ajuste currentDate para o final do intervalo de dias
-                    currentDate = new Date(currentDate);
-                    currentDate.setDate(currentDate.getDate() + (intervaloDias || 14));
+
+                    // Ajuste dataAtual para o final do intervalo de dias
+                    dataAtual = new Date(dataAtual);
+                    dataAtual.setDate(dataAtual.getDate() + (duracaoEscala));
                 }
 
                 // Reinicie o loop a partir da primeira vara se necessário
-                startingVaraIndex = 0;
+                indexVaraInicial = 0;
             }
         }
 
-        createBgEvents(dateArrays);
+        const inicioEscalaData2024 = new Date('2024-01-07'); //data de inicio da escala
+        const fimEscalaData2024 = new Date('2024-12-20'); //data de inicio do recesso
+        const varaInicial2024 = '2civilCG'; // vara que irá a iniciar a escala esse ano
+        const plantoesRestantes2024 = 6 // quantidade de plantões restantes do ano anterior
+
+        criarArrayEventos(dateArrays2024, inicioEscalaData2024, fimEscalaData2024, varaInicial2024, plantoesRestantes2024);
+
+        const inicioEscalaData2025 = new Date('2025-01-07'); //data de inicio da escala
+        const fimEscalaData2025 = new Date('2025-12-20'); //data de inicio do recesso
+        const varaInicial2025 = '3crimeCG'; // vara que irá a iniciar a escala esse ano
+        const plantoesRestantes2025 = 11 // quantidade de plantões restantes do ano anterior
+
+        criarArrayEventos(dateArrays2025, inicioEscalaData2025, fimEscalaData2025, varaInicial2025, plantoesRestantes2025);
+
+        const dateArrays = [...dateArrays2024, ...dateArrays2025];
 
         //--------------------------------------------------|^
 
@@ -400,6 +413,54 @@ function CalendarioAdm({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchD
             }
         };
 
+        function adicionarDias(data, dias) {
+            const novaData = new Date(data);
+            novaData.setDate(novaData.getDate() + dias);
+            return novaData;
+        }
+        function dividirPlantaoEntreVaras(dataInicial, dataFinal, varaInicial) {
+            const datasRecesso = [];
+
+            // Converter strings para datas
+            let dataInicio = new Date(dataInicial);
+            const dataFim = new Date(dataFinal);
+            console.log(dataInicio,'a',dataFim)
+
+            // Calcular o número total de dias entre as datas
+            const totalDias = Math.ceil((dataFim - dataInicio) / (1000 * 60 * 60 * 24)) + 1;
+            console.log(totalDias)
+            // Determinar a vara inicial
+            let varaIndex = classNames.indexOf(varaInicial);
+
+            const diasPorVara = Math.floor(totalDias / classNames.length);
+
+            const diasExtras = totalDias % classNames.length;
+            console.log(diasPorVara,'e',diasExtras)
+
+            for (let i = 0; i < classNames.length; i++) {
+                // Definir o número de dias para essa vara
+                const diasParaVara = classNames.length - i <= diasExtras ? diasPorVara + 1 : diasPorVara ;
+
+                // Definir a data final para essa vara
+                const dataFimVara = adicionarDias(dataInicio, diasParaVara);
+
+                // Criar o objeto da escala
+                const vara = classNames[(varaIndex + i) % classNames.length];
+                datasRecesso.push({
+                    start: dataInicio.toISOString().split('T')[0],
+                    end: dataFimVara.toISOString().split('T')[0],
+                    display: 'background',
+                    className: vara,
+                    color: classColors[vara],
+                });
+
+                // Atualizar o início da próxima escala
+                dataInicio = adicionarDias(dataFimVara, 0); // Começa no próximo dia
+            }
+
+            return datasRecesso;
+        }
+
         return (
             <>
                 <div>
@@ -517,7 +578,7 @@ function CalendarioAdm({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchD
                     size="medium"
                     variant="gradient"
                     color='info'
-                    onClick={() => console.log(attEvent[121], plantaoTabela)}>CONSOLE.LOG</MDButton>
+                    onClick={() => console.log(dividirPlantaoEntreVaras('2024-12-20', '2025-01-06', '2civilCG'))}>CONSOLE.LOG</MDButton>
                 <Grid container spacing={2}>
 
                     <Grid item xs={12} xl={8} style={{height: "550px"}}>

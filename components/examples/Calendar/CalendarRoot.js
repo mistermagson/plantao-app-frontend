@@ -67,12 +67,17 @@ export default styled(Box)(({ theme, ownerState }) => {
 
     "& .fc .fc-daygrid-day-number": {
       margin: 1,
-      color: darkMode ? white.main : grey[650],
-      fontSize: '15px',
+      color: darkMode ? white.main : grey[900],
+      fontSize: '17px',
       fontWeight: fontWeightMedium,
       width: "100%",
       textAlign: "center",
       border: 'none',
+
+      // Adicionando stroke
+      // '-webkit-text-stroke-width': '0.5px',
+      // '-webkit-text-stroke-color': 'white',
+
     },
 
 

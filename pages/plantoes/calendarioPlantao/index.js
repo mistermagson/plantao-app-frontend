@@ -94,64 +94,136 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
             '5crimeCG': '5ª Vara Criminal de Campo Grande',
             '6fiscalCG': '6ª Vara Fiscal de Campo Grande',
         };
-        const dateArrays = [];
+        const dateArrays2024 = [];
+        const dateArrays2025 = [];
+        const datasRecesso = [
+            {
+                start: '2024-12-20',
+                end: '2024-12-22',
+                display: 'background',
+                className: '2civilCG',
+                color: '#f77001'
+            },
+            {
+                start: '2024-12-22',
+                end: '2024-12-24',
+                display: 'background',
+                className: '3crimeCG',
+                color: '#7f05ad'
+            },
+            {
+                start: '2024-12-24',
+                end: '2024-12-26',
+                display: 'background',
+                className: '4civilCG',
+                color: '#13bb0f'
+            },
+            {
+                start: '2024-12-26',
+                end: '2024-12-28',
+                display: 'background',
+                className: '5crimeCG',
+                color: '#fff304'
+            },
+            {
+                start: '2024-12-28',
+                end: '2024-12-30',
+                display: 'background',
+                className: '6fiscalCG',
+                color: '#721808'
+            },
+            {
+                start: '2024-12-30',
+                end: '2025-01-01',
+                display: 'background',
+                className: '1jefCG',
+                color: '#73e8e8'
+            },
+            {
+                start: '2025-01-01',
+                end: '2025-01-04',
+                display: 'background',
+                className: '2jefCG',
+                color: '#f31c0d'
+            },
+            {
+                start: '2025-01-04',
+                end: '2025-01-07',
+                display: 'background',
+                className: '1civilCG',
+                color: '#0e4cc2'
+            },
+
+        ]
 
         // CRIA BACKGROUND EVENTS de cada vara--------------|v
-        function createBgEvents(dateArrays) {
 
-            const startDate = new Date('2024-01-07');
-            const endDate = new Date('2024-12-20'); // Data de término em 31 de dezembro de 2023
-            const startingVara = '2civilCG';
+        function criarEvento(dataAtual, fimEscala, nomeVara, startingVara, duracaoEscala) {
 
-            let currentDate = startDate;
-            let startingVaraIndex = classNames.indexOf(startingVara);
-            let intervaloDias;  // Defina intervaloDias no escopo exterior
+            let dataFim = new Date(dataAtual);
+            // Aplique o intervalo de dias apenas no primeiro array
+            dataFim.setDate(dataFim.getDate() + duracaoEscala);
 
-
-            function createDateArray(dataInicio, className, startingVara, intervaloDias) {
-
-                let dataFim = new Date(dataInicio);
-                // Aplique o intervalo de dias apenas no primeiro array
-                if (intervaloDias && dateArrays.length === 0) {
-                    dataFim.setDate(dataFim.getDate() + intervaloDias);
-                } else {
-                    dataFim.setDate(dataFim.getDate() + 14);
-                }
-
-                // Se a data de término ultrapassar a endDate, ajuste-a para coincidir com a endDate
-                if (dataFim > endDate) {
-                    dataFim = endDate;
-                }
-
-                return {
-                    start: dataInicio.toISOString().split('T')[0],
-                    end: dataFim.toISOString().split('T')[0],
-                    display: 'background',
-                    color: classColors[className],
-                    className: className,
-                };
+            // Se a data de término ultrapassar a endDate, ajuste-a para coincidir com a endDate
+            if (dataFim > fimEscala) {
+                dataFim = fimEscala;
             }
 
+            return {
+                start: dataAtual.toISOString().split('T')[0],
+                end: dataFim.toISOString().split('T')[0],
+                display: 'background',
+                color: classColors[nomeVara],
+                className: nomeVara,
+            };
+        }
 
-            while (currentDate < endDate) {
-                for (let i = startingVaraIndex; i < classNames.length; i++) {
-                    const className = classNames[i];
-                    if (currentDate < endDate) {
+        function criarArrayEventos(arrayEventos, inicioEscalaData, fimEscalaData, varaInicial, plantoesRestantes) {
+
+            let dataAtual = inicioEscalaData;
+            let indexVaraInicial = classNames.indexOf(varaInicial);
+            let duracaoEscala;
+
+
+            while (dataAtual < fimEscalaData) {
+
+                //repete o loop para cada vara
+                for (let i = indexVaraInicial; i < classNames.length; i++) {
+
+                    const nomeVara = classNames[i];
+
+                    if (dataAtual < fimEscalaData) {
                         // Aplique o intervalo de dias apenas no primeiro array
-                        intervaloDias = dateArrays.length === 0 ? 6 : undefined;
-                        dateArrays.push(createDateArray(currentDate, className, startingVara, intervaloDias));
+                        duracaoEscala = arrayEventos.length === 0 ? plantoesRestantes : 14;
+                        arrayEventos.push(criarEvento(dataAtual, fimEscalaData, nomeVara, varaInicial, duracaoEscala));
                     }
-                    // Ajuste currentDate para o final do intervalo de dias
-                    currentDate = new Date(currentDate);
-                    currentDate.setDate(currentDate.getDate() + (intervaloDias || 14));
+
+                    // Ajuste dataAtual para o final do intervalo de dias
+                    dataAtual = new Date(dataAtual);
+                    dataAtual.setDate(dataAtual.getDate() + (duracaoEscala));
                 }
 
                 // Reinicie o loop a partir da primeira vara se necessário
-                startingVaraIndex = 0;
+                indexVaraInicial = 0;
             }
         }
 
-        createBgEvents(dateArrays);
+        const inicioEscalaData2024 = new Date('2024-01-07'); //data de inicio da escala
+        const fimEscalaData2024 = new Date('2024-12-20'); //data de inicio do recesso
+        const varaInicial2024 = '2civilCG'; // vara que irá a iniciar a escala esse ano
+        const plantoesRestantes2024 = 6 // quantidade de plantões restantes do ano anterior
+
+        criarArrayEventos(dateArrays2024, inicioEscalaData2024, fimEscalaData2024, varaInicial2024, plantoesRestantes2024);
+
+        const inicioEscalaData2025 = new Date('2025-01-07'); //data de inicio da escala
+        const fimEscalaData2025 = new Date('2025-12-20'); //data de inicio do recesso
+        const varaInicial2025 = '3crimeCG'; // vara que irá a iniciar a escala esse ano
+        const plantoesRestantes2025 = 11 // quantidade de plantões restantes do ano anterior
+
+        criarArrayEventos(dateArrays2025, inicioEscalaData2025, fimEscalaData2025, varaInicial2025, plantoesRestantes2025);
+
+        const dateArrays = [...dateArrays2024, ...dateArrays2025, ...datasRecesso];
+
         //--------------------------------------------------|^
 
         const handleEventClick = (info) => {
