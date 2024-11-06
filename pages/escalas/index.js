@@ -80,8 +80,6 @@ function EscalasPage({ data, h, tipo }) {
     const [accordion2Expanded, setAccordion2Expanded] = useState(true);
     const [accordion3Expanded, setAccordion3Expanded] = useState(true);
 
-
-
     const [valorEditavel, setValorEditavel] = useState(escalaSelecionada ? escalaSelecionada.descricao : "");
     const [editando, setEditando] = useState(false);
 
@@ -452,7 +450,7 @@ function EscalasPage({ data, h, tipo }) {
                         <Grid container spacing={3} pb={1} px={3}>
                             <Grid item ml={2} xs={12} xl={10}>
                                 <Grid container spacing={2} mb={-2}>
-                                    <Grid item xs={12} xl={5}>
+                                    <Grid item xs={12} xl={4}>
                                         <h5 style={{ color: "#344767" }}>Descrição da escala:</h5>
                                         <TextField
                                             fullWidth
@@ -479,6 +477,28 @@ function EscalasPage({ data, h, tipo }) {
                                             fullWidth
                                             id="outlined-tipo-input"
                                             value={escalaSelecionada ? escalaSelecionada.tipo : ""}
+                                            InputProps={{readOnly: true }}
+                                            variant="standard"
+                                            style={{ flex: 1, marginRight: "8px" }}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} xl={1.5}>
+                                        <h5 style={{ color: "#344767" }}>Total de Plantões</h5>
+                                        <TextField
+                                            fullWidth
+                                            id="outlined-tipo-input"
+                                            value={escalaSelecionada ? plantoes.length : ""}
+                                            InputProps={{readOnly: true }}
+                                            variant="standard"
+                                            style={{ flex: 1, marginRight: "8px" }}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} xl={1.5}>
+                                        <h5 style={{ color: "#344767" }}>Total Juízes</h5>
+                                        <TextField
+                                            fullWidth
+                                            id="outlined-tipo-input"
+                                            value={escalaSelecionada ? juizes.length : ""}
                                             InputProps={{readOnly: true }}
                                             variant="standard"
                                             style={{ flex: 1, marginRight: "8px" }}

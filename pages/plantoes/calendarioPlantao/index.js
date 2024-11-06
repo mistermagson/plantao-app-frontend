@@ -463,7 +463,7 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                             Os plantões escolhidos foram salvos com sucesso.
                         </DialogContent>
                         <DialogActions>
-                            <Button onClick={() => { handleClose();setPassar(true);}}>Ok</Button>
+                            <Button onClick={() => { handleClose();setPassar(true)}}>Ok</Button>
                         </DialogActions>
                     </Dialog>
                 </div>
@@ -537,13 +537,14 @@ function Calendario({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchData
                         )}
                     </Grid>
                     <Grid item xs={12} xl={3.8}>
-                        <Card>
+                        <Card  style={{padding: "8px"}}>
                             {juiz !== null && (
                                 <>
                                     {/*<MDButton size="large" onClick={showJSON}>Exibir</MDButton>*/}
                                     <MDButton
+                                        style={{marginBottom: "8px", marginTop: "8px"}}
                                         size="medium"
-                                        variant={escala?.preferencia.data.id === juiz?.id && !clickHabilitado || addEvent.length > 0 || remEvent.length > 0 ? 'gradient' : 'text'}
+                                        variant={escala?.preferencia.data.id === juiz?.id && !clickHabilitado || addEvent.length > 0 || remEvent.length > 0 ? 'gradient' : 'outlined'}
                                         color={escala?.preferencia.data.id === juiz?.id ? (clickHabilitado ? 'success' : 'info') : "secondary"}
                                         onClick={() => {
                                             toggleClick();

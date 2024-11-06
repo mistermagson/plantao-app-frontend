@@ -574,11 +574,11 @@ function CalendarioAdm({plantoes, escala, juiz, limpaPlantao, addPlantao, fetchD
                         </Dialog>
                     </div>
                 </div>
-                <MDButton
-                    size="medium"
-                    variant="gradient"
-                    color='info'
-                    onClick={() => console.log(dividirPlantaoEntreVaras('2024-12-20', '2025-01-06', '2civilCG'))}>CONSOLE.LOG</MDButton>
+                {/*<MDButton*/}
+                {/*    size="medium"*/}
+                {/*    variant="gradient"*/}
+                {/*    color='info'*/}
+                {/*    onClick={() => console.log(dividirPlantaoEntreVaras('2024-12-20', '2025-01-06', '2civilCG'))}>CONSOLE.LOG</MDButton>*/}
                 <Grid container spacing={2}>
 
                     <Grid item xs={12} xl={8} style={{height: "550px"}}>
