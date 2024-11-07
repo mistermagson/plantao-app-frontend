@@ -54,7 +54,9 @@ import MuiPagination from "@mui/material/Pagination";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import {foiAutenticado, validateAdmin, validateAuthToken} from "../../utils/sistemaUtils";
 import {parseCookies} from "nookies";
-
+import RefreshIcon from '@mui/icons-material/Refresh';
+import CalculateIcon from '@mui/icons-material/Calculate';
+import { Divide } from 'lucide-react';
 
 function EscalasPage({ data, h, tipo }) {
 
@@ -519,12 +521,19 @@ function EscalasPage({ data, h, tipo }) {
                                                         <IconButton aria-label="toggle edicao" onClick={editandoNumPlantoes ? handleSalvarNumPlantoes : handleEditarNumPlantoes} fontSize="small">
                                                             {editandoNumPlantoes ? <SaveIcon fontSize="small"  /> : <EditIcon fontSize="small" />}
                                                         </IconButton>
+                                                        <IconButton aria-label="toggle edicao" onClick={()=>{
+                                                            editaPlantoesPorJuiz(Math.ceil(plantoes.length/juizes.length), escalaSelecionada.id, h)
+                                                            setTimeout(fetchEscalas, 1000);}
+                                                        } fontSize="small">
+                                                            <Divide />
+                                                        </IconButton>
                                                     </InputAdornment>
                                                 ),
 
                                             }}
                                         />
                                     </Grid>
+
                                 </Grid>
                                 <Grid container mt={2} spacing={2}>
                                     <Grid item xs={6} xl={3}>
