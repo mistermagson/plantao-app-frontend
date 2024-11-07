@@ -4,6 +4,16 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 function MinutaPage({ plantoes }) {
 
+    function capitalizeWords(text) {
+        if (!text) return '';
+        return text
+            .toLowerCase()
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+    }
+
+
     const mergeRows = (plantoes) => {
         const mergedRows = [];
         let currentRow = null;
@@ -109,11 +119,11 @@ function MinutaPage({ plantoes }) {
                                         <td style={tableCellStyle}>
                                             {row.plantonista && row.plantonista.data && row.plantonista.data[0]?.attributes.nome ? (
                                                 <>
-                                                    {row.plantonista.data[0].attributes.nome} <br/>
-                                                    {`${row.plantonista.data[0].attributes.cargo} da ${
+                                                    {capitalizeWords(row.plantonista.data[0].attributes.nome)} <br/>
+                                                    {`${capitalizeWords(row.plantonista.data[0].attributes.cargo)} da ${
                                                         row.plantonista.data[0].attributes.lotacao &&
                                                         row.plantonista.data[0].attributes.lotacao.data &&
-                                                        row.plantonista.data[0].attributes.lotacao.data.attributes.descricao
+                                                        capitalizeWords(row.plantonista.data[0].attributes.lotacao.data.attributes.descricao)
                                                     }`}
                                                 </>
                                             ) : (
