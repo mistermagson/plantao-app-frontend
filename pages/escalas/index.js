@@ -651,9 +651,6 @@ function EscalasPage({ data, h, tipo }) {
                                                     slotProps={{ toolbar: { showQuickFilter: true}}}
                                                     sortModel={[{field: 'data', sort: 'asc',}]}
                                                     hideExport={true}
-                                                    hideFooterPagination={true}
-                                                    hideFooterRowCount={true}
-                                                    hideFooterSelectedRowCount={true}
                                                 />
                                                 <Grid container spacing={1}  justifyContent="center" alignItems="center" sx={{ border: '1px solid rgb(224, 224, 224)', borderRadius: '5px', padding: '5px', paddingBottom: '10px' }}>
                                                     <Grid item xs={6} md={6} xl={4} mt={0.2}>
