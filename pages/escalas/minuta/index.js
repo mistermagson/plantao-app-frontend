@@ -80,7 +80,6 @@ function MinutaPage({ plantoes }) {
 
         return (
             <div>
-                <button onClick={()=>{console.log(plantoes)}}> teste</button>
                 {Object.keys(mergedRowsPorMes).map((key) => {
                     const [year, month] = key.split('-');
                     const mes = new Date(parseInt(year), parseInt(month) - 1).toLocaleString('default', { month: 'long' });

@@ -614,7 +614,7 @@ function EscalasPage({ data, h, tipo }) {
                                                     style={{ height: '500px' }}
                                                     editMode="row"
                                                     disableColumnMenu
-                                                    sx={{ fontSize: '16px', fontWeight: 'regular', color: 'dark',border:0 }}
+                                                    sx={{ fontSize: '16px', fontWeight: 'regular', color: 'dark',border:0, marginBottom: '12px' }}
                                                     pageSizeOptions={[5, 10, 50]}
                                                     initialState={{pagination: { paginationModel: { pageSize: 50 } },}}
                                                     rows={plantoes}
@@ -645,7 +645,6 @@ function EscalasPage({ data, h, tipo }) {
                                                     disableDensitySelector
                                                     disableRowSelectionOnClick
                                                     slots={{
-                                                        pagination: CustomPagination,
                                                         toolbar: GridToolbar,
                                                     }}
                                                     slotProps={{ toolbar: { showQuickFilter: true}}}
