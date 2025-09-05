@@ -54,7 +54,9 @@ import MuiPagination from "@mui/material/Pagination";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import {foiAutenticado, validateAdmin, validateAuthToken} from "../../utils/sistemaUtils";
 import {parseCookies} from "nookies";
-
+import RefreshIcon from '@mui/icons-material/Refresh';
+import CalculateIcon from '@mui/icons-material/Calculate';
+import { Divide } from 'lucide-react';
 
 function EscalasPage({ data, h, tipo }) {
 
@@ -79,8 +81,6 @@ function EscalasPage({ data, h, tipo }) {
     const [accordion1Expanded, setAccordion1Expanded] = useState(true);
     const [accordion2Expanded, setAccordion2Expanded] = useState(true);
     const [accordion3Expanded, setAccordion3Expanded] = useState(true);
-
-
 
     const [valorEditavel, setValorEditavel] = useState(escalaSelecionada ? escalaSelecionada.descricao : "");
     const [editando, setEditando] = useState(false);
@@ -452,7 +452,7 @@ function EscalasPage({ data, h, tipo }) {
                         <Grid container spacing={3} pb={1} px={3}>
                             <Grid item ml={2} xs={12} xl={10}>
                                 <Grid container spacing={2} mb={-2}>
-                                    <Grid item xs={12} xl={5}>
+                                    <Grid item xs={12} xl={4}>
                                         <h5 style={{ color: "#344767" }}>Descrição da escala:</h5>
                                         <TextField
                                             fullWidth
@@ -484,6 +484,28 @@ function EscalasPage({ data, h, tipo }) {
                                             style={{ flex: 1, marginRight: "8px" }}
                                         />
                                     </Grid>
+                                    <Grid item xs={12} xl={1.5}>
+                                        <h5 style={{ color: "#344767" }}>Total de Plantões</h5>
+                                        <TextField
+                                            fullWidth
+                                            id="outlined-tipo-input"
+                                            value={escalaSelecionada ? plantoes.length : ""}
+                                            InputProps={{readOnly: true }}
+                                            variant="standard"
+                                            style={{ flex: 1, marginRight: "8px" }}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} xl={1.5}>
+                                        <h5 style={{ color: "#344767" }}>Total Juízes</h5>
+                                        <TextField
+                                            fullWidth
+                                            id="outlined-tipo-input"
+                                            value={escalaSelecionada ? juizes.length : ""}
+                                            InputProps={{readOnly: true }}
+                                            variant="standard"
+                                            style={{ flex: 1, marginRight: "8px" }}
+                                        />
+                                    </Grid>
                                     <Grid item xs={12} xl={2}>
                                         <h5 style={{ color: "#344767" }}>Plantões por Juiz</h5>
                                         <TextField
@@ -499,12 +521,19 @@ function EscalasPage({ data, h, tipo }) {
                                                         <IconButton aria-label="toggle edicao" onClick={editandoNumPlantoes ? handleSalvarNumPlantoes : handleEditarNumPlantoes} fontSize="small">
                                                             {editandoNumPlantoes ? <SaveIcon fontSize="small"  /> : <EditIcon fontSize="small" />}
                                                         </IconButton>
+                                                        <IconButton aria-label="toggle edicao" onClick={()=>{
+                                                            editaPlantoesPorJuiz(Math.ceil(plantoes.length/juizes.length), escalaSelecionada.id, h)
+                                                            setTimeout(fetchEscalas, 1000);}
+                                                        } fontSize="small">
+                                                            <Divide />
+                                                        </IconButton>
                                                     </InputAdornment>
                                                 ),
 
                                             }}
                                         />
                                     </Grid>
+
                                 </Grid>
                                 <Grid container mt={2} spacing={2}>
                                     <Grid item xs={6} xl={3}>
@@ -594,7 +623,7 @@ function EscalasPage({ data, h, tipo }) {
                                                     style={{ height: '500px' }}
                                                     editMode="row"
                                                     disableColumnMenu
-                                                    sx={{ fontSize: '16px', fontWeight: 'regular', color: 'dark',border:0 }}
+                                                    sx={{ fontSize: '16px', fontWeight: 'regular', color: 'dark',border:0, marginBottom: '12px' }}
                                                     pageSizeOptions={[5, 10, 50]}
                                                     initialState={{pagination: { paginationModel: { pageSize: 50 } },}}
                                                     rows={plantoes}
@@ -625,15 +654,11 @@ function EscalasPage({ data, h, tipo }) {
                                                     disableDensitySelector
                                                     disableRowSelectionOnClick
                                                     slots={{
-                                                        pagination: CustomPagination,
                                                         toolbar: GridToolbar,
                                                     }}
                                                     slotProps={{ toolbar: { showQuickFilter: true}}}
                                                     sortModel={[{field: 'data', sort: 'asc',}]}
                                                     hideExport={true}
-                                                    hideFooterPagination={true}
-                                                    hideFooterRowCount={true}
-                                                    hideFooterSelectedRowCount={true}
                                                 />
                                                 <Grid container spacing={1}  justifyContent="center" alignItems="center" sx={{ border: '1px solid rgb(224, 224, 224)', borderRadius: '5px', padding: '5px', paddingBottom: '10px' }}>
                                                     <Grid item xs={6} md={6} xl={4} mt={0.2}>
