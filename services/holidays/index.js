@@ -69,10 +69,17 @@ export function getEasterHolidays(year) {
   movingDate.setDate(movingDate.getDate() - 45);
   holidays.push({
     date: formatDate(movingDate),
-    name: 'Carnaval',
+    name: 'Carnaval - terça',
     type: 'nacional',
   });
-  movingDate.setDate(movingDate.getDate() + 107);
+  movingDate.setDate(movingDate.getDate() - 1);
+  holidays.push({
+    date: formatDate(movingDate),
+    name: 'Carnaval - segunda',
+    type: 'nacional',
+  });
+
+  movingDate.setDate(movingDate.getDate() + 108);
   holidays.push({
     date: formatDate(movingDate),
     name: 'Corpus Christi',
